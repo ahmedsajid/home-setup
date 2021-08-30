@@ -1,4 +1,4 @@
 ---
 
-- include: includes/screen.yml
-- include: includes/nasmounts.yml
+- import_playbook: includes/screen.yml
+- import_playbook: includes/nasmounts.yml
