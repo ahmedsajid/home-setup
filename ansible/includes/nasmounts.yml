@@ -23,4 +23,5 @@
         # Tune NFS 3 mounts
         opts: 'rsize=32768,wsize=32768,nfsvers=3,tcp,async'
         fstype: nfs
+        state: present
       with_items: "{{ mounts }}"
