@@ -1,0 +1,2 @@
+[pull_mode_hosts]
+next.lan ansible_host=192.168.0.99
