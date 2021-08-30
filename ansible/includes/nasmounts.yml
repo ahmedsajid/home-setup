@@ -1,0 +1,26 @@
+---
+
+- hosts: localhost
+  vars:
+    mounts:
+      - 'Movies'
+      - 'TV Shows'
+      - 'Backup'
+      - 'Download'
+    nas_root: '/mnt/nas'
+  tasks:
+    - name: Create required folders
+      file:
+        state: directory
+        path: "{{ nas_root }}/{{ item }}"
+      with_items: "{{ mounts }}"
+
+    - name: Adding NAS mount points to fstab
+      mount:
+        src: 192.168.0.30:/{{ item }}
+        path: "{{ nas_root }}/{{ item }}"
+        # https://rizvir.com/articles/linux-sysadmin-cheats/
+        # Tune NFS 3 mounts
+        opts: 'rsize=32768,wsize=32768,nfsvers=3,tcp,async'
+        fstype: nfs
+      with_items: "{{ mounts }}"
