@@ -1,6 +1,6 @@
 ---
 
-- hosts: localhost
+- hosts: next
   vars:
     mounts:
       - 'Movies'
