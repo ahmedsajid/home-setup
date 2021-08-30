@@ -1,0 +1,13 @@
+---
+
+- hosts: localhost
+  tasks:
+    - name: install screen
+      package:
+        name: screen
+
+    # Taken from https://rizvir.com/articles/linux-sysadmin-cheats/
+    - name: Allow scrolling in screen session
+      lineinfile:
+        path: /etc/screenrc
+        line: 'termcapinfo xterm* ti@:te@'
