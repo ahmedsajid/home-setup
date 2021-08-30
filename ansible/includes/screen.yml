@@ -1,6 +1,6 @@
 ---
 
-- hosts: local
+- hosts: all
   tasks:
     - name: install screen
       package:
