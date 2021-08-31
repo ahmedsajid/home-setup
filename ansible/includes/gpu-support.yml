@@ -7,13 +7,14 @@
         name: "ubuntu-drivers-common"
 
     - name: "Install drivers"
-      shell: "ubuntu-drivers --gpgpu autoinstal"
+      shell: "ubuntu-drivers --gpgpu autoinstall"
+      register: gpu_install
 
     - name: "reboot server"
       shell: sleep 5 && reboot &
       async: 1
       poll: 0
-      when: reboot_hint.stdout.find("reboot") != -1
+      when: gpu_install is changed
 
     - name: "wait for server"
       wait_for_connection:
