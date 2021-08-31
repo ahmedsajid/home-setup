@@ -15,5 +15,5 @@
     - name: Ensure Emby server is enabled
       systemd:
         name: "emby-server"
-        enable: true
+        enabled: true
         state: started
