@@ -1,0 +1,7 @@
+---
+
+- hosts: all
+  tasks:
+    - name: Setting timezone
+      timezone:
+        name: 'America/Toronto'
