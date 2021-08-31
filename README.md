@@ -1,4 +1,4 @@
-# Repo that holds my home lab setup
+# Repo for home setup
 I have choosen to use ansible pull mechanism as it doesn't require a controller.
 Also ensures that my setup is always up to date.
 And, my home setup can run on unrealiable hardware with a small RTO.
