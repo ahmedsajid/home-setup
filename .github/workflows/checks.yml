@@ -1,0 +1,33 @@
+---
+
+name: checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checking out repo
+      uses: actions/checkout@v2
+    - name: Setup Python
+      uses: actions/setup-python@v2
+    - name: Run pre-commit checks
+      uses: pre-commit/action@v2.0.3
+    - name: Run Ansible test
+      uses: dawidd6/action-ansible-playbook@v2
+      with:
+        # Required, playbook filepath
+        playbook: local.yml
+        # Optional, directory where playbooks live
+        directory: ./ansible
+        # Optional, literal inventory file contents
+        inventory: |
+          [all]
+          127.0.0.1 ansible_connection=local
+        options: |
+          --become
+          --check
