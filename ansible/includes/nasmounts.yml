@@ -1,6 +1,6 @@
 ---
 
-- hosts: next
+- hosts: all
   vars:
     mounts:
       - 'Movies'
