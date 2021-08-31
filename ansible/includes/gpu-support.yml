@@ -3,9 +3,12 @@
 - hosts: all
   tasks:
 
-    - name: "Installing ubuntu-drivers-common"
+    - name: "Installing required packages"
       package:
-        name: "ubuntu-drivers-common"
+        name: "{{ item }}"
+      with_items:
+        - "nvidia-modprobe"
+        - "ubuntu-drivers-common"
 
     - name: "Install drivers"
       shell: "ubuntu-drivers --gpgpu autoinstall"
