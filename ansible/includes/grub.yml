@@ -2,6 +2,7 @@
 
 - hosts: all
   tasks:
+    # https://unix.stackexchange.com/questions/25133/ubuntu-server-continuously-goes-to-sleep/25151#25151
     - name: "Disable System sleep"
       lineinfile:
          dest: /etc/default/grub
