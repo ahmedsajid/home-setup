@@ -9,6 +9,10 @@
       - 'Download'
     nas_root: '/mnt/nas'
   tasks:
+    - name: Installed nfs-common
+      package:
+        name: nfs-common
+
     - name: Create required folders
       file:
         state: directory
@@ -23,5 +27,5 @@
         # Tune NFS 3 mounts
         opts: 'rsize=32768,wsize=32768,nfsvers=3,tcp,async'
         fstype: nfs
-        state: present
+        state: mounted
       with_items: "{{ mounts }}"
