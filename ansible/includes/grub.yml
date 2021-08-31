@@ -1,0 +1,16 @@
+---
+
+- hosts: all
+  tasks:
+    - name: "Disable System sleep"
+      lineinfile:
+         dest: /etc/default/grub
+         regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+         line: 'GRUB_CMDLINE_LINUX_DEFAULT="acpi=off apm=off"'  
+         mode: 0644
+         backup: yes
+       register: grub_file
+
+   - name: Update Grub
+     command: update-grub
+     when: grub_file is changed
