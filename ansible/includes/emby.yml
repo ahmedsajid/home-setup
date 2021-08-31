@@ -8,6 +8,9 @@
     - name: Install Emby
       apt:
         deb: "{{ emby_download_url }}"
+      # https://github.com/ansible/ansible/issues/45219
+      environment:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
     - name: Ensure Emby server is enabled
       systemd:
