@@ -5,13 +5,13 @@
     # https://unix.stackexchange.com/questions/25133/ubuntu-server-continuously-goes-to-sleep/25151#25151
     - name: "Disable System sleep"
       lineinfile:
-         dest: /etc/default/grub
-         regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
-         line: 'GRUB_CMDLINE_LINUX_DEFAULT="acpi=off apm=off"'  
-         mode: 0644
-         backup: yes
-       register: grub_file
+        dest: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="acpi=off apm=off"'
+        mode: 0644
+        backup: true
+      register: grub_file
 
-   - name: Update Grub
-     command: update-grub
-     when: grub_file is changed
+    - name: Update Grub
+      command: update-grub
+      when: grub_file is changed
