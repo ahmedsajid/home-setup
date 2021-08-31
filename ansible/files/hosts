@@ -1,17 +1,2 @@
-[all:children]
-emby
-wireguard
-adguard
-backup
-
-[emby]
-next.lan ansible_host=192.168.0.99
-
-[adguard]
-next.lan ansible_host=192.168.0.99
-
-[wireguard]
-next.lan ansible_host=192.168.0.99
-
-[backup]
-next.lan ansible_host=192.168.0.99
+[local]
+127.0.0.1

@@ -21,7 +21,7 @@
     # Repository to check out -- YOU MUST CHANGE THIS
     # repo must contain a local.yml file at top level
     repo_url: git://github.com/ahmedsajid/home-setup.git
-    checkout: main
+    checkout: inventoryupdate
 
   tasks:
 
