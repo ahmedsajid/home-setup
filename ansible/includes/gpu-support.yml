@@ -1,0 +1,24 @@
+---
+
+- hosts: all
+  tasks:
+    - name: "Installing ubuntu-drivers-common"
+      package:
+        name: "ubuntu-drivers-common"
+
+    - name: "Install drivers"
+      shell: "ubuntu-drivers --gpgpu autoinstal"
+
+    - name: "reboot server"
+      shell: sleep 5 && reboot &
+      async: 1
+      poll: 0
+      when: reboot_hint.stdout.find("reboot") != -1
+
+    - name: "wait for server"
+      wait_for_connection:
+        connect_timeout: 20
+        sleep: 5
+        delay: 5
+        timeout: 600
+
