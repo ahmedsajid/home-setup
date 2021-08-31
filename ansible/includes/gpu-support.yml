@@ -9,10 +9,3 @@
 
     - name: "Install drivers"
       shell: "ubuntu-drivers --gpgpu autoinstall"
-      register: gpu_install
-
-    - name: "reboot server"
-      shell: sleep 5 && reboot &
-      async: 1
-      poll: 0
-      when: gpu_install is changed
