@@ -2,6 +2,7 @@
 
 - hosts: all
   tasks:
+
     - name: "Installing ubuntu-drivers-common"
       package:
         name: "ubuntu-drivers-common"
@@ -22,4 +23,3 @@
         sleep: 5
         delay: 5
         timeout: 600
-
