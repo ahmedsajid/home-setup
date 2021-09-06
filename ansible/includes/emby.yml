@@ -10,7 +10,7 @@
     - name: Restart Emby
       systemd:
         name: "emby-server"
-        state: reloaded
+        state: restarted
       # Skipping check mode since its causes issues :(
       when: not ansible_check_mode
 
