@@ -20,4 +20,6 @@
       vars:
         unbound_interfaces:
           - 127.0.0.1@5353
+        unbound_forward_zone_configuration:
+          - forward-tls-upstream: "yes"
       when: not ansible_check_mode
