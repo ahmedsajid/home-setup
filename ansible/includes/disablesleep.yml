@@ -1,0 +1,14 @@
+---
+
+- hosts: all
+  tasks:
+    - name: "Disable any kind of sleep"
+      systemd:
+        name: "{{ item }}"
+        enabled: no
+        masked: yes
+      with_items:
+        - sleep.target
+        - suspend.target
+        - hibernate.target
+        - hybrid-sleep.target
