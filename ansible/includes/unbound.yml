@@ -9,9 +9,10 @@
       delegate_to: localhost
 
     - name: Clone role jdauphant.unbound
-        repo: 'https://foosball.example.org/path/to/repo.git'
+      git:
+        repo: 'https://github.com/jdauphant/ansible-role-unbound.git'
         dest: /root/.ansible/roles/jdauphant.unbound
-        version: v2.1.0 
+        version: v2.1.0
 
     - name: Use unbound
       include_role:
