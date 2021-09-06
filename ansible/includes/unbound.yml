@@ -8,3 +8,4 @@
       vars:
         unbound_interfaces:
           - 127.0.0.1@5353
+      when: not ansible_check_mode
