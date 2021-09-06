@@ -4,6 +4,16 @@
   vars:
     emby_version: "4.6.4.0"
     emby_download_url: "https://github.com/MediaBrowser/Emby.Releases/releases/download/{{ emby_version }}/emby-server-deb_{{ emby_version }}_amd64.deb"
+    emby_root: "/var/lib/emby"
+
+  handlers:
+    - name: Restart Emby
+      systemd:
+        name: "emby-server"
+        state: restarted
+      # Skipping check mode since its causes issues :(
+      when: not ansible_check_mode
+
   tasks:
     - name: Install Emby
       apt:
@@ -19,3 +29,30 @@
         state: started
       # Skipping check mode since its causes issues :(
       when: not ansible_check_mode
+
+    - name: Create folders for content
+      file:
+        state: directory
+        path: "{{ item }}"
+        owner: "emby"
+        group: "emby"
+      with_items:
+        - "{{ emby_root }}/config"
+        - "{{ emby_root }}/root/default/TV shows"
+        - "{{ emby_root }}/root/default/Movies"
+
+    - name: Copy config files
+      copy:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: "emby"
+        group: "emby"
+      with_items:
+        - src: "../files/emby/system.xml"
+          dest: "{{ emby_root }}/config/system.xml"
+        - src: "../files/emby/TV_shows_options.xml"
+          dest: "{{ emby_root }}/root/default/TV shows/options.xml"
+        - src: "../files/emby/Movies_options.xml"
+          dest: "{{ emby_root }}/root/default/Movies/options.xml"
+      notify:
+        - Restart Emby
