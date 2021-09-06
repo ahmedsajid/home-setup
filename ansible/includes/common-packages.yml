@@ -13,3 +13,4 @@
         - '/bin/ping$'
         - '/bin/curl$'
         - '/bin/vim$'
+        - '/bin/wget$'
