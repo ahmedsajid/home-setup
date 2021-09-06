@@ -29,8 +29,6 @@ jobs:
         playbook: local.yml
         # Optional, directory where playbooks live
         directory: ./ansible
-        # Optional, galaxy requirements filepath
-        requirements: requirements.yml
         # Optional, literal inventory file contents
         inventory: |
           [all]
