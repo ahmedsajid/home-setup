@@ -1,0 +1,11 @@
+---
+
+- hosts: all
+  tasks:
+    - name: Install unbound
+      include_role:
+        name: jdauphant.unbound
+      vars:
+        unbound_interfaces:
+          - 127.0.0.1@5353
+      when: not ansible_check_mode
