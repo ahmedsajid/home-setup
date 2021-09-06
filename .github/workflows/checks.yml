@@ -30,7 +30,7 @@ jobs:
         # Optional, directory where playbooks live
         directory: ./ansible
         # Optional, galaxy requirements filepath
-        requirements: ./ansible/requirements.yml
+        requirements: requirements.yml
         # Optional, literal inventory file contents
         inventory: |
           [all]
