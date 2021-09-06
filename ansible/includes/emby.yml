@@ -46,11 +46,11 @@
         owner: "emby"
         group: "emby"
       with_items:
-        - src: "files/emby/system.xml"
+        - src: "../files/emby/system.xml"
           dest: "{{ emby_root }}/config/system.xml"
-        - src: "files/emby/TV_shows_options.xml"
+        - src: "../files/emby/TV_shows_options.xml"
           dest: "{{ emby_root }}/root/default/TV shows/options.xml"
-        - src: "files/emby/Movies_options.xml"
+        - src: "../files/emby/Movies_options.xml"
           dest: "{{ emby_root }}/root/default/Movies/options.xml"
       notify:
         - Restart Emby
