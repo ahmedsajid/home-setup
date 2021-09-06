@@ -11,6 +11,8 @@
       systemd:
         name: "emby-server"
         state: restarted
+      # Skipping check mode since its causes issues :(
+      when: not ansible_check_mode
 
   tasks:
     - name: Install Emby
