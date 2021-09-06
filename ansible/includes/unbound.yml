@@ -2,7 +2,18 @@
 
 - hosts: all
   tasks:
-    - name: Install unbound
+    - name: create role folder
+      file:
+        state: directory
+        path: /root/.ansible/roles
+      delegate_to: localhost
+
+    - name: Clone role jdauphant.unbound
+        repo: 'https://foosball.example.org/path/to/repo.git'
+        dest: /root/.ansible/roles/jdauphant.unbound
+        version: v2.1.0 
+
+    - name: Use unbound
       include_role:
         name: jdauphant.unbound
       vars:
