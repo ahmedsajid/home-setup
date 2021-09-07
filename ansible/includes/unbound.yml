@@ -8,15 +8,15 @@
         path: /root/.ansible/roles
       delegate_to: localhost
 
-    - name: Clone role jdauphant.unbound
+    - name: Clone role ahmedsajid.unbound
       git:
-        repo: 'https://github.com/jdauphant/ansible-role-unbound.git'
-        dest: /root/.ansible/roles/jdauphant.unbound
-        version: v2.1.0
+        repo: 'https://github.com/ahmedsajid/ansible-role-unbound.git'
+        dest: /root/.ansible/roles/ahmedsajid.unbound
+        version: v2.1.1
 
-    - name: Use unbound
+    - name: Using unbound role
       include_role:
-        name: jdauphant.unbound
+        name: ahmedsajid.unbound
       vars:
         unbound_interfaces:
           - 127.0.0.1@5353
