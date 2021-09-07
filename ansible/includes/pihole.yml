@@ -32,6 +32,7 @@
         - "/opt/pihole/dnsmasq.d/"
 
     - name: Deploy pihole container
+      docker_container:
         name: "pihole"
         hostname: "pihole"
         image: "pihole/pihole:v5.8.1"
