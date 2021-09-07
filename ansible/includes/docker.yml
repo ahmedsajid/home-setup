@@ -21,3 +21,4 @@
           "max-size": "100m",
           "max-file": "5"
         }
+      when: not ansible_check_mode
