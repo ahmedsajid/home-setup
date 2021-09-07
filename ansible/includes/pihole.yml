@@ -1,0 +1,48 @@
+---
+
+- hosts: all
+  tasks:
+    - name: create role folder
+      file:
+        state: directory
+        path: /root/.ansible/roles
+
+    - name: Clone role ahmedsajid.unbound
+      git:
+        repo: 'https://github.com/ahmedsajid/ansible-role-unbound.git'
+        dest: /root/.ansible/roles/ahmedsajid.unbound
+        version: v2.1.1
+
+    - name: Using unbound role
+      include_role:
+        name: ahmedsajid.unbound
+      vars:
+        unbound_interfaces:
+          - 127.0.0.1@5353
+        unbound_forward_zone_configuration:
+          - forward-tls-upstream: "yes"
+      when: not ansible_check_mode
+
+    - name: create pihole required folders
+      file:
+        state: directory
+        path: /root/.ansible/roles
+      with_items:
+        - "/opt/pihole/etc"
+        - "/opt/pihole/dnsmasq.d/"
+
+    - name: Deploy pihole container
+        name: "pihole"
+        hostname: "pihole"
+        image: "pihole/pihole:v5.8.1"
+        network_mode: "host"
+        env:
+          TZ: 'America/Toronto'
+          PIHOLE_DNS_: '127.0.0.1#5353'
+        restart_policy: always
+        state: started
+        pull: yes
+        restart: yes
+        volumes:
+          - '/opt/pihole/etc/:/etc/pihole/'
+          - '/opt/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
