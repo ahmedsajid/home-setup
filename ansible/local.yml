@@ -8,3 +8,4 @@
 - import_playbook: includes/gpu-support.yml
 - import_playbook: includes/emby.yml
 - import_playbook: includes/unbound.yml
+- import_playbook: includes/docker.yml
