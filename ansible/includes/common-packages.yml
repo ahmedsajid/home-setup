@@ -2,15 +2,19 @@
 
 - hosts: all
   tasks:
-    - name: Install apt-file
+    - name: install common-packages
       package:
-        name: "apt-file"
-
-    - name: Install packages by binaries
-      shell: apt-get -y install $(apt-file search --regexp '{{ item }}' | head -n 1 | cut -d ':' -f1)
+        name: "{{ item }}"
       with_items:
-        - '/bin/netstat$'
-        - '/bin/ping$'
-        - '/bin/curl$'
-        - '/bin/vim$'
-        - '/bin/wget$'
+        - "bash-completion"
+        - "net-tools"
+        - "iputils-ping"
+        - "curl"
+        - "wget"
+        - "screen"
+
+    # Taken from https://rizvir.com/articles/linux-sysadmin-cheats/
+    - name: Allow scrolling in screen session
+      lineinfile:
+        path: /etc/screenrc
+        line: 'termcapinfo xterm* ti@:te@'
