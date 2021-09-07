@@ -17,7 +17,7 @@
       include_role:
         name: gbolo.unbound
       vars:
-        docker_config_log_opts:  {
+        docker_config_log_opts: {
           "max-size": "100m",
           "max-file": "5"
         }
