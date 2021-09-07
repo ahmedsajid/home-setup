@@ -24,4 +24,3 @@ Once the cronjob has been setup, there should be following available services pr
 - Web Aria2 - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/31)
 - NAS to external hdd backup - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/32)
 - HTTPs access to services (Nginx, LetsEncrypt, NoIP) - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/33)
-
