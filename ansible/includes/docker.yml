@@ -13,9 +13,9 @@
         dest: /root/.ansible/roles/gbolo.docker
         version: v2.1
 
-    - name: Using unbound role
+    - name: Using docker role
       include_role:
-        name: gbolo.unbound
+        name: gbolo.docker
       vars:
         docker_config_log_opts: {
           "max-size": "100m",
