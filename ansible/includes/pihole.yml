@@ -42,8 +42,8 @@
           PIHOLE_DNS_: '127.0.0.1#5353'
         restart_policy: always
         state: started
-        pull: yes
-        restart: yes
+        pull: true
+        restart: true
         volumes:
           - '/opt/pihole/etc/:/etc/pihole/'
           - '/opt/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
