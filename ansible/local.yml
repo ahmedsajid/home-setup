@@ -4,7 +4,6 @@
 - import_playbook: includes/grub.yml
 - import_playbook: includes/timezone.yml
 - import_playbook: includes/common-packages.yml
-- import_playbook: includes/screen.yml
 - import_playbook: includes/nasmounts.yml
 - import_playbook: includes/gpu-support.yml
 - import_playbook: includes/emby.yml
