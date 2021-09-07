@@ -21,4 +21,6 @@
           "max-size": "100m",
           "max-file": "5"
         }
+        docker_install_py_module: true
+        docker_py_pkg_name: "python3-docker"
       when: not ansible_check_mode
