@@ -18,6 +18,6 @@
         name: gbolo.unbound
       vars:
         docker_config_log_opts:  {
-            "max-size": "100m",
-            "max-file": "5"
+          "max-size": "100m",
+          "max-file": "5"
         }
