@@ -12,6 +12,7 @@
         - "curl"
         - "wget"
         - "screen"
+        - "tree"
 
     # Taken from https://rizvir.com/articles/linux-sysadmin-cheats/
     - name: Allow scrolling in screen session
