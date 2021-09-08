@@ -14,7 +14,7 @@ jobs:
         with:
           script: |
             const title = context.issue.title
-            console.log(context)
+            // console.log(context)
             console.log(title)
             if (title.startsWith('bug:')) {
               github.issues.addLabels({
