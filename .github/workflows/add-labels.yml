@@ -27,12 +27,7 @@ jobs:
             // print context
             console.log(context)
 
-            // Getting title info by checking if it was an issue or pr
-            if (context.payload.pull_request) {
-              let title = context.payload.pull_request.title
-            } else {
-              let title = context.payload.issue.title
-            }
+            const title = (context.payload.pull_request) ? context.payload.pull_request.title : context.payload.issue.title
 
             console.log(title)
 
