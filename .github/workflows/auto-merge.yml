@@ -13,14 +13,11 @@ jobs:
   apply-auto-merge:
     runs-on: ubuntu-latest
     steps:
+      - name: Checking out repo
+        uses: actions/checkout@v2
+      - name: Download ghcli
+        run: wget -O gh.deb https://github.com/cli/cli/releases/download/v2.0.0/gh_2.0.0_linux_amd64.deb
+      - name: Install ghcli
+        run: sudo dpkg -i gh.deb
       - name: auto-merge
-        uses: actions/github-script@v4
-        with:
-          script: |
-
-            console.log(context.repo.owner)
-            console.log(context.actor)
-            console.log(github.issues)
-
-            // if (context.actor === context.repo.owner) {
-            // }
+        run: gh pr merge --auto -s
