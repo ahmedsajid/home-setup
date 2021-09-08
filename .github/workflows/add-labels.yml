@@ -24,24 +24,26 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            // if its a pull request
-            console.log(context)
+            // Getting title info by checking if it was an issue or pr
             if (context.payload.pull_request) {
               const title = context.payload.pull_request.title
-              console.log(title)
-              if (title.startsWith('bug:')) {
-                github.issues.setLabels({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  labels: ['bug']
-                })
-              } else {
-                github.issues.setLabels({
-                  issue_number: context.issue.number,
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  labels: ['enhancement']
-                })
-              }
+            } else {
+              const title = context.payload.issue.title
+            }
+            console.log(title)
+
+            if (title.startsWith('bug:')) {
+              github.issues.setLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['bug']
+              })
+            } else {
+              github.issues.setLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['enhancement']
+              })
             }
