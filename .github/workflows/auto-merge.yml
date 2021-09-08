@@ -1,4 +1,5 @@
 ---
+
 name: auto-merge
 
 on:
@@ -15,9 +16,12 @@ jobs:
     steps:
       - name: Checking out repo
         uses: actions/checkout@v2
-      - name: Download ghcli
-        run: wget -O gh.deb https://github.com/cli/cli/releases/download/v2.0.0/gh_2.0.0_linux_amd64.deb
-      - name: Install ghcli
-        run: sudo dpkg -i gh.deb
-      - name: auto-merge
-        run: gh pr merge --auto -s
+      - name: Run auto-merge
+        run: |
+          if [ "${ACTOR}" == "${OWNER}" ]; then
+            gh pr merge --auto -s
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ACTOR: ${{ context.actor }}
+          OWNER: ${{ context.repo.owner }}
