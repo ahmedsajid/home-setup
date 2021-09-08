@@ -18,7 +18,8 @@ jobs:
       #   uses: actions/checkout@v2
       - name: Run auto-merge
         run: |
-          echo "${ACTOR} ${OWNER}" 
+          pwd
+          ls
           if [ "${ACTOR}" = "${OWNER}" ]; then
             gh pr merge --auto -s
           fi
