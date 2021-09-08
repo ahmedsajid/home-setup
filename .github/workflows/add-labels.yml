@@ -10,17 +10,13 @@ jobs:
   apply-label:
     runs-on: ubuntu-latest
     steps:
-      - name: View the github context
-        run: echo "$GITHUB_CONTEXT"
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
       - name: add-label
         uses: actions/github-script@v4
         with:
           script: |
-
+            console.log(context)
             const title = context.event.pull_request.title
-            console.log(title)
+            console.log(context)
             if (title === '^bug:.*') {
               github.issues.addLabels({
                 issue_number: context.issue.number,
