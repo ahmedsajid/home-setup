@@ -19,7 +19,7 @@ jobs:
       - name: Run auto-merge
         run: |
           pwd
-          ls
+          ls -ltraR
           if [ "${ACTOR}" = "${OWNER}" ]; then
             gh pr merge --auto -s
           fi
