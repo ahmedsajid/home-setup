@@ -18,12 +18,9 @@ jobs:
         with:
           script: |
 
-            // If the owner trigger the workflow,
-            // enable auto-merge
-            console.log(github.actor)
-            console.log(github.repository_owner)
             console.log(context.repo.owner)
             console.log(context.actor)
+            console.log(github)
 
-            // if (github.actor === github.repository_owner) {
+            // if (context.actor === context.repo.owner) {
             // }
