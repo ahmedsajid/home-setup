@@ -34,18 +34,18 @@ jobs:
             }
             console.log(title)
 
-            if (title.startsWith('bug:')) {
-              github.issues.setLabels({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                labels: ['bug']
-              })
-            } else {
-              github.issues.setLabels({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                labels: ['enhancement']
-              })
-            }
+            // if (title.startsWith('bug:')) {
+            //   github.issues.setLabels({
+            //     issue_number: context.issue.number,
+            //     owner: context.repo.owner,
+            //     repo: context.repo.repo,
+            //     labels: ['bug']
+            //   })
+            // } else {
+            //   github.issues.setLabels({
+            //     issue_number: context.issue.number,
+            //     owner: context.repo.owner,
+            //     repo: context.repo.repo,
+            //     labels: ['enhancement']
+            //   })
+            // }
