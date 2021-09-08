@@ -1,0 +1,45 @@
+---
+
+name: add-label
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+  issues:
+    types:
+      - opened
+      - reopened
+  issue_comment:
+
+jobs:
+  apply-label:
+    runs-on: ubuntu-latest
+    steps:
+      - name: add-label
+        uses: actions/github-script@v4
+        with:
+          script: |
+            // if its a pull request
+            if (context.payload.pull_request) {
+              const title = context.payload.pull_request.title
+              console.log(title)
+              if (title.startsWith('bug:')) {
+                github.issues.setLabels({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  labels: ['bug']
+                })
+              } else {
+                github.issues.setLabels({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  labels: ['enhancement']
+                })
+              }
+            }
