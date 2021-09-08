@@ -14,14 +14,15 @@ jobs:
   apply-auto-merge:
     runs-on: ubuntu-latest
     steps:
-      - name: Checking out repo
-        uses: actions/checkout@v2
+      # - name: Checking out repo
+      #   uses: actions/checkout@v2
       - name: Run auto-merge
         run: |
+          echo "${ACTOR} ${OWNER}" 
           if [ "${ACTOR}" == "${OWNER}" ]; then
             gh pr merge --auto -s
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           ACTOR: ${{ env.actor }}
-          OWNER: ${{ env.repo.owner }}
+          OWNER: ${{ github.repository_owner }}
