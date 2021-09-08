@@ -4,9 +4,10 @@ name: testing
 
 on:
   pull_request:
+    paths: 'ansible/**'
   push:
     branches: [main]
-      paths: 'ansible/**'
+    paths: 'ansible/**'
 jobs:
   test:
     runs-on: ubuntu-latest
