@@ -54,7 +54,7 @@
             https://raw.githubusercontent.com/ahmedsajid/pihole/master/sunburst.txt
             https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
             https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube2.txt
- 
+
     - name: Deploy pihole container
       docker_container:
         name: "pihole"
