@@ -1,5 +1,4 @@
 ---
-
 name: add-label
 
 on:
@@ -24,6 +23,9 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
+            // print context
+            console.log(context)
+
             // Getting title info by checking if it was an issue or pr
             if (context.payload.pull_request) {
               const title = context.payload.pull_request.title
