@@ -14,15 +14,15 @@ jobs:
         with:
           script: |
             const title = context.issue.title
-            if (title.startsWith('bug:') {
-                github.issues.addLabels({
+            if (title.startsWith('bug:')) {
+              github.issues.addLabels({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 labels: ['bug']
               })
             } else {
-                github.issues.addLabels({
+              github.issues.addLabels({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
