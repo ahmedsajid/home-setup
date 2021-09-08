@@ -19,7 +19,7 @@ jobs:
         with:
           script: |
 
-            const title = context.issue.title
+            const title = context.event.issue.title
             console.log(title)
             if (title === '^bug:.*') {
               github.issues.addLabels({
