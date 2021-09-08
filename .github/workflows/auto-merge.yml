@@ -19,10 +19,10 @@ jobs:
       - name: Run auto-merge
         run: |
           echo "${ACTOR} ${OWNER}" 
-          if [ "${ACTOR}" == "${OWNER}" ]; then
+          if [ "${ACTOR}" = "${OWNER}" ]; then
             gh pr merge --auto -s
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACTOR: ${{ env.actor }}
+          ACTOR: ${{ github.actor }}
           OWNER: ${{ github.repository_owner }}
