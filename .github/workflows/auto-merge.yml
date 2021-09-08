@@ -1,0 +1,28 @@
+---
+name: auto-merge
+
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+
+jobs:
+  apply-auto-merge:
+    runs-on: ubuntu-latest
+    steps:
+      - name: auto-merge
+        uses: actions/github-script@v4
+        with:
+          script: |
+
+            // If the owner trigger the workflow,
+            // enable auto-merge
+            console.log(github.actor)
+            console.log(gitub.repository_owner)
+            console.log(context.repo.owner)
+
+            // if (github.actor === github.repository_owner) {
+            // }
