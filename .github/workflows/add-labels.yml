@@ -16,11 +16,11 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            console.log(context)
+            // if its a pull request
             if (context.payload.pull_request) {
               const title = context.payload.pull_request.title
               console.log(title)
-              if (title.startsWith === 'bug:') {
+              if (title.startsWith('bug:')) {
                 github.issues.addLabels({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
