@@ -16,7 +16,8 @@ jobs:
             const title = context.issue.title
             // console.log(context)
             console.log(title)
-            if (title.startsWith('bug:')) {
+            // if (title.startsWith('bug:')) {
+            if (title === '^bug:.*') {
               github.issues.addLabels({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
