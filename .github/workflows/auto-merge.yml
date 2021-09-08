@@ -23,5 +23,5 @@ jobs:
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ACTOR: ${{ context.actor }}
-          OWNER: ${{ context.repo.owner }}
+          ACTOR: ${{ env.actor }}
+          OWNER: ${{ env.repo.owner }}
