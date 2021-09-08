@@ -24,12 +24,7 @@ jobs:
         with:
           script: |
 
-            // print context
-            console.log(context)
-
             const title = (context.payload.pull_request) ? context.payload.pull_request.title : context.payload.issue.title
-
-            console.log(title)
 
             if (title.startsWith('bug:')) {
               github.issues.setLabels({
