@@ -15,20 +15,20 @@ jobs:
         with:
           script: |
             console.log(context)
-            const title = context.event.pull_request.title
-            console.log(context)
-            if (title === '^bug:.*') {
-              github.issues.addLabels({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                labels: ['bug']
-              })
-            } else {
-              github.issues.addLabels({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                labels: ['enhancement']
-              })
-            }
+            // const title = context.event.pull_request.title
+            // console.log(context)
+            // if (title === '^bug:.*') {
+            //   github.issues.addLabels({
+            //     issue_number: context.issue.number,
+            //     owner: context.repo.owner,
+            //     repo: context.repo.repo,
+            //     labels: ['bug']
+            //   })
+            // } else {
+            //   github.issues.addLabels({
+            //     issue_number: context.issue.number,
+            //     owner: context.repo.owner,
+            //     repo: context.repo.repo,
+            //     labels: ['enhancement']
+            //   })
+            // }
