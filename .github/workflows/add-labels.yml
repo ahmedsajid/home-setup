@@ -2,9 +2,11 @@
 name: add-label
 
 on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
   issues:
     types: [opened]
-  pull_request:
+  issue_comment:
 
 jobs:
   apply-label:
