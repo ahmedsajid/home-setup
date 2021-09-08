@@ -13,6 +13,7 @@ on:
     types:
       - opened
       - reopened
+      - edited
   issue_comment:
 
 jobs:
@@ -24,6 +25,7 @@ jobs:
         with:
           script: |
             // if its a pull request
+            console.log(context)
             if (context.payload.pull_request) {
               const title = context.payload.pull_request.title
               console.log(title)
