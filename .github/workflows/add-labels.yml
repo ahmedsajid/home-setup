@@ -1,11 +1,18 @@
 ---
+
 name: add-label
 
 on:
   pull_request:
-    types: [opened, synchronize, reopened, edited]
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
   issues:
-    types: [opened]
+    types:
+      - opened
+      - reopened
   issue_comment:
 
 jobs:
@@ -21,14 +28,14 @@ jobs:
               const title = context.payload.pull_request.title
               console.log(title)
               if (title.startsWith('bug:')) {
-                github.issues.addLabels({
+                github.issues.setLabels({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   labels: ['bug']
                 })
               } else {
-                github.issues.addLabels({
+                github.issues.setLabels({
                   issue_number: context.issue.number,
                   owner: context.repo.owner,
                   repo: context.repo.repo,
