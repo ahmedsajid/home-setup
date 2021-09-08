@@ -20,7 +20,7 @@ jobs:
 
             console.log(context.repo.owner)
             console.log(context.actor)
-            console.log(github)
+            console.log(github.issues)
 
             // if (context.actor === context.repo.owner) {
             // }
