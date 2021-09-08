@@ -40,6 +40,7 @@
         env:
           TZ: 'America/Toronto'
           PIHOLE_DNS_: '127.0.0.1#5353'
+        dns_servers: '8.8.8.8'
         restart_policy: always
         state: started
         pull: true
