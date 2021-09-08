@@ -29,24 +29,25 @@ jobs:
 
             // Getting title info by checking if it was an issue or pr
             if (context.payload.pull_request) {
-              const title = context.payload.pull_request.title
+              let title = context.payload.pull_request.title
             } else {
-              const title = context.payload.issue.title
+              let title = context.payload.issue.title
             }
+
             console.log(title)
 
-            // if (title.startsWith('bug:')) {
-            //   github.issues.setLabels({
-            //     issue_number: context.issue.number,
-            //     owner: context.repo.owner,
-            //     repo: context.repo.repo,
-            //     labels: ['bug']
-            //   })
-            // } else {
-            //   github.issues.setLabels({
-            //     issue_number: context.issue.number,
-            //     owner: context.repo.owner,
-            //     repo: context.repo.repo,
-            //     labels: ['enhancement']
-            //   })
-            // }
+            if (title.startsWith('bug:')) {
+              github.issues.setLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['bug']
+              })
+            } else {
+              github.issues.setLabels({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                labels: ['enhancement']
+              })
+            }
