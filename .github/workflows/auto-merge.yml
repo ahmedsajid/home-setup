@@ -23,6 +23,7 @@ jobs:
             console.log(github.actor)
             console.log(github.repository_owner)
             console.log(context.repo.owner)
+            console.log(context.actor)
 
             // if (github.actor === github.repository_owner) {
             // }
