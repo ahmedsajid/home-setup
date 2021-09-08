@@ -1,5 +1,4 @@
 ---
-
 name: add-label
 
 on:
@@ -24,12 +23,12 @@ jobs:
         uses: actions/github-script@v4
         with:
           script: |
-            // Getting title info by checking if it was an issue or pr
-            if (context.payload.pull_request) {
-              const title = context.payload.pull_request.title
-            } else {
-              const title = context.payload.issue.title
-            }
+
+            // print context
+            console.log(context)
+
+            const title = (context.payload.pull_request) ? context.payload.pull_request.title : context.payload.issue.title
+
             console.log(title)
 
             if (title.startsWith('bug:')) {
