@@ -27,7 +27,7 @@
 
     - name: "Disable systemd-resolv & avahi-daemon"
       systemd:
-        name: "{{ items }}"
+        name: "{{ item }}"
         enabled: false
         masked: true
         state: "stopped"
