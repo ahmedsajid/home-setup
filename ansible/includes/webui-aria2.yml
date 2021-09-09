@@ -4,8 +4,8 @@
   tasks:
     - name: Deploy webui-arai2 container
       docker_container:
-        name: "webui-arai2"
-        hostname: "webui-arai2"
+        name: "webui-aria2"
+        hostname: "webui-aria2"
         image: "ahmedsajid/webui-aria2"
         env:
           TZ: 'America/Toronto'
