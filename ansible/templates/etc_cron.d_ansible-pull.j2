@@ -1,2 +1,6 @@
 # Cron job to git clone/pull a repo and then run locally
+{% if healthchecks_enabled %}
+{{ schedule }} {{ cron_user }} if [[ $(ansible-pull -d {{ workdir }} -U {{ repo_url }} -C {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1;echo $?) -ne 0 ]];then curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}/fail;else curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }};fi
+{% else %}
 {{ schedule }} {{ cron_user }} ansible-pull -d {{ workdir }} -U {{ repo_url }} -C {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1
+{% endif %}
