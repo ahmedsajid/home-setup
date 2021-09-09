@@ -25,9 +25,12 @@
           - "rotate"
       when: not ansible_check_mode
 
-    - name: "Disable systemd-resolv"
+    - name: "Disable systemd-resolv & avahi-daemon"
       systemd:
-        name: "systemd-resolved"
+        name: "{{ items }}"
         enabled: false
         masked: true
         state: "stopped"
+      with_items:
+        - "systemd-resolved"
+        - "avahi-daemon"
