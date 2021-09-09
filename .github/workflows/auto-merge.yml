@@ -16,11 +16,7 @@ jobs:
     steps:
       - name: Run auto-merge
         if: ${{ github.actor == github.repository_owner }}
-        run: |
-          echo ${PR}
-          if [ "${ACTOR}" = "${OWNER}" ]; then
-            gh pr merge --auto -s
-          fi
+        run: gh pr merge ${PR} --auto -s
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR: ${{ github.event.number }}
