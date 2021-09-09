@@ -10,3 +10,4 @@
 - import_playbook: includes/emby.yml
 - import_playbook: includes/docker.yml
 - import_playbook: includes/pihole.yml
+- import_playbook: includes/webui-aria2.yml

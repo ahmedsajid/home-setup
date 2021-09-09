@@ -1,0 +1,20 @@
+---
+
+- hosts: all
+  tasks:
+    - name: Deploy webui-arai2 container
+      docker_container:
+        name: "webui-arai2"
+        hostname: "webui-arai2"
+        image: "ahmedsajid/webui-aria2"
+        env:
+          TZ: 'America/Toronto'
+        ports:
+          - "6800:6800"
+          - "9100:8080"
+        restart_policy: always
+        state: started
+        pull: true
+        restart: true
+        volumes:
+          - '/mnt/nas/Download:/data'
