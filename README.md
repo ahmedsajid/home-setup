@@ -21,6 +21,5 @@ Once the cronjob has been setup, there should be following available services pr
 - Pihole (+Unbound) - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/28)
 - Grafana - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/30)
 - Wireguard - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/29)
-- Web Aria2 - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/31)
 - NAS to external hdd backup - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/32)
 - HTTPs access to services (Nginx, LetsEncrypt, NoIP) - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/33)
