@@ -68,7 +68,6 @@
         restart_policy: always
         state: started
         pull: true
-        restart: true
         volumes:
           - '/opt/pihole/etc/:/etc/pihole/'
           - '/opt/pihole/dnsmasq.d/:/etc/dnsmasq.d/'

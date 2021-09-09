@@ -15,6 +15,5 @@
         restart_policy: always
         state: started
         pull: true
-        restart: true
         volumes:
           - '/mnt/nas/Download:/data'
