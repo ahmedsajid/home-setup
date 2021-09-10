@@ -1,6 +1,11 @@
 ---
 
-- hosts: all
+- name: "Ensuring laptop stays awake"
+  hosts: localhost
+  connection: local
+  handlers:
+    - name: Update Grub
+      command: update-grub
   tasks:
     - name: "Disable any kind of sleep"
       systemd:
@@ -12,3 +17,14 @@
         - suspend.target
         - hibernate.target
         - hybrid-sleep.target
+
+    # https://unix.stackexchange.com/questions/25133/ubuntu-server-continuously-goes-to-sleep/25151#25151
+    - name: "Disable System sleep"
+      lineinfile:
+        dest: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX_DEFAULT='
+        line: 'GRUB_CMDLINE_LINUX_DEFAULT="acpi=off apm=off"'
+        mode: 0644
+        backup: true
+      notify:
+        - Update Grub

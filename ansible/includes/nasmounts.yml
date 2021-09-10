@@ -1,6 +1,8 @@
 ---
 
-- hosts: all
+- name: "Ensuring NAS shares are mounted"
+  hosts: localhost
+  connection: local
   vars:
     mounts:
       - 'Movies'
