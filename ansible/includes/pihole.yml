@@ -33,29 +33,16 @@
         - "/opt/pihole/etc"
         - "/opt/pihole/dnsmasq.d/"
 
-    - name: Deploy pihole custom configs
+    - name: Deploy pihole custom adlist
       copy:
-        dest: "{{ item.dest }}"
-        content: "{{ item.content }}"
+        dest: "/opt/pihole/etc/adlists.list"
+        content: |
+          https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+          https://raw.githubusercontent.com/ahmedsajid/pihole/master/adlist.txt
+          https://raw.githubusercontent.com/ahmedsajid/pihole/master/sunburst.txt
+          https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
+          https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube2.txt
         mode: 0640
-      with_items:
-        - dest: "/opt/pihole/etc/setupVars.conf"
-          content: |
-            BLOCKING_ENABLED=true
-            INSTALL_WEB_SERVER=true
-            INSTALL_WEB_INTERFACE=true
-            IPV4_ADDRESS=0.0.0.0
-            PIHOLE_DNS_1=127.0.0.1#5353
-            PIHOLE_INTERFACE=eth0
-            QUERY_LOGGING=true
-            WEBPASSWORD=
-        - dest: "/opt/pihole/etc/adlists.list"
-          content: |
-            https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-            https://raw.githubusercontent.com/ahmedsajid/pihole/master/adlist.txt
-            https://raw.githubusercontent.com/ahmedsajid/pihole/master/sunburst.txt
-            https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
-            https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube2.txt
 
     - name: Deploy pihole container
       docker_container:
@@ -66,6 +53,9 @@
         env:
           TZ: 'America/Toronto'
           PIHOLE_DNS_: '127.0.0.1#5353'
+          WEBPASSWORD: ''
+          INTERFACE: "{{ ansible_default_ipv4.interface }}"
+          ServerIP: "{{ ansible_default_ipv4.address }}"
         dns_servers: '8.8.8.8'
         restart_policy: always
         state: started
