@@ -1,6 +1,8 @@
 ---
 
-- hosts: all
+- name: "Managing DNS config on the host"
+  hosts: localhost
+  connection: local
   tasks:
     - name: create role folder
       file:

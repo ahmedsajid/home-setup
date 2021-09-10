@@ -1,6 +1,8 @@
 ---
 
-- hosts: all
+- name: "Playbook to set timezone"
+  hosts: localhost
+  connection: local
   tasks:
     - name: Setting timezone
       timezone:

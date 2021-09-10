@@ -1,6 +1,8 @@
 ---
 
-- hosts: all
+- name: "Pihole Install and setup"
+  hosts: localhost
+  connection: local
   tasks:
     - name: create role folder
       file:

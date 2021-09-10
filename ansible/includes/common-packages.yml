@@ -1,6 +1,8 @@
 ---
 
-- hosts: all
+- name: "Install common packages"
+  hosts: localhost
+  connection: local
   tasks:
     - name: install common-packages
       package:

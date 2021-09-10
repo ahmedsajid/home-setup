@@ -1,6 +1,8 @@
 ---
 
-- hosts: all
+- name: "Install and Setup Emby"
+  hosts: localhost
+  connection: local
   vars:
     emby_version: "4.6.4.0"
     emby_download_url: "https://github.com/MediaBrowser/Emby.Releases/releases/download/{{ emby_version }}/emby-server-deb_{{ emby_version }}_amd64.deb"

@@ -1,6 +1,8 @@
 ---
 
-- hosts: all
+- name: "GPU drivers installation"
+  hosts: localhost
+  connection: local
   tasks:
 
     - name: "Installing required packages"
