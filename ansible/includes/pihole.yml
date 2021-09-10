@@ -70,8 +70,6 @@
         restart_policy: always
         state: started
         pull: true
-        capabilities:
-          - net_admin
         volumes:
           - '/opt/pihole/etc/:/etc/pihole/'
           - '/opt/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
