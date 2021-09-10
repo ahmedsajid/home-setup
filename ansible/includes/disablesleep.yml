@@ -28,4 +28,3 @@
         backup: true
       notify:
         - Update Grub
-
