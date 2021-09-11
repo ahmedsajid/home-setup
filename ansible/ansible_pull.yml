@@ -18,6 +18,9 @@
     # Directory to where repository will be cloned
     workdir: /var/lib/ansible/local
 
+    # Override local changes
+    clean: true
+
     # Repository to check out -- YOU MUST CHANGE THIS
     # repo must contain a local.yml file at top level
     repo_url: git://github.com/ahmedsajid/home-setup.git
