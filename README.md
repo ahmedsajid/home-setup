@@ -23,7 +23,7 @@ ansible-playbook -i inventory ansible_pull.yml --ask-become-pass -e healthchecks
 
 Once the cronjob has been setup, there should be following available services provided by the server:
 - Emby
-- Pihole (+Unbound) - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/28)
+- Pihole (+Unbound)
 - Grafana - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/30)
 - Wireguard - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/29)
 - Webui Aria2
@@ -35,4 +35,3 @@ Once the cronjob has been setup, there should be following available services pr
 The whole work flow and repo is integrated with:
 - Github Actions to perform some actions that I'm too lazy to perform, linting and checks
 - healthchecks.io to monitor ansible-pull cronjob status
-
