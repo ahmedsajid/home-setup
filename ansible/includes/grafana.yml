@@ -1,0 +1,30 @@
+---
+
+- name: "Installing and setting up grafana"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: create role folder
+      file:
+        state: directory
+        path: /root/.ansible/roles
+
+    - name: Clone role cloudalchemy.grafana
+      git:
+        repo: 'https://github.com/cloudalchemy/ansible-grafana.git'
+        dest: /root/.ansible/roles/cloudalchemy.grafana
+        version: 0.17.0
+
+    - name: Using cloudalchemy ansible-grafana role
+      include_role:
+        name: cloudalchemy.grafana
+      vars:
+        grafana_security:
+          admin_user: admin
+          admin_password: admin
+        grafana_datasources:
+          - name: prometheus
+            type: prometheus
+            url: 'http://127.0.0.1:9090'
+            basicAuth: false
+      when: not ansible_check_mode
