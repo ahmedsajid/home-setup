@@ -22,7 +22,7 @@
         prometheus_targets:
           node:
             - targets:
-              - localhost:9100
+                - localhost:9100
               labels:
                 env: next
       when: not ansible_check_mode
