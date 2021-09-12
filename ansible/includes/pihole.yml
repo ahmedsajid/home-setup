@@ -3,6 +3,9 @@
 - name: "Pihole Install and setup"
   hosts: localhost
   connection: local
+  vars:
+    pihole_docker_image: "pihole/pihole:v5.8.1"
+    pihole_exporter_docker_image: "ekofr/pihole-exporter:v0.0.11"
   tasks:
     - name: create role folder
       file:
@@ -48,7 +51,7 @@
       docker_container:
         name: "pihole"
         hostname: "pihole"
-        image: "pihole/pihole:v5.8.1"
+        image: "{{ pihole_docker_image }}"
         network_mode: "host"
         env:
           TZ: 'America/Toronto'
@@ -56,10 +59,26 @@
           WEBPASSWORD: ''
           INTERFACE: "{{ ansible_default_ipv4.interface }}"
           ServerIP: "{{ ansible_default_ipv4.address }}"
-        dns_servers: '8.8.8.8'
         restart_policy: always
         state: started
         pull: true
         volumes:
           - '/opt/pihole/etc/:/etc/pihole/'
           - '/opt/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
+
+    - name: Deploy pihole exporter
+      docker_container:
+        name: "pihole-exporter"
+        hostname: "pihole-exporter"
+        image: "{{ pihole_exporter_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+          PIHOLE_HOSTNAME: '{{ ansible_default_ipv4.address }}'
+          PIHOLE_PASSWORD: ''
+          INTERVAL: 30s
+          PORT: 9617
+        ports:
+          - '9617:9617'
+        restart_policy: always
+        state: started
+        pull: true

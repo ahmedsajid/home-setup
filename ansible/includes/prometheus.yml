@@ -25,4 +25,8 @@
                 - localhost:9100
               labels:
                 env: next
+            - targets:
+                - localhost:9617
+              labels:
+                env: pihole
       when: not ansible_check_mode
