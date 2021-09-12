@@ -73,10 +73,10 @@
         image: "{{ pihole_exporter_docker_image }}"
         env:
           TZ: 'America/Toronto'
-          PIHOLE_HOSTNAME: '{{ ansible_default_ipv4.address }}'
+          PIHOLE_HOSTNAME: "{{ ansible_default_ipv4.address }}"
           PIHOLE_PASSWORD: ''
-          INTERVAL: 30s
-          PORT: 9617
+          INTERVAL: '30s'
+          PORT: '9617'
         ports:
           - '9617:9617'
         restart_policy: always
