@@ -48,4 +48,6 @@
             password: "{{ noip_password }}"
             force_basic_auth: true
           no_log: true
-      when: config_file_exists.stat.exists
+      when:
+        - not ansible_check_mode
+        - config_file_exists.stat.exists
