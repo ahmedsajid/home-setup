@@ -11,12 +11,20 @@ And, my home setup can run on unreliable hardware with a small RTO (cattle NOT p
 ## First install (ansible-pull setup)
 ```
 cd ansible
-ansible-playbook -i inventory ansible_pull.yml --ask-become-pass
+
+ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --ask-become-pass
 ```
+
+The `,` is required to be passed as inventory parameter, otherwise the playbook would fail.
 
 To enable healthchecks.io monitoring for the ansible-pull cronjob, run playbook with the extra vars specified below.
 ```
-ansible-playbook -i inventory ansible_pull.yml --ask-become-pass -e healthchecks_enabled=true -e healthchecks_uuid=<checkUUID>
+ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --ask-become-pass -e healthchecks_uuid=<checkUUID>
+```
+
+To enable noip dynamic updates, first have your hostname registered. Then you can pass in required parameters to the pull playbook as below.
+```
+ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --ask-become-pass -e noip_hostname=myhostname -e noip_username=username -e noip_password=myrandompassword
 ```
 
 ## Running services

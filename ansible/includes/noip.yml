@@ -1,0 +1,51 @@
+---
+
+- name: Dynamic Updates
+  hosts: localhost
+  connection: local
+  vars:
+    config_file: '/root/config.ini'
+  tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: Only run updates if the config file exists
+      block:
+        - name: Get IPv4 address
+          uri:
+            url: "https://api.ipify.org?format=json"
+            method: GET
+            return_content: true
+            body_format: json
+          register: ipv4_result
+          until: ipv4_result.status == 200
+          retries: 10
+          delay: 5
+
+        - name: Get IPv6 address
+          uri:
+            url: "https://api64.ipify.org?format=json"
+            method: GET
+            return_content: true
+            body_format: json
+          register: ipv6_result
+          until: ipv6_result.status == 200
+          retries: 10
+          delay: 5
+
+        - name: Update Dynamic DNS
+          vars:
+            noip_username: "{{ lookup('ini', 'username section=noip file={{ config_file }}') }}"
+            noip_password: "{{ lookup('ini', 'password section=noip file={{ config_file }}') }}"
+            noip_hostname: "{{ lookup('ini', 'hostname section=noip file={{ config_file }}') }}"
+            ipv4: "{{ ipv4_result.json.ip }}"
+            ipv6: "{{ ipv6_result.json.ip }}"
+          uri:
+            url: "https://dynupdate.no-ip.com/nic/update?hostname={{ noip_hostname }}&myip={{ ipv4 }}&myipv6={{ ipv6 }}"
+            user: "{{ noip_username }}"
+            password: "{{ noip_password }}"
+            force_basic_auth: true
+          no_log: true
+      when: config_file_exists.stat.exists

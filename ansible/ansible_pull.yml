@@ -1,6 +1,6 @@
 ---
 
-- hosts: pull_mode_hosts
+- hosts: all
   remote_user: ahmed
   become: true
 
@@ -18,13 +18,13 @@
     # Directory to where repository will be cloned
     workdir: /var/lib/ansible/local
 
-    # Override local changes
-    clean: true
-
     # Repository to check out -- YOU MUST CHANGE THIS
     # repo must contain a local.yml file at top level
     repo_url: git://github.com/ahmedsajid/home-setup.git
     checkout: main
+
+    # ini config file with various secrets and parameters
+    config_file: /root/config.ini
 
   tasks:
 
@@ -45,6 +45,14 @@
       copy:
         src: files/hosts
         dest: /etc/ansible/hosts
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Deploy a config ini file
+      template:
+        src: templates/config.ini.j2
+        dest: "{{ config_file }}"
         owner: root
         group: root
         mode: 0644

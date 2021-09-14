@@ -1,9 +1,9 @@
 # Cron job to git clone/pull a repo and then run locally
 SHELL=/bin/bash
 {% macro command() -%}
-ansible-pull {% if clean %}--clean{% endif %} --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1
+ansible-pull --clean --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1
 {%- endmacro %}
-{% if healthchecks_enabled is defined and healthchecks_enabled %}
+{% if healthchecks_uuid is defined %}
 {{ schedule }} {{ cron_user }} if [[ $({{ command() }};echo $?) -ne 0 ]];then curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}/fail;else curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }};fi
 {% else %}
 {{ command() }}
