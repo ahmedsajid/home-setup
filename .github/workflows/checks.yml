@@ -59,4 +59,3 @@ jobs:
         options: |
           --become
           --check
-          --extra-vars config_file=/tmp/config.ini
