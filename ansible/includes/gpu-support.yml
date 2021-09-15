@@ -9,8 +9,8 @@
       package:
         name: "{{ item }}"
       with_items:
-        - "nvidia-modprobe"
         - "ubuntu-drivers-common"
+        # - "nvidia-modprobe"
 
     - name: "Install drivers"
       shell: "ubuntu-drivers --gpgpu autoinstall"
