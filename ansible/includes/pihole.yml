@@ -31,7 +31,7 @@
     - name: create pihole required folders
       file:
         state: directory
-        path: /root/.ansible/roles
+        path: "{{ item }}"
       with_items:
         - "/opt/pihole/etc"
         - "/opt/pihole/dnsmasq.d/"
