@@ -7,7 +7,7 @@
   vars:
 
     # schedule is fed directly to cron
-    schedule: '*/5 * * * *'
+    schedule: '*/10 * * * *'
 
     # User to run ansible-pull as from cron
     cron_user: root
@@ -33,6 +33,11 @@
         name: ansible
         state: absent
 
+    - name: Install python3-pip
+      package:
+        name: python3-pip
+        state: present
+
     - name: Install ansible via pip
       pip:
         name: ansible==4.5.0
@@ -45,14 +50,6 @@
         owner: root
         group: root
         mode: 0751
-
-    - name: Copy ansible inventory file to client
-      copy:
-        src: files/hosts
-        dest: /etc/ansible/hosts
-        owner: root
-        group: root
-        mode: 0644
 
     - name: Deploy a config ini file
       template:
