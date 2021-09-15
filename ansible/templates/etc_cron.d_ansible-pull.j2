@@ -1,5 +1,6 @@
 # Cron job to git clone/pull a repo and then run locally
 SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 {% macro command() -%}
 ansible-pull --clean --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1
 {%- endmacro %}
