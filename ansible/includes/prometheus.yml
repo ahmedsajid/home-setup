@@ -9,6 +9,11 @@
         state: directory
         path: /root/.ansible/roles
 
+    - name: Install jmespath via pip
+      pip:
+        name: jmespath==0.10.0
+        state: present
+
     - name: Clone role cloudalchemy.prometheus
       git:
         repo: 'https://github.com/cloudalchemy/ansible-prometheus.git'
