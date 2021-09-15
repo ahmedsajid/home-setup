@@ -28,10 +28,15 @@
 
   tasks:
 
-    - name: Install ansible
+    - name: Remove ansible version provided by package managers
       package:
         name: ansible
-        state: latest
+        state: absent
+
+    - name: Install ansible via pip
+      pip:
+        name: ansible==4.5.0
+        state: present
 
     - name: Create local directory to work from
       file:
