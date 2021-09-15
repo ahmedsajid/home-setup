@@ -1,0 +1,11 @@
+---
+
+- name: "Disalbing unattended upgrades"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: "Disable unattended upgrades service"
+      systemd:
+        name: "unattended-upgrades.service"
+        enabled: false
+        masked: true
