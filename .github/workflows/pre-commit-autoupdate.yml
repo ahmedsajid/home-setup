@@ -31,7 +31,7 @@ jobs:
               git checkout -b pre-commit-autoupdate-${DATENOW}
               git add -A
               git commit -m "chore: pre-commit autoupdate for ${DATENOW}"
-              gh pr create --fill
+              gh pr create --fill --base main
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
