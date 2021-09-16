@@ -32,7 +32,7 @@ jobs:
               git add -A
               git commit -m "chore: pre-commit autoupdate for ${DATENOW}"
               git push -u origin HEAD
-              gh pr create --fill --base main
+              gh pr create --fill
           fi
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
