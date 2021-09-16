@@ -19,10 +19,13 @@ jobs:
         run: sudo pip install pre-commit
       - name: Run pre-commit autoupdate
         run: pre-commit autoupdate
-      - name: Create PR if reuqired
+      - name: Create PR if required
         run: |
           if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
               DATENOW=$(date '+%s')
+              # Adding author info
+              git config user.email "action@github.com"
+              git config user.name "Github Action"
               git checkout -b pre-commit-autoupdate-${DATENOW}
               git add -A
               git commit -m "chore: pre-commit autoupdate for ${DATENOW}"
