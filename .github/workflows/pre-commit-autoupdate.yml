@@ -31,6 +31,7 @@ jobs:
               git checkout -b pre-commit-autoupdate-${DATENOW}
               git add -A
               git commit -m "chore: pre-commit autoupdate for ${DATENOW}"
+              git push -u origin HEAD
               gh pr create --fill
           fi
         env:
