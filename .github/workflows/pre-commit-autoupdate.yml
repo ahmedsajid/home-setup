@@ -23,6 +23,7 @@ jobs:
         run: pre-commit autoupdate
       - name: Create PR if required
         run: |
+          # If there are changes, only then continue
           if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
               DATENOW=$(date '+%s')
               # Adding author info
@@ -35,4 +36,4 @@ jobs:
               gh pr create --fill
           fi
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
