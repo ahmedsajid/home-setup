@@ -2,11 +2,14 @@
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 ANSIBLE_CONFIG={{ workdir }}/ansible/ansible.cfg
-{% macro command() -%}
+{% macro ansible_command() -%}
 ansible-pull --clean --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1
 {%- endmacro %}
+{% macro curl_command(call='') -%}
+curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}{{ call }}
+{%- endmacro %}
 {% if healthchecks_uuid is defined %}
-{{ schedule }} {{ cron_user }} curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}/start;if [[ $({{ command() }};echo $?) -ne 0 ]];then curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}/fail;else curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }};fi
+{{ schedule }} {{ cron_user }} {{ curl_command('/start') }};if [[ $({{ ansible_command() }};echo $?) -ne 0 ]];then {{ curl_command('/fail') }};else {{ curl_command() }};fi
 {% else %}
-{{ command() }}
+{{ ansible_command() }}
 {% endif %}
