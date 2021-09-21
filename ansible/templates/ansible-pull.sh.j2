@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Cron job to git clone/pull a repo and then run locally
+export ANSIBLE_CONFIG={{ workdir }}/ansible/ansible.cfg
+{% macro ansible_command() -%}
+ansible-pull --clean --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1
+{%- endmacro %}
+{% macro hc_curl_command(call='') -%}
+curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}{{ call }}
+{%- endmacro %}
+
+{% if healthchecks_uuid is defined %}
+# Send Start signal
+{{ hc_curl_command('/start') }}
+if [[ $({{ ansible_command() }};echo $?) -ne 0 ]];then
+    # Send Fail signal
+    {{ hc_curl_command('/fail') }}
+else
+    # Send Ping
+    {{ hc_curl_command() }}
+fi
+{% else %}
+{{ ansible_command() }}
+{% endif %}

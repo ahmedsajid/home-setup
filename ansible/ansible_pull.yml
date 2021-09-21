@@ -67,6 +67,14 @@
         group: root
         mode: 0644
 
+    - name: Create ansible-pull script
+      template:
+        src: templates/ansible-pull.sh.j2
+        dest: /root/ansible-pull.sh
+        owner: root
+        group: root
+        mode: 0755
+
     - name: Create logrotate entry for ansible-pull.log
       template:
         src: templates/etc_logrotate.d_ansible-pull.j2

@@ -1,15 +1,4 @@
 # Cron job to git clone/pull a repo and then run locally
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-ANSIBLE_CONFIG={{ workdir }}/ansible/ansible.cfg
-{% macro ansible_command() -%}
-ansible-pull --clean --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1
-{%- endmacro %}
-{% macro curl_command(call='') -%}
-curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}{{ call }}
-{%- endmacro %}
-{% if healthchecks_uuid is defined %}
-{{ schedule }} {{ cron_user }} {{ curl_command('/start') }};if [[ $({{ ansible_command() }};echo $?) -ne 0 ]];then {{ curl_command('/fail') }};else {{ curl_command() }};fi
-{% else %}
-{{ ansible_command() }}
-{% endif %}
+{{ schedule }} {{ cron_user }} /bin/bash -c '/root/ansible-pull.sh'
