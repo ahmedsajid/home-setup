@@ -6,7 +6,7 @@ ANSIBLE_CONFIG={{ workdir }}/ansible/ansible.cfg
 ansible-pull --clean --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} ansible/local.yml >>{{ logfile }} 2>&1
 {%- endmacro %}
 {% if healthchecks_uuid is defined %}
-{{ schedule }} {{ cron_user }} if [[ $({{ command() }};echo $?) -ne 0 ]];then curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}/fail;else curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }};fi
+{{ schedule }} {{ cron_user }} curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}/start;if [[ $({{ command() }};echo $?) -ne 0 ]];then curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }}/fail;else curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid }};fi
 {% else %}
 {{ command() }}
 {% endif %}
