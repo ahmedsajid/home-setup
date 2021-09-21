@@ -12,7 +12,7 @@ curl -fsS -m 10 --retry 5 -o /dev/null https://hc-ping.com/{{ healthchecks_uuid 
 {% if healthchecks_uuid is defined %}
 # Send Start signal
 {{ hc_curl_command('/start') }}
-if [[ $({{ ansible_command() }};echo $?) -ne 0 ]];then 
+if [[ $({{ ansible_command() }};echo $?) -ne 0 ]];then
     # Send Fail signal
     {{ hc_curl_command('/fail') }}
 else
