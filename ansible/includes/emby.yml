@@ -43,6 +43,21 @@
         - "{{ emby_root }}/root/default/TV shows"
         - "{{ emby_root }}/root/default/Movies"
 
+    - name: Get cksum of system.xml in git
+      stat:
+        path: "../files/emby/system.xml"
+      register: gitsystemxml
+
+    - name: Get cksum of my system.xml deployed
+      stat:
+        path: "{{ emby_root }}/config/system.xml"
+      register: embysystemxml
+
+    - name: Config changed
+      debug:
+        msg: "File Compare"
+      failed_when:  gitsystemxml.stat.checksum != embysystemxml.stat.checksum
+
     - name: Copy config files
       copy:
         src: "{{ item.src }}"
