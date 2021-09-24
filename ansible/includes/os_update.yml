@@ -4,6 +4,17 @@
   hosts: localhost
   connection: local
   tasks:
+    - name: "Set facts for time"
+      set_fact:
+        hour_now: "{{ ansible_date_time.hour | int }}"
+        minute_now: "{{ ansible_date_time.minute | int }}"
+
+    - name: "print ansible_date_time"
+      debug:
+        msg:
+          - "{{ hour_now }}"
+          - "{{ minute_now }}"
+
     - name: "Only run update out of hours unless forced"
       block:
         - name: "update all packages"
@@ -20,5 +31,5 @@
           reboot:
             msg: "Reboot triggered by Ansible"
           when: reboot_required.stat.exists
-      when: (ansible_date_time.hour | int == 2 and ansible_date_time.minute | int < 10) or
+      when: (hour_now | int == 2 and minute_now | int < 10) or
             (force_run_update is defined and force_run_update)
