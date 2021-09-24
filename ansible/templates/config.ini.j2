@@ -1,3 +1,20 @@
+# {{ ansible_managed }}
+
+[defaults]
+
+# callbacks
+callback_enabled = healthchecks, profile_tasks
+
+# enable caching for gathering - speeding up the deployment
+## Using smart caching
+gathering = smart
+## Using jsonfile for cache
+fact_caching = jsonfile
+## Path to cache
+fact_caching_connection = /tmp/facts_cache
+## two hours timeout for cache
+fact_caching_timeout = 7200
+
 [healthchecks]
 uuid={{ healthchecks_uuid | default('') }}
 
