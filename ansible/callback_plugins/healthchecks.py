@@ -97,7 +97,7 @@ class CallbackModule(CallbackBase):
                     (host, summary['failures'], summary['unreachable']))
                 total_errors += errors
 
-        # Add info to event if errors occurred
+        # If errors exists, then call fail with summary
         if total_errors > 0:
             self.call_healthchecks(call='/fail', text=summary)
         else:
