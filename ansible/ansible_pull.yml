@@ -1,9 +1,6 @@
 ---
 
 - hosts: all
-  remote_user: ahmed
-  become: true
-
   vars:
 
     # schedule is fed directly to cron
@@ -51,6 +48,11 @@
         group: root
         mode: 0751
 
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_exists
+
     - name: Deploy a config ini file
       template:
         src: templates/config.ini.j2
@@ -58,6 +60,7 @@
         owner: root
         group: root
         mode: 0644
+      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
 
     - name: Create crontab entry to clone/pull git repository
       template:
@@ -66,14 +69,6 @@
         owner: root
         group: root
         mode: 0644
-
-    - name: Create ansible-pull script
-      template:
-        src: templates/ansible-pull.sh.j2
-        dest: /root/ansible-pull.sh
-        owner: root
-        group: root
-        mode: 0755
 
     - name: Create logrotate entry for ansible-pull.log
       template:
