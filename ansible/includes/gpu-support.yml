@@ -1,0 +1,16 @@
+---
+
+- name: "GPU drivers installation"
+  hosts: localhost
+  connection: local
+  tasks:
+
+    - name: "Installing required packages"
+      package:
+        name: "{{ item }}"
+      with_items:
+        - "ubuntu-drivers-common"
+        # - "nvidia-modprobe"
+
+    - name: "Install drivers"
+      shell: "ubuntu-drivers --gpgpu autoinstall"

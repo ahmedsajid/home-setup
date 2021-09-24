@@ -1,0 +1,37 @@
+---
+
+- name: "Installing and setting up prometheus"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: create role folder
+      file:
+        state: directory
+        path: /root/.ansible/roles
+
+    - name: Install jmespath via pip
+      pip:
+        name: jmespath==0.10.0
+        state: present
+
+    - name: Clone role cloudalchemy.prometheus
+      git:
+        repo: 'https://github.com/cloudalchemy/ansible-prometheus.git'
+        dest: /root/.ansible/roles/cloudalchemy.prometheus
+        version: 4.0.0
+
+    - name: Using cloudalchemy ansible-prometheus role
+      include_role:
+        name: cloudalchemy.prometheus
+      vars:
+        prometheus_targets:
+          node:
+            - targets:
+                - localhost:9100
+              labels:
+                env: next
+            - targets:
+                - localhost:9617
+              labels:
+                env: pihole
+      when: not ansible_check_mode

@@ -1,0 +1,24 @@
+---
+
+- name: "Install common packages"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: install common-packages
+      package:
+        name: "{{ item }}"
+      with_items:
+        - "bash-completion"
+        - "net-tools"
+        - "iputils-ping"
+        - "curl"
+        - "wget"
+        - "screen"
+        - "tree"
+        - "jq"
+
+    # Taken from https://rizvir.com/articles/linux-sysadmin-cheats/
+    - name: Allow scrolling in screen session
+      lineinfile:
+        path: /etc/screenrc
+        line: 'termcapinfo xterm* ti@:te@'

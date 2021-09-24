@@ -1,0 +1,82 @@
+---
+
+- hosts: "{{ target | default('all') }}"
+  vars:
+
+    # schedule is fed directly to cron
+    schedule: '*/10 * * * *'
+
+    # User to run ansible-pull as from cron
+    cron_user: root
+
+    # File that ansible will use for logs
+    logfile: /var/log/ansible-pull.log
+
+    # Directory to where repository will be cloned
+    workdir: /var/lib/ansible/local
+
+    # Repository to check out -- YOU MUST CHANGE THIS
+    # repo must contain a local.yml file at top level
+    repo_url: git://github.com/ahmedsajid/home-setup.git
+    checkout: main
+
+    # ini config file with various secrets and parameters
+    config_file: /root/config.ini
+
+  tasks:
+
+    - name: Remove ansible version provided by package managers
+      package:
+        name: ansible
+        state: absent
+
+    - name: Install python3-pip
+      package:
+        name: python3-pip
+        state: present
+
+    - name: Install via pip
+      pip:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - ansible==4.5.0
+        - requests==2.26.0
+
+    - name: Create local directory to work from
+      file:
+        path: "{{ workdir }}"
+        state: directory
+        owner: root
+        group: root
+        mode: 0751
+
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_exists
+
+    - name: Deploy a config ini file
+      template:
+        src: templates/config.ini.j2
+        dest: "{{ config_file }}"
+        owner: root
+        group: root
+        mode: 0644
+      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
+
+    - name: Create crontab entry to clone/pull git repository
+      template:
+        src: templates/etc_cron.d_ansible-pull.j2
+        dest: /etc/cron.d/ansible-pull
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Create logrotate entry for ansible-pull.log
+      template:
+        src: templates/etc_logrotate.d_ansible-pull.j2
+        dest: /etc/logrotate.d/ansible-pull
+        owner: root
+        group: root
+        mode: 0644

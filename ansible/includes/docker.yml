@@ -1,0 +1,28 @@
+---
+
+- name: "Docker installation and setup"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: create role folder
+      file:
+        state: directory
+        path: /root/.ansible/roles
+
+    - name: Clone role gbolo.docker
+      git:
+        repo: 'https://github.com/gbolo/ansible-role-docker.git'
+        dest: /root/.ansible/roles/gbolo.docker
+        version: v2.1
+
+    - name: Using docker role
+      include_role:
+        name: gbolo.docker
+      vars:
+        docker_config_log_opts: {
+          "max-size": "100m",
+          "max-file": "5"
+        }
+        docker_install_py_module: true
+        docker_py_pkg_name: "python3-docker"
+      when: not ansible_check_mode

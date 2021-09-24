@@ -1,0 +1,117 @@
+<?xml version="1.0"?>
+<LibraryOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <EnableArchiveMediaFiles>false</EnableArchiveMediaFiles>
+  <EnablePhotos>true</EnablePhotos>
+  <EnableRealtimeMonitor>true</EnableRealtimeMonitor>
+  <EnableChapterImageExtraction>false</EnableChapterImageExtraction>
+  <ExtractChapterImagesDuringLibraryScan>false</ExtractChapterImagesDuringLibraryScan>
+  <DownloadImagesInAdvance>false</DownloadImagesInAdvance>
+  <PathInfos>
+    <MediaPathInfo>
+      <Path>/mnt/nas/TV Shows</Path>
+    </MediaPathInfo>
+  </PathInfos>
+  <IgnoreHiddenFiles>false</IgnoreHiddenFiles>
+  <IgnoreFileExtensions />
+  <SaveLocalMetadata>false</SaveLocalMetadata>
+  <SaveMetadataHidden>false</SaveMetadataHidden>
+  <SaveLocalThumbnailSets>false</SaveLocalThumbnailSets>
+  <ImportMissingEpisodes>false</ImportMissingEpisodes>
+  <EnableAutomaticSeriesGrouping>true</EnableAutomaticSeriesGrouping>
+  <EnableEmbeddedTitles>false</EnableEmbeddedTitles>
+  <EnableAudioResume>false</EnableAudioResume>
+  <AutomaticRefreshIntervalDays>0</AutomaticRefreshIntervalDays>
+  <PreferredMetadataLanguage>en</PreferredMetadataLanguage>
+  <PreferredImageLanguage>en</PreferredImageLanguage>
+  <ContentType>tvshows</ContentType>
+  <MetadataCountryCode>CA</MetadataCountryCode>
+  <SeasonZeroDisplayName>Specials</SeasonZeroDisplayName>
+  <Name>TV shows</Name>
+  <MetadataSavers />
+  <DisabledLocalMetadataReaders />
+  <LocalMetadataReaderOrder>
+    <string>Nfo</string>
+  </LocalMetadataReaderOrder>
+  <DisabledSubtitleFetchers />
+  <SubtitleFetcherOrder>
+    <string>Open Subtitles</string>
+  </SubtitleFetcherOrder>
+  <SkipSubtitlesIfEmbeddedSubtitlesPresent>false</SkipSubtitlesIfEmbeddedSubtitlesPresent>
+  <SkipSubtitlesIfAudioTrackMatches>false</SkipSubtitlesIfAudioTrackMatches>
+  <SubtitleDownloadLanguages />
+  <RequirePerfectSubtitleMatch>true</RequirePerfectSubtitleMatch>
+  <SaveSubtitlesWithMedia>true</SaveSubtitlesWithMedia>
+  <ForcedSubtitlesOnly>false</ForcedSubtitlesOnly>
+  <TypeOptions>
+    <TypeOptions>
+      <Type>Series</Type>
+      <MetadataFetchers>
+        <string>TheTVDB</string>
+        <string>TheMovieDb</string>
+      </MetadataFetchers>
+      <MetadataFetcherOrder>
+        <string>TheTVDB</string>
+        <string>TheMovieDb</string>
+        <string>The Open Movie Database</string>
+      </MetadataFetcherOrder>
+      <ImageFetchers>
+        <string>TheTVDB</string>
+        <string>FanArt</string>
+      </ImageFetchers>
+      <ImageFetcherOrder>
+        <string>TheTVDB</string>
+        <string>FanArt</string>
+        <string>TheMovieDb</string>
+        <string>The Open Movie Database</string>
+      </ImageFetcherOrder>
+      <ImageOptions />
+    </TypeOptions>
+    <TypeOptions>
+      <Type>Season</Type>
+      <MetadataFetchers />
+      <MetadataFetcherOrder>
+        <string>TheMovieDb</string>
+      </MetadataFetcherOrder>
+      <ImageFetchers>
+        <string>TheTVDB</string>
+      </ImageFetchers>
+      <ImageFetcherOrder>
+        <string>TheTVDB</string>
+        <string>FanArt</string>
+        <string>TheMovieDb</string>
+      </ImageFetcherOrder>
+      <ImageOptions />
+    </TypeOptions>
+    <TypeOptions>
+      <Type>Episode</Type>
+      <MetadataFetchers>
+        <string>TheTVDB</string>
+      </MetadataFetchers>
+      <MetadataFetcherOrder>
+        <string>TheTVDB</string>
+        <string>TheMovieDb</string>
+        <string>The Open Movie Database</string>
+      </MetadataFetcherOrder>
+      <ImageFetchers>
+        <string>TheTVDB</string>
+        <string>Screen Grabber</string>
+      </ImageFetchers>
+      <ImageFetcherOrder>
+        <string>TheTVDB</string>
+        <string>TheMovieDb</string>
+        <string>The Open Movie Database</string>
+        <string>Screen Grabber</string>
+      </ImageFetcherOrder>
+      <ImageOptions />
+    </TypeOptions>
+  </TypeOptions>
+  <CollapseSingleItemFolders>true</CollapseSingleItemFolders>
+  <EnableAdultMetadata>false</EnableAdultMetadata>
+  <ImportCollections>false</ImportCollections>
+  <MinCollectionItems>2</MinCollectionItems>
+  <MinResumePct>5</MinResumePct>
+  <MaxResumePct>90</MaxResumePct>
+  <MinResumeDurationSeconds>180</MinResumeDurationSeconds>
+  <ThumbnailImagesIntervalSeconds>10</ThumbnailImagesIntervalSeconds>
+  <SampleIgnoreSize>314572800</SampleIgnoreSize>
+</LibraryOptions>
