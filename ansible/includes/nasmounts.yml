@@ -10,6 +10,7 @@
       - 'Backup'
       - 'Download'
     nas_root: '/mnt/nas'
+    config_file: '/root/config.ini'
   tasks:
     - name: Installed nfs-common
       package:
