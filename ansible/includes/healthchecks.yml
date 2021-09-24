@@ -18,7 +18,7 @@
 
     - name: Call healthchecks with provided status
       vars:
-        healthchecks_uuid: "{{ lookup('ini', 'uuid section=healthchecks file={{ config_file }}') }}"
+        healthchecks_uuid: "{{ lookup('ini', 'uuid section=healthchecks file={{ config_file }}') | default('') }}"
       uri:
         url: https://hc-ping.com/{{ healthchecks_uuid }}{{ healthchecks_status }}
         status_code: 200
