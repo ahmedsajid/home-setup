@@ -1,0 +1,39 @@
+---
+
+name: pre-commit-autoupdate
+
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+  workflow_dispatch:
+
+jobs:
+  autoupdate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checking out repo
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Python
+        uses: actions/setup-python@v2
+      - name: Install pre-commit
+        run: sudo pip install pre-commit
+      - name: Run pre-commit autoupdate
+        run: pre-commit autoupdate
+      - name: Create PR if required
+        run: |
+          # If there are changes, only then continue
+          if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
+              DATENOW=$(date '+%s')
+              # Adding author info
+              git config user.email "action@github.com"
+              git config user.name "Github Action"
+              git checkout -b pre-commit-autoupdate-${DATENOW}
+              git add -A
+              git commit -m "chore: pre-commit autoupdate"
+              git push -u origin HEAD
+              gh pr create --fill
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}

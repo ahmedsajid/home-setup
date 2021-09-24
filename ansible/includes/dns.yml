@@ -1,0 +1,35 @@
+---
+
+- name: "Managing DNS config on the host"
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: create role folder
+      file:
+        state: directory
+        path: /root/.ansible/roles
+
+    - name: Clone role ahuffman.resolv
+      git:
+        repo: 'https://github.com/ahuffman/ansible-resolv.git'
+        dest: /root/.ansible/roles/ahuffman.resolv
+        version: 1.3.2
+
+    - name: Using unbound role
+      include_role:
+        name: ahuffman.resolv
+      vars:
+        resolv_nameservers:
+          - "8.8.8.8"
+          - "8.8.4.4"
+        resolv_options:
+          - "timeout:2"
+          - "rotate"
+      when: not ansible_check_mode
+
+    - name: "Disable systemd-resolv"
+      systemd:
+        name: "systemd-resolved"
+        enabled: false
+        masked: true
+        state: "stopped"

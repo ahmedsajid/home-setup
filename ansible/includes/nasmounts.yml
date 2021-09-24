@@ -1,0 +1,45 @@
+---
+
+- name: "Ensuring NAS shares are mounted"
+  hosts: localhost
+  connection: local
+  vars:
+    mounts:
+      - 'Movies'
+      - 'TV Shows'
+      - 'Backup'
+      - 'Download'
+    nas_root: '/mnt/nas'
+    config_file: '/root/config.ini'
+  tasks:
+    - name: Installed nfs-common
+      package:
+        name: nfs-common
+
+    - name: Create required folders
+      file:
+        state: directory
+        path: "{{ nas_root }}/{{ item }}"
+      with_items: "{{ mounts }}"
+
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_exists
+
+    - name: Adding NAS mount points to fstab
+      vars:
+        nas_ip: "{{ lookup('ini', 'ip section=nas file={{ config_file }}') | default('') }}"
+      mount:
+        src: "{{ nas_ip }}:/{{ item }}"
+        path: "{{ nas_root }}/{{ item }}"
+        # https://rizvir.com/articles/linux-sysadmin-cheats/
+        # Tune NFS 3 mounts
+        opts: 'rsize=32768,wsize=32768,nfsvers=3,tcp,async'
+        fstype: nfs
+        state: mounted
+      with_items: "{{ mounts }}"
+      when:
+        - not ansible_check_mode
+        - config_exists.stat.exists
+        - nas_ip != ''

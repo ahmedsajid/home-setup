@@ -1,0 +1,84 @@
+---
+
+- name: "Pihole Install and setup"
+  hosts: localhost
+  connection: local
+  vars:
+    pihole_docker_image: "pihole/pihole:v5.8.1"
+    pihole_exporter_docker_image: "ekofr/pihole-exporter:v0.0.11"
+  tasks:
+    - name: create role folder
+      file:
+        state: directory
+        path: /root/.ansible/roles
+
+    - name: Clone role ahmedsajid.unbound
+      git:
+        repo: 'https://github.com/ahmedsajid/ansible-role-unbound.git'
+        dest: /root/.ansible/roles/ahmedsajid.unbound
+        version: v2.1.1
+
+    - name: Using unbound role
+      include_role:
+        name: ahmedsajid.unbound
+      vars:
+        unbound_interfaces:
+          - 127.0.0.1@5353
+        unbound_forward_zone_configuration:
+          - forward-tls-upstream: "yes"
+      when: not ansible_check_mode
+
+    - name: create pihole required folders
+      file:
+        state: directory
+        path: "{{ item }}"
+      with_items:
+        - "/opt/pihole/etc"
+        - "/opt/pihole/dnsmasq.d/"
+
+    - name: Deploy pihole custom adlist
+      copy:
+        dest: "/opt/pihole/etc/adlists.list"
+        content: |
+          https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+          https://raw.githubusercontent.com/ahmedsajid/pihole/master/adlist.txt
+          https://raw.githubusercontent.com/ahmedsajid/pihole/master/sunburst.txt
+          https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
+          https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube2.txt
+        mode: 0640
+
+    - name: Deploy pihole container
+      docker_container:
+        name: "pihole"
+        hostname: "pihole"
+        image: "{{ pihole_docker_image }}"
+        network_mode: "host"
+        env:
+          TZ: 'America/Toronto'
+          PIHOLE_DNS_: '127.0.0.1#5353'
+          WEBPASSWORD: ''
+          INTERFACE: "{{ ansible_default_ipv4.interface }}"
+          ServerIP: "{{ ansible_default_ipv4.address }}"
+        restart_policy: always
+        state: started
+        pull: true
+        volumes:
+          - '/opt/pihole/etc/:/etc/pihole/'
+          - '/opt/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
+
+    - name: Deploy pihole exporter
+      docker_container:
+        name: "pihole-exporter"
+        hostname: "pihole-exporter"
+        image: "{{ pihole_exporter_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+          PIHOLE_HOSTNAME: "{{ ansible_default_ipv4.address }}"
+          PIHOLE_PASSWORD: ''
+          INTERVAL: '30s'
+          PORT: '9617'
+        ports:
+          - '9617:9617'
+        restart_policy: always
+        state: started
+        pull: true
