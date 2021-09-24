@@ -1,5 +1,11 @@
 ---
 
+# Start of run, send start status
+- import_playbook: includes/healthchecks.yml
+  vars:
+    healthchecks_status: '/start'
+
+# List of tasks
 - import_playbook: includes/noip.yml
 - import_playbook: includes/dns.yml
 - import_playbook: includes/disablesleep.yml
@@ -15,3 +21,6 @@
 - import_playbook: includes/node-exporter.yml
 - import_playbook: includes/grafana.yml
 - import_playbook: includes/prometheus.yml
+
+# End of the run, send ping
+- import_playbook: includes/healthchecks.yml

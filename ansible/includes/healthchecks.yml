@@ -1,0 +1,27 @@
+---
+
+- name: "Playbook for healthchecks"
+  hosts: localhost
+  connection: local
+  vars:
+    config_file: '/root/config.ini'
+    healthchecks_status: ''
+  tasks:
+    - name: provided healthchecks status
+      debug:
+        msg: "{{ healthchecks_status }}"
+
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_exists
+
+    - name: Call healthchecks with provided status
+      vars:
+        healthchecks_uuid: "{{ lookup('ini', 'uuid section=healthchecks file={{ config_file }}') }}"
+      uri: 
+        url: https://hc-ping.com/{{ healthchecks_uuid }}{{ healthchecks_status }}
+        status_code: 200
+      when:
+        - healthchecks_uuid != ''
+        - config_exists.stat.exists
