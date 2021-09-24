@@ -48,4 +48,8 @@
             password: "{{ noip_password }}"
             force_basic_auth: true
           no_log: true
+          when:
+            - noip_username != ''
+            - noip_password != ''
+            - noip_hostname != ''
       when: config_file_exists.stat.exists
