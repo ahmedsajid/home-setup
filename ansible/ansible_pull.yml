@@ -1,6 +1,6 @@
 ---
 
-- hosts: all
+- hosts: "{{ target | default('all') }}"
   vars:
 
     # schedule is fed directly to cron
