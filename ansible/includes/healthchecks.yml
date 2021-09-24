@@ -25,3 +25,4 @@
       when:
         - healthchecks_uuid != ''
         - config_exists.stat.exists
+        - not ansible_check_mode
