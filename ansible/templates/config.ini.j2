@@ -15,13 +15,13 @@ fact_caching_connection = /tmp/facts_cache
 ## two hours timeout for cache
 fact_caching_timeout = 7200
 
-[healthchecks]
-uuid={{ healthchecks_uuid | default('') }}
+[callback_healthchecks]
+uuid = {{ healthchecks_uuid | default('') }}
 
 [noip]
-hostname={{ noip_hostname | default('') }}
-username={{ noip_username | default('') }}
-password={{ noip_password | default('') }}
+hostname = {{ noip_hostname | default('') }}
+username = {{ noip_username | default('') }}
+password = {{ noip_password | default('') }}
 
 [nas]
-ip={{ nas_ip | default('') }}
+ip = {{ nas_ip | default('') }}
