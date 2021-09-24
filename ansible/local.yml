@@ -24,3 +24,6 @@
 
 # End of the run, send ping
 - import_playbook: includes/healthchecks.yml
+
+# Run update after successful run of everything
+- import_playbook: includes/os_update.yml
