@@ -20,20 +20,8 @@ jobs:
         uses: actions/setup-python@v2
       - name: Run pre-commit checks
         uses: pre-commit/action@v2.0.3
-  # Testing first deploy ansible pull playbook
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checking out repo
-        uses: actions/checkout@v2
-      - name: Install ansible 4.5.0
-        run: sudo pip install ansible==4.5.0
-      - name: Run Ansible test
-        run: |
-          cd ansible
-          ansible-playbook --inventory '127.0.0.1,' --connection local --become --check ansible_pull.yml
   # Testing ansible-pull that is ran via cronjob
-  test-pull:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checking out repo
