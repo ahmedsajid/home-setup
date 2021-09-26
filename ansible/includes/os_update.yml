@@ -28,8 +28,9 @@
           register: reboot_required
 
         - name: "Reboot"
-          reboot:
-            msg: "Reboot triggered by Ansible"
+          shell: sleep 5 && reboot &
+          async: 1
+          poll: 0
           when: reboot_required.stat.exists
       when: (hour_now | int == 2 and minute_now | int < 10) or
             (force_run_update is defined and force_run_update)
