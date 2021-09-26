@@ -3,4 +3,4 @@
 SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 ANSIBLE_CONFIG={{ config_file }}
-{{ schedule }} {{ cron_user }} ansible-pull --clean --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} --extra-vars target=localhost ansible/ansible_pull.yml ansible/local.yml >>{{ logfile }} 2>&1
+{{ schedule }} {{ cron_user }} ansible-pull --clean --directory {{ workdir }} --url {{ repo_url }} --checkout {{ checkout }} --extra-vars target=localhost ansible/local.yml >>{{ logfile }} 2>&1
