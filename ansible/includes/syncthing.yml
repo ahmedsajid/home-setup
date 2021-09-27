@@ -35,8 +35,8 @@
         hostname: "next"
         image: "{{ syncthing_docker_image }}"
         env:
-          PUID: 1000
-          PGID: 1000
+          PUID: "1000"
+          PGID: "1000"
           TZ: "America/Toronto"
         ports:
           - "8384:8384"
