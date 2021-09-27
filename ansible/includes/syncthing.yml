@@ -23,7 +23,7 @@
 
     - name: "Deploy syncthing config"
       template:
-        src: "templates/syncthing/config.xml.j2"
+        src: "../templates/syncthing/config.xml.j2"
         dest: "/mnt/nas/Syncthing/config/config.xml"
         mode: 0644
         force: false
