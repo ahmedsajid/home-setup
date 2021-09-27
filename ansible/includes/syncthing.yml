@@ -9,6 +9,7 @@
     - name: "Random Syncthing API Key"
       set_fact:
         syncthing_api_key: "{{ lookup('password', '/root/syncthing_api_key length=24') }}"
+      when: not ansible_check_mode
 
     - name: "Create syncthing folders"
       file:
