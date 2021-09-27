@@ -58,7 +58,7 @@
 
     - name: Deploy a config ini file
       template:
-        src: templates/config.ini.j2
+        src: templates/root/config.ini.j2
         dest: "{{ config_file }}"
         owner: root
         group: root
@@ -67,7 +67,7 @@
 
     - name: Create crontab entry to clone/pull git repository
       template:
-        src: templates/etc_cron.d_ansible-pull.j2
+        src: templates/etc/etc_cron.d_ansible-pull.j2
         dest: /etc/cron.d/ansible-pull
         owner: root
         group: root
@@ -75,7 +75,7 @@
 
     - name: Create logrotate entry for ansible-pull.log
       template:
-        src: templates/etc_logrotate.d_ansible-pull.j2
+        src: templates/etc/etc_logrotate.d_ansible-pull.j2
         dest: /etc/logrotate.d/ansible-pull
         owner: root
         group: root
