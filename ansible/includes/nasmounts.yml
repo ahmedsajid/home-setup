@@ -9,6 +9,7 @@
       - 'TV Shows'
       - 'Backup'
       - 'Download'
+      - 'Syncthing'
     nas_root: '/mnt/nas'
     config_file: '/root/config.ini'
   tasks:

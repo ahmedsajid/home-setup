@@ -1,0 +1,51 @@
+---
+
+- name: "Syncthing deploy and setup"
+  hosts: localhost
+  connection: local
+  vars:
+    syncthing_docker_image: "syncthing/syncthing:1.18"
+  tasks:
+    - name: "Random Syncthing API Key"
+      set_fact:
+        syncthing_api_key: "{{ lookup('password', '/root/syncthing_api_key length=24') }}"
+      when: not ansible_check_mode
+
+    - name: "Create syncthing folders"
+      file:
+        state: directory
+        owner: 1000
+        group: 1000
+        path: "{{ item }}"
+      with_items:
+        - "/mnt/nas/Syncthing/config"
+        - "/mnt/nas/Syncthing/data"
+
+    - name: "Deploy syncthing config"
+      template:
+        src: "../templates/syncthing/config.xml.j2"
+        dest: "/mnt/nas/Syncthing/config/config.xml"
+        mode: 0644
+        force: false
+      when: not ansible_check_mode
+
+    - name: "Deploy syncthing container"
+      docker_container:
+        name: "syncthing"
+        hostname: "next"
+        image: "{{ syncthing_docker_image }}"
+        env:
+          PUID: 1000
+          PGID: 1000
+          TZ: "America/Toronto"
+        ports:
+          - "8384:8384"
+          - "22000:22000/tcp"
+          - "22000:22000/udp"
+          - "21027:21027/udp"
+        restart_policy: always
+        state: started
+        pull: true
+        volumes:
+          - "/mnt/nas/Syncthing/config:/var/syncthing/config"
+          - "/mnt/nas/Syncthing/data:/data"
