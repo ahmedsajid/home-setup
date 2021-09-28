@@ -60,7 +60,7 @@
         dest: "/opt/pihole/etc/custom.list"
         content: |
           {% for service in service_list %}
-          {{ service }}.lan {{ ansible_default_ipv4.address }}
+          {{ ansible_default_ipv4.address }} {{ service }}.lan
           {% endfor %}
         mode: 0640
 
