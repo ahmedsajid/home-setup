@@ -12,6 +12,9 @@
       - 'Syncthing'
     nas_root: '/mnt/nas'
     config_file: '/root/config.ini'
+    # https://rizvir.com/articles/linux-sysadmin-cheats/
+    # Tune NFS 3 mounts
+    nfs_mount_opts: 'rsize=32768,wsize=32768,nfsvers=3,tcp,async'
   tasks:
     - name: Installed nfs-common
       package:
@@ -34,11 +37,9 @@
       mount:
         src: "{{ nas_ip }}:/{{ item }}"
         path: "{{ nas_root }}/{{ item }}"
-        # https://rizvir.com/articles/linux-sysadmin-cheats/
-        # Tune NFS 3 mounts
-        opts: 'rsize=32768,wsize=32768,nfsvers=3,tcp,async'
         fstype: nfs
         state: mounted
+        opts: "{{ nfs_mount_opts }}"
       with_items: "{{ mounts }}"
       when:
         - not ansible_check_mode

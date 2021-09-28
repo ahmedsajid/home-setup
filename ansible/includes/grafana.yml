@@ -3,6 +3,8 @@
 - name: "Installing and setting up grafana"
   hosts: localhost
   connection: local
+  vars:
+    grafana_role_version: 0.17.0
   tasks:
     - name: create role folder
       file:
@@ -13,7 +15,7 @@
       git:
         repo: 'https://github.com/cloudalchemy/ansible-grafana.git'
         dest: /root/.ansible/roles/cloudalchemy.grafana
-        version: 0.17.0
+        version: "{{ grafana_role_version }}"
 
     - name: Using cloudalchemy ansible-grafana role
       include_role:

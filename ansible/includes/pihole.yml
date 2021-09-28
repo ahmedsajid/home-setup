@@ -6,6 +6,19 @@
   vars:
     pihole_docker_image: "pihole/pihole:v5.8.1"
     pihole_exporter_docker_image: "ekofr/pihole-exporter:v0.0.11"
+    custom_ad_list: |
+      https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+      https://raw.githubusercontent.com/ahmedsajid/pihole/master/adlist.txt
+      https://raw.githubusercontent.com/ahmedsajid/pihole/master/sunburst.txt
+      https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
+      https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube2.txt
+    service_list:
+      - emby
+      - syncthing
+      - prometheus
+      - grafana
+      - webui-aria
+    unbound_role_version: v2.1.1
   tasks:
     - name: create role folder
       file:
@@ -16,7 +29,7 @@
       git:
         repo: 'https://github.com/ahmedsajid/ansible-role-unbound.git'
         dest: /root/.ansible/roles/ahmedsajid.unbound
-        version: v2.1.1
+        version: "{{ unbound_role_version }}"
 
     - name: Using unbound role
       include_role:
@@ -39,12 +52,16 @@
     - name: Deploy pihole custom adlist
       copy:
         dest: "/opt/pihole/etc/adlists.list"
+        content: "{{ custom_ad_list }}"
+        mode: 0640
+
+    - name: Deploy custom dns entries
+      copy:
+        dest: "/opt/pihole/etc/custom.list"
         content: |
-          https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
-          https://raw.githubusercontent.com/ahmedsajid/pihole/master/adlist.txt
-          https://raw.githubusercontent.com/ahmedsajid/pihole/master/sunburst.txt
-          https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
-          https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube2.txt
+          {% for service in service_list %}
+          {{ service }}.lan {{ ansible_default_ipv4.address }}
+          {% endfor %}
         mode: 0640
 
     - name: Deploy pihole container
