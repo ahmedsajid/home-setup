@@ -3,6 +3,11 @@
 - name: "Managing DNS config on the host"
   hosts: localhost
   connection: local
+  vars:
+    resolv_role_version: 1.3.2
+    upstream_nameservers:
+      - "8.8.8.8"
+      - "8.8.4.4"
   tasks:
     - name: create role folder
       file:
@@ -13,15 +18,13 @@
       git:
         repo: 'https://github.com/ahuffman/ansible-resolv.git'
         dest: /root/.ansible/roles/ahuffman.resolv
-        version: 1.3.2
+        version: "{{ resolv_role_version }}"
 
     - name: Using unbound role
       include_role:
         name: ahuffman.resolv
       vars:
-        resolv_nameservers:
-          - "8.8.8.8"
-          - "8.8.4.4"
+        resolv_nameservers: "{{ upstream_nameservers }}"
         resolv_options:
           - "timeout:2"
           - "rotate"

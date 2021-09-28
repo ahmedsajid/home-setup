@@ -23,6 +23,10 @@
     # ini config file with various secrets and parameters
     config_file: /root/config.ini
 
+    # pip packages to be instaleld
+    pip_packages:
+      - ansible==4.5.0
+      - requests==2.26.0
   tasks:
 
     - name: Remove ansible version provided by package managers
@@ -39,9 +43,7 @@
       pip:
         name: "{{ item }}"
         state: present
-      with_items:
-        - ansible==4.5.0
-        - requests==2.26.0
+      with_items: "{{ pip_packages }}"
 
     - name: Create local directory to work from
       file:

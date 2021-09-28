@@ -3,6 +3,8 @@
 - name: "Installing and setting up node-exporter"
   hosts: localhost
   connection: local
+  vars:
+    node_exporter_role_version: 2.0.0
   tasks:
     - name: create role folder
       file:
@@ -13,7 +15,7 @@
       git:
         repo: 'https://github.com/cloudalchemy/ansible-node-exporter.git'
         dest: /root/.ansible/roles/cloudalchemy.node-exporter
-        version: 2.0.0
+        version: "{{ node_exporter_role_version }}"
 
     - name: Using cloudalchemy ansible-node-exporter role
       include_role:

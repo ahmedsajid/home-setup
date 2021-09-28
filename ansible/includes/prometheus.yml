@@ -3,6 +3,8 @@
 - name: "Installing and setting up prometheus"
   hosts: localhost
   connection: local
+  vars:
+    prometheus_role_version: 4.0.0
   tasks:
     - name: create role folder
       file:
@@ -18,7 +20,7 @@
       git:
         repo: 'https://github.com/cloudalchemy/ansible-prometheus.git'
         dest: /root/.ansible/roles/cloudalchemy.prometheus
-        version: 4.0.0
+        version: "{{ prometheus_role_version }}"
 
     - name: Using cloudalchemy ansible-prometheus role
       include_role:
