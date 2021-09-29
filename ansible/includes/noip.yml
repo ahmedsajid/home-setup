@@ -3,6 +3,7 @@
 - name: Dynamic Updates
   hosts: localhost
   connection: local
+  ignore_errors: true
   vars:
     config_file: '/root/config.ini'
   tasks:
