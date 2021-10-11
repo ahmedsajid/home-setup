@@ -16,6 +16,7 @@
         - "screen"
         - "tree"
         - "jq"
+        - "aria2"
 
     # Taken from https://rizvir.com/articles/linux-sysadmin-cheats/
     - name: Allow scrolling in screen session
