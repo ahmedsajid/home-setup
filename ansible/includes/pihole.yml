@@ -99,3 +99,17 @@
         restart_policy: always
         state: started
         pull: true
+
+    - name: Set facts for time
+      set_fact:
+        minute_now: "{{ ansible_date_time.minute | int }}"
+
+    - name: Print ansible_date_time
+      debug:
+        msg:
+          - "{{ minute_now }}"
+
+    - name: Update pihole gravity
+      command: docker exec -t pihole pihole -g
+      when: minute_now | int < 10 or
+            (force_gravity_update is defined and force_gravity_update)
