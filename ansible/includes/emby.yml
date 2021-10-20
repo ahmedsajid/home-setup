@@ -20,18 +20,15 @@
     - name: Gather package facts
       package_facts:
 
-    - name: stop execution of the playbook if emby already installed
-      meta: end_play
-      when:
-        - "'emby-server' in ansible_facts.packages"
-        - ansible_facts.packages['emby-server'][0].version == emby_version
-
     - name: Install Emby
       apt:
         deb: "{{ emby_download_url }}"
       # https://github.com/ansible/ansible/issues/45219
       environment:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      when:
+        - not "'emby-server' in ansible_facts.packages"
+        - ansible_facts.packages['emby-server'][0].version != emby_version
 
     - name: Ensure Emby server is enabled
       systemd:
