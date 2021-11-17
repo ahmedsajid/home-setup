@@ -56,7 +56,9 @@
       systemd:
         name: unbound
         state: restarted
-      when: apparmor_unbound.changed
+      when:
+        - not ansible_check_mode
+        - apparmor_unbound.changed
 
     - name: create pihole required folders
       file:
