@@ -36,7 +36,7 @@
         content: |
           /var/log/unbound.log rw,
         dest: /etc/apparmor.d/usr.sbin.unbound
-      when: apparmor_unbound
+      register: apparmor_unbound
 
     - name: parse recently created apparmor profile
       shell: apparmor_parser -r /etc/apparmor.d/usr.sbin.unbound
@@ -56,9 +56,7 @@
       systemd:
         name: unbound
         state: restarted
-      when:
-        - not ansible_check_mode
-        - apparmor_unbound.changed
+      when: apparmor_unbound.changed
 
     - name: create pihole required folders
       file:
