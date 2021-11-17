@@ -32,7 +32,7 @@
         version: "{{ unbound_role_version }}"
 
     - name: apparmor config to allow unbound creating and updating unbound log file
-      file:
+      copy:
         content: |
           /var/log/unbound.log rw,
         dest: /etc/apparmor.d/usr.sbin.unbound
