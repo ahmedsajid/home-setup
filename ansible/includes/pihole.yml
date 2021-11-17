@@ -18,7 +18,7 @@
       - prometheus
       - grafana
       - webui-aria
-    unbound_role_version: v2.1.1
+    unbound_role_version: v2.1.2
   tasks:
     - name: create role folder
       file:
