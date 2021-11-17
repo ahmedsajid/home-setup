@@ -31,17 +31,6 @@
         dest: /root/.ansible/roles/ahmedsajid.unbound
         version: "{{ unbound_role_version }}"
 
-    - name: apparmor config to allow unbound creating and updating unbound log file
-      copy:
-        content: |
-          /var/log/unbound.log rw,
-        dest: /etc/apparmor.d/usr.sbin.unbound
-      register: apparmor_unbound
-
-    - name: parse recently created apparmor profile
-      shell: apparmor_parser -r /etc/apparmor.d/usr.sbin.unbound
-      when: apparmor_unbound.changed
-
     - name: Using unbound role
       include_role:
         name: ahmedsajid.unbound
@@ -51,14 +40,6 @@
         unbound_forward_zone_configuration:
           - forward-tls-upstream: "yes"
       when: not ansible_check_mode
-
-    - name: restart unbound on apparmor change
-      systemd:
-        name: unbound
-        state: restarted
-      when:
-        - not ansible_check_mode
-        - apparmor_unbound.changed
 
     - name: create pihole required folders
       file:
