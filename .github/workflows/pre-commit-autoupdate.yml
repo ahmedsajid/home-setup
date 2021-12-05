@@ -27,8 +27,8 @@ jobs:
           if [[ $(git status --porcelain | wc -l) -gt 0 ]]; then
               DATENOW=$(date '+%s')
               # Adding author info
-              git config user.email "action@github.com"
-              git config user.name "Github Action"
+              git config user.name github-actions
+              git config user.email github-actions@github.com
               git checkout -b pre-commit-autoupdate-${DATENOW}
               git add -A
               git commit -m "chore: pre-commit autoupdate"
