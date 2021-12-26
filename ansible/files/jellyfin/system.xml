@@ -3,7 +3,7 @@
   <LogFileRetentionDays>3</LogFileRetentionDays>
   <IsStartupWizardCompleted>true</IsStartupWizardCompleted>
   <EnableUPnP>false</EnableUPnP>
-  <EnableMetrics>false</EnableMetrics>
+  <EnableMetrics>true</EnableMetrics>
   <PublicPort>8096</PublicPort>
   <UPnPCreateHttpPortMap>false</UPnPCreateHttpPortMap>
   <UDPPortRange />
