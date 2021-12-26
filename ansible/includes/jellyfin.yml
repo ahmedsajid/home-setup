@@ -1,0 +1,76 @@
+---
+
+- name: "Install and Setup Jellyfin"
+  hosts: localhost
+  connection: local
+  vars:
+    jellyfin_root: "/var/lib/jellyfin/root"
+    jellyfin_version: "10.7.7-1"
+
+  handlers:
+    - name: Restart Jellyfin
+      systemd:
+        name: "jellyfin"
+        state: restarted
+      # Skipping check mode since its causes issues :(
+      when: not ansible_check_mode
+
+  tasks:
+    - name: Gather package facts
+      package_facts:
+
+    - name: Add an Apt signing key for Jellyfin
+      apt_key:
+        url: https://repo.jellyfin.org/jellyfin_team.gpg.key
+        state: present
+
+    - name: Add Jellyfin repository
+      apt_repository:
+        repo: deb [arch=amd64] https://repo.jellyfin.org/ubuntu focal main
+        state: present
+        filename: jellyfin
+
+    - name: Install Jellyfin
+      apt:
+        name: "jellyfin={{ jellyfin_version }}"
+        update_cache: true
+      # https://github.com/ansible/ansible/issues/45219
+      environment:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      when: (not 'jellyfin' in ansible_facts.packages) or ('jellyfin' in ansible_facts.packages and ansible_facts.packages['jellyfin'][0].version != jellyfin_version)
+
+    - name: Ensure Jellyfin server is enabled
+      systemd:
+        name: "jellyfin"
+        enabled: true
+        state: started
+      # Skipping check mode since its causes issues :(
+      when: not ansible_check_mode
+
+    - name: Create folders for content
+      file:
+        state: directory
+        path: "{{ jellyfin_root }}"
+        owner: "jellyfin"
+        group: "jellyfin"
+
+    - name: Copy over system config file
+      copy:
+        src: "../files/jellyfin/system.xml"
+        dest: "/etc/jellyfin/system.xml"
+        owner: "jellyfin"
+        group: "jellyfin"
+      notify:
+        - Restart Jellyfin
+
+    - name: Copy over library content configuration files
+      synchronize:
+        src: "../files/jellyfin/default"
+        dest: "{{ jellyfin_root }}"
+        delete: true
+        recursive: true
+        copy_links: true
+        owner: "jellyfin"
+        group: "jellyfin"
+      notify:
+        - Restart Jellyfin
