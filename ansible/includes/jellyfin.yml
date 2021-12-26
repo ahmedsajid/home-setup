@@ -58,12 +58,15 @@
 
     - name: Copy over system config file
       copy:
-        src: "../files/jellyfin/system.xml"
-        dest: "/etc/jellyfin/system.xml"
+        src: "../files/jellyfin/{{ item }}"
+        dest: "/etc/jellyfin/{{ item }}"
         owner: "jellyfin"
         group: "jellyfin"
       notify:
         - Restart Jellyfin
+      with_items:
+        - "system.xml"
+        - "encoding.xml"
 
     - name: Copy over library content configuration files
       synchronize:
