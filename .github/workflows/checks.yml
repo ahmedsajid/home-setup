@@ -34,8 +34,8 @@ jobs:
         uses: actions/setup-python@v2
         with:
           cache: 'pip'
-      - name: Install python3-docker
-        run: pip installl docker
+      - name: Install docker 5.0.3
+        run: pip install docker==5.0.3
       - name: Install ansible 4.5.0
         run: pip install ansible==4.5.0
       - name: Run Ansible test
