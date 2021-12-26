@@ -37,7 +37,9 @@
       # https://github.com/ansible/ansible/issues/45219
       environment:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-      when: (not 'jellyfin' in ansible_facts.packages) or ('jellyfin' in ansible_facts.packages and ansible_facts.packages['jellyfin'][0].version != jellyfin_version)
+      when:
+        - (not 'jellyfin' in ansible_facts.packages) or ('jellyfin' in ansible_facts.packages and ansible_facts.packages['jellyfin'][0].version != jellyfin_version)
+        - not ansible_check_mode
 
     - name: Ensure Jellyfin server is enabled
       systemd:
