@@ -62,8 +62,8 @@
         dest: "/etc/jellyfin/system.xml"
         owner: "jellyfin"
         group: "jellyfin"
-      # notify:
-      #   - Restart Jellyfin
+        # notify:
+        #   - Restart Jellyfin
 
     - name: Copy over library content configuration files
       synchronize:
@@ -72,8 +72,8 @@
         delete: true
         recursive: true
         copy_links: true
-      # notify:
-      #   - Restart Jellyfin
+        # notify:
+        #   - Restart Jellyfin
 
     - name: fixing permission of files that were copied
       file:
