@@ -70,7 +70,14 @@
         delete: true
         recursive: true
         copy_links: true
-        owner: "jellyfin"
-        group: "jellyfin"
       notify:
         - Restart Jellyfin
+
+    - name: fixing permission of files that were copied
+      file:
+        path: "{{ jellyfin_root }}"
+        state: directory
+        recurse: true
+        mode: 0755
+        owner: 101
+        group: 101
