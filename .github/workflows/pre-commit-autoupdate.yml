@@ -17,8 +17,8 @@ jobs:
           fetch-depth: 0
       - name: Setup Python
         uses: actions/setup-python@v2
-      - name: Install pre-commit
-        run: sudo pip install pre-commit
+      - name: Install pre-commit 2.16.0
+        run: pip install pre-commit==2.16.0
       - name: Run pre-commit autoupdate
         run: pre-commit autoupdate
       - name: Create PR if required
