@@ -12,7 +12,7 @@
     - name: Restart Emby
       systemd:
         name: "emby-server"
-        state: restarted
+        state: stopped
       # Skipping check mode since its causes issues :(
       when: not ansible_check_mode
 
@@ -33,8 +33,8 @@
     - name: Ensure Emby server is enabled
       systemd:
         name: "emby-server"
-        enabled: true
-        state: started
+        enabled: false
+        state: stopped
       # Skipping check mode since its causes issues :(
       when: not ansible_check_mode
 
