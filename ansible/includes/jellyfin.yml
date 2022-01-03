@@ -88,3 +88,5 @@
         mode: 0755
         owner: "jellyfin"
         group: "jellyfin"
+      notify:
+        - Restart Jellyfin

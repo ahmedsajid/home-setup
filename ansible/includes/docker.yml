@@ -3,6 +3,15 @@
 - name: "Docker installation and setup"
   hosts: localhost
   connection: local
+  vars:
+    nvidia_docker_version: "2.8.0-1"
+  handlers:
+    - name: Restart docker
+      systemd:
+        name: "docker"
+        state: restarted
+      # Skipping check mode since its causes issues :(
+      when: not ansible_check_mode
   tasks:
     - name: create role folder
       file:
@@ -26,3 +35,28 @@
         docker_install_py_module: true
         docker_py_pkg_name: "python3-docker"
       when: not ansible_check_mode
+
+    - name: Add an Apt signing key for Nvidia Docker
+      apt_key:
+        url: https://nvidia.github.io/nvidia-docker/gpgkey
+        state: present
+
+    - name: Add Nvidia Docker repository
+      get_url:
+        url: https://nvidia.github.io/nvidia-docker/{{ ansible_facts['ansible_distribution'] | lower() }}{{ ansible_facts['ansible_distribution_version'] }}/nvidia-docker.list
+        dest: /etc/apt/sources.list.d/nvidia-docker.list
+      when:
+        - not ansible_check_mode
+
+    - name: Install Nvidia Docker package
+      apt:
+        name: "nvidia-docker2={{ nvidia_docker_version }}"
+        update_cache: true
+      # https://github.com/ansible/ansible/issues/45219
+      environment:
+        PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      when:
+        - (not 'nvidia-docker2' in ansible_facts.packages) or ('nvidia-docker2' in ansible_facts.packages and ansible_facts.packages['nvidia-docker2'][0].version != nvidia-docker2_version)
+        - not ansible_check_mode
+      notify:
+        - Restart docker
