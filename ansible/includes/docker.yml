@@ -13,6 +13,9 @@
       # Skipping check mode since its causes issues :(
       when: not ansible_check_mode
   tasks:
+    - name: Gather package facts
+      package_facts:
+
     - name: create role folder
       file:
         state: directory
@@ -43,10 +46,8 @@
 
     - name: Add Nvidia Docker repository
       get_url:
-        url: https://nvidia.github.io/nvidia-docker/{{ ansible_facts['ansible_distribution'] | lower() }}{{ ansible_facts['ansible_distribution_version'] }}/nvidia-docker.list
+        url: https://nvidia.github.io/nvidia-docker/{{ ansible_facts['distribution'] | lower() }}{{ ansible_facts['distribution_version'] }}/nvidia-docker.list
         dest: /etc/apt/sources.list.d/nvidia-docker.list
-      when:
-        - not ansible_check_mode
 
     - name: Install Nvidia Docker package
       apt:
