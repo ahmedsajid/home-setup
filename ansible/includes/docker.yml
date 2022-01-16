@@ -57,7 +57,7 @@
       environment:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       when:
-        - (not 'nvidia-docker2' in ansible_facts.packages) or ('nvidia-docker2' in ansible_facts.packages and ansible_facts.packages['nvidia-docker2'][0].version != nvidia-docker2_version)
+        - (not 'nvidia-docker2' in ansible_facts.packages) or ('nvidia-docker2' in ansible_facts.packages and ansible_facts.packages['nvidia-docker2'][0].version != nvidia_docker_version)
         - not ansible_check_mode
       notify:
         - Restart docker
