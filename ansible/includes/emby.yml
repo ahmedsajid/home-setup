@@ -27,8 +27,7 @@
       environment:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       when:
-        - not "'emby-server' in ansible_facts.packages"
-        - ansible_facts.packages['emby-server'][0].version != emby_version
+        - (not 'emby-server' in ansible_facts.packages) or ('emby-server' in ansible_facts.packages and ansible_facts.packages['emby-server'][0].version != emby_version)
 
     - name: Ensure Emby server is enabled
       systemd:
