@@ -9,7 +9,6 @@
 - import_playbook: includes/timezone.yml
 - import_playbook: includes/common-packages.yml
 - import_playbook: includes/nasmounts.yml
-- import_playbook: includes/gpu-support.yml
 - import_playbook: includes/emby.yml
 - import_playbook: includes/jellyfin.yml
 - import_playbook: includes/docker.yml
