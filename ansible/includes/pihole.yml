@@ -39,6 +39,21 @@
           - 127.0.0.1@5353
         unbound_forward_zone_configuration:
           - forward-tls-upstream: "yes"
+        unbound_configuration:
+          - verbosity: 1
+          - do-ip4: "yes"
+          - do-ip6: "no"
+          - do-udp: "yes"
+          - do-tcp: "yes"
+          - num-threads: 1
+          - pidfile: "/var/run/unbound.pid"
+          - logfile: "{{unbound_logfile}}"
+          - log-time-ascii: "yes"
+          - log-queries: "yes"
+          - log-replies: "yes"
+          - log-tag-queryreply: "yes"
+          - log-local-actions: "yes"
+          - log-servfail: "yes"
       when: not ansible_check_mode
 
     - name: create pihole required folders
