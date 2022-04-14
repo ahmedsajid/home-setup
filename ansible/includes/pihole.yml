@@ -91,6 +91,8 @@
           WEBPASSWORD: ''
           INTERFACE: "{{ ansible_default_ipv4.interface }}"
           ServerIP: "{{ ansible_default_ipv4.address }}"
+        capabilities:
+          - NET_ADMIN
         restart_policy: always
         state: started
         pull: true
