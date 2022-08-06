@@ -20,12 +20,12 @@ repos:
       - id: detect-private-key
 
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.26.3
+    rev: v1.27.1
     hooks:
       - id: yamllint
 
   - repo: https://github.com/ansible-community/ansible-lint.git
-    rev: v6.3.0
+    rev: v6.4.0
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
