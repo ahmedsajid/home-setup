@@ -45,7 +45,7 @@
           - "21027:21027/udp"
         restart_policy: always
         state: started
-        pull: true
+        pull: false
         volumes:
           - "/mnt/nas/Syncthing/config:/var/syncthing/config"
           - "/mnt/nas/Syncthing/data:/data"

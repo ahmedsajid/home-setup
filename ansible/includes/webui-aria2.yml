@@ -16,6 +16,6 @@
           - "8080:8080"
         restart_policy: always
         state: started
-        pull: true
+        pull: false
         volumes:
           - '/mnt/nas/Download:/data'
