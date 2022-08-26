@@ -49,3 +49,8 @@
         volumes:
           - "/mnt/nas/Syncthing/config:/var/syncthing/config"
           - "/mnt/nas/Syncthing/data:/data"
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded

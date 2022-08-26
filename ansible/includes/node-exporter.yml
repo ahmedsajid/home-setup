@@ -16,6 +16,11 @@
         repo: 'https://github.com/cloudalchemy/ansible-node-exporter.git'
         dest: /root/.ansible/roles/cloudalchemy.node-exporter
         version: "{{ node_exporter_role_version }}"
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
 
     - name: Using cloudalchemy ansible-node-exporter role
       include_role:

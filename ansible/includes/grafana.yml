@@ -16,6 +16,11 @@
         repo: 'https://github.com/cloudalchemy/ansible-grafana.git'
         dest: /root/.ansible/roles/cloudalchemy.grafana
         version: "{{ grafana_role_version }}"
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
 
     - name: Using cloudalchemy ansible-grafana role
       include_role:

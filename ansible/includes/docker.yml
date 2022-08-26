@@ -24,6 +24,11 @@
         repo: 'https://github.com/gbolo/ansible-role-docker.git'
         dest: /root/.ansible/roles/gbolo.docker
         version: v2.1
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
 
     - name: Using docker role
       include_role:
