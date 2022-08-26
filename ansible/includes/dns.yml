@@ -19,6 +19,11 @@
         repo: 'https://github.com/ahuffman/ansible-resolv.git'
         dest: /root/.ansible/roles/ahuffman.resolv
         version: "{{ resolv_role_version }}"
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
 
     - name: Using unbound role
       include_role:

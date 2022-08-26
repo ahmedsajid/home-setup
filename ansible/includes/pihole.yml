@@ -30,6 +30,11 @@
         repo: 'https://github.com/ahmedsajid/ansible-role-unbound.git'
         dest: /root/.ansible/roles/ahmedsajid.unbound
         version: "{{ unbound_role_version }}"
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
 
     - name: Using unbound role
       include_role:
@@ -99,6 +104,11 @@
         volumes:
           - '/opt/pihole/etc/:/etc/pihole/'
           - '/opt/pihole/dnsmasq.d/:/etc/dnsmasq.d/'
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
 
     - name: Deploy pihole exporter
       docker_container:
@@ -116,6 +126,11 @@
         restart_policy: always
         state: started
         pull: false
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
 
     - name: Set facts for time
       set_fact:
