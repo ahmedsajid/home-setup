@@ -10,6 +10,7 @@
       - 'Backup'
       - 'Download'
       - 'Syncthing'
+      - 'Multimedia'
     nas_root: '/mnt/nas'
     config_file: '/root/config.ini'
     # https://rizvir.com/articles/linux-sysadmin-cheats/
