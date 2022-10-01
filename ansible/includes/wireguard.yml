@@ -5,7 +5,16 @@
   connection: local
   vars:
     config_file: '/root/config.ini'
+    wireguard_docker_image: "embarkstudios/wireguard-ui:latest"
   tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
 
     - name: enable IP forwarding
       sysctl:
@@ -15,34 +24,41 @@
         state: present
         reload: true
 
-    - name: Installing qrencode for mobile devices
-      package:
-        name: "{{ item }}"
-      with_items:
-        - "openresolv"
-        - "qrencode"
-
-    - name: create role folder
+    - name: create wireguard required folder
       file:
         state: directory
-        path: /root/.ansible/roles
+        path: "/opt/wireguard"
 
-    - name: Clone role githubixx.wireguard
-      git:
-        repo: 'https://github.com/githubixx/ansible-role-wireguard.git'
-        dest: /root/.ansible/roles/githubixx.wireguard
-        version: 10.0.0
+    - name: Deploy wireguard container
+      vars:
+        namecheap_domain: "{{ lookup('ini', 'domain section=namecheap file={{ config_file }}') }}"
+      docker_container:
+        name: "wireguard"
+        hostname: "wireguard"
+        image: "{{ wireguard_docker_image }}"
+        network_mode: "host"
+        env:
+          TZ: 'America/Toronto'
+          WIREGUARD_UI_LISTEN_ADDRESS: ":8080"
+          WIREGUARD_UI_DATA_DIR: "/data"
+          WIREGUARD_UI_WG_ENDPOINT: "vpn.{{ namecheap_domain }}:51820"
+          WIREGUARD_UI_CLIENT_IP_RANGE: "10.6.0.1/24"
+          WIREGUARD_UI_WG_DNS: "{{ ansible_default_ipv4.address }}"
+          WIREGUARD_UI_NAT: "true"
+          WIREGUARD_UI_NAT_DEVICE: "{{ ansible_default_ipv4.interface }}"
+          # WIREGUARD_UI_WG_DEVICE_NAME=wg0
+        # capabilities:
+        #   - NET_ADMIN
+        restart_policy: always
+        privileged: true
+        state: started
+        pull: false
+        volumes:
+          - '/opt/wireguard/:/data/'
+      # added retry to tasks dependant on external services
       register: result
       retries: 5
       delay: 3
       until: result is succeeded
-
-    - name: Using wireguard role
-      include_role:
-        name: githubixx.wireguard
-      vars:
-        wireguard_address: "10.6.0.1/24"
-        wireguard_endpoint: "vpn.{{ lookup('ini', 'domain section=namecheap file={{ config_file }}') }}"
-        wireguard_dns: "{{ ansible_default_ipv4.address }}"
-        wireguard_save_config: "true"
-      when: not ansible_check_mode
+      when:
+        - namecheap_domain != ''

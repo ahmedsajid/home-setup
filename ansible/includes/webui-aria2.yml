@@ -13,7 +13,7 @@
           TZ: 'America/Toronto'
         ports:
           - "6800:6800"
-          - "8080:8080"
+          - "9090:8080"
         restart_policy: always
         state: started
         pull: false
