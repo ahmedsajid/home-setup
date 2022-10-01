@@ -22,9 +22,9 @@ To enable healthchecks.io monitoring for the ansible-pull cronjob, run playbook 
 ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --user <username> --become --ask-become-pass -e healthchecks_uuid=<checkUUID> -e config_deploy=true
 ```
 
-To enable noip dynamic updates, first have your hostname registered. Then you can pass in required parameters to the pull playbook as below.
+To enable namecheap dynamic updates, first have your hostname registered. Then you can pass in required parameters to the pull playbook as below.
 ```
-ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --user <username> --become --ask-become-pass -e noip_hostname=myhostname -e noip_username=username -e noip_password=myrandompassword -e config_deploy=true
+ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --user <username> --become --ask-become-pass -e namecheap_host=myhostname -e namecheap_domain=mydomain.tld -e namecheap_password=myrandompassword -e config_deploy=true
 ```
 
 ## Running services
@@ -36,7 +36,7 @@ Once the cronjob has been setup, there should be following available services pr
 - Wireguard - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/29)
 - Webui Aria2
 - NAS to external hdd backup - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/32)
-- HTTPs access to services (Nginx, LetsEncrypt, NoIP) - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/33)
+- HTTPs access to services (Nginx, LetsEncrypt, Namecheap) - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/33)
 
 ## Integrations
 
