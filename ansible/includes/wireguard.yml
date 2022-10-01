@@ -1,0 +1,45 @@
+---
+
+- name: "Wireguard installation and setup"
+  hosts: localhost
+  connection: local
+  vars:
+    config_file: '/root/config.ini'
+  tasks:
+
+    - name: enable IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: true
+        state: present
+        reload: true
+
+    - name: Installing qrencode for mobile devices
+      package:
+        name: "qrencode"
+
+    - name: create role folder
+      file:
+        state: directory
+        path: /root/.ansible/roles
+
+    - name: Clone role githubixx.wireguard
+      git:
+        repo: 'https://github.com/githubixx/ansible-role-wireguard.git'
+        dest: /root/.ansible/roles/githubixx.wireguard
+        version: 10.0.0
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+
+    - name: Using wireguard role
+      include_role:
+        name: githubixx.wireguard
+      vars:
+        wireguard_address: "10.6.0.1/24"
+        wireguard_endpoint: "vpn.{{ lookup('ini', 'domain section=namecheap file={{ config_file }}') }}"
+        wireguard_dns: "{{ ansible_default_ipv4.address }}"
+        wireguard_save_config: "true"
+      when: not ansible_check_mode
