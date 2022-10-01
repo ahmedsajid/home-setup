@@ -8,10 +8,10 @@ callback_whitelist = healthchecks, profile_tasks
 [callback_healthchecks]
 uuid = {{ healthchecks_uuid | default('') }}
 
-[noip]
-hostname = {{ noip_hostname | default('') }}
-username = {{ noip_username | default('') }}
-password = {{ noip_password | default('') }}
-
 [nas]
 ip = {{ nas_ip | default('') }}
+
+[namecheap]
+host = {{ namecheap_host | default('') }}
+domain = {{ namecheap_domain | default('') }}
+password = {{ namecheap_password | default('') }}
