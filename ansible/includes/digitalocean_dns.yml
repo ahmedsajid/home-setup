@@ -1,0 +1,61 @@
+---
+
+- name: Dynamic Updates
+  hosts: localhost
+  connection: local
+  ignore_errors: true
+  vars:
+    config_file: '/root/config.ini'
+  tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
+
+    - name: Get IPv4 address
+      uri:
+        url: "https://api.ipify.org?format=json"
+        method: GET
+        return_content: true
+        body_format: json
+      register: ipv4_result
+      until: ipv4_result.status == 200
+      retries: 10
+      delay: 5
+
+
+    # EXAMPLE
+    # curl -X POST \
+    #   -H "Content-Type: application/json" \
+    #   -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" \
+    #   -d '{"type":"A","name":"www","data":"162.10.66.0","priority":null,"port":null,"ttl":1800,"weight":null,"flags":null,"tag":null}' \
+    #   "https://api.digitalocean.com/v2/domains/example.com/records"
+
+
+    - name: Update Dynamic DNS
+      vars:
+        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
+        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
+        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+        ip: "{{ ipv4_result.json.ip }}"
+      uri:
+        url: "https://api.digitalocean.com/v2/domains/{{ digitalocean_domain }}/records"
+        method: POST
+        body_format: json
+        headers:
+          Content-Type: application/json
+          Authorization: "Bearer {{ digitalocean_token }}"
+        body:
+          type: "A"
+          name: "*"
+          data: "{{ ip }}"
+          ttl: 1800
+      no_log: true
+      when:
+        - digitalocean_host != ''
+        - digitalocean_domain != ''
+        - digitaloean_token != ''
