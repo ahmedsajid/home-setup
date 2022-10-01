@@ -96,6 +96,7 @@
           WEBPASSWORD: ''
           INTERFACE: "{{ ansible_default_ipv4.interface }}"
           ServerIP: "{{ ansible_default_ipv4.address }}"
+          DNSMASQ_LISTENING: "all"
         capabilities:
           - NET_ADMIN
         restart_policy: always
