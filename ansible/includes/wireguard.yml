@@ -17,7 +17,10 @@
 
     - name: Installing qrencode for mobile devices
       package:
-        name: "qrencode"
+        name: "{{ item }}"
+      with_items:
+        - "openresolv"
+        - "qrencode"
 
     - name: create role folder
       file:
