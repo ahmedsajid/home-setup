@@ -2,7 +2,6 @@
 
 # List of tasks
 - import_playbook: ansible_pull.yml
-- import_playbook: includes/namecheap.yml
 - import_playbook: includes/digitalocean_dns.yml
 - import_playbook: includes/dns.yml
 - import_playbook: includes/disablesleep.yml
