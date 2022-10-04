@@ -1,0 +1,61 @@
+---
+
+- name: "Caddyserver Install and setup"
+  hosts: localhost
+  connection: local
+  vars:
+    caddy_docker_image: "ahmedsajid/caddyserver:digitalocean"
+    service_list:
+      - emby
+      - syncthing
+      - prometheus
+      - grafana
+      - webui-aria
+    config_file: '/root/config.ini'
+  tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
+
+    - name: create caddy required folders
+      file:
+        state: directory
+        path: "{{ item }}"
+      with_items:
+        - "/opt/caddy/etc"
+
+    - name: Deploy caddy custom config
+      template:
+        src: "../templates/caddyserver/Caddyfile.j2"
+        dest: "/opt/caddy/etc/Caddyfile"
+        mode: 0640
+      vars:
+        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+      when:
+        - digitalocean_domain != ''
+
+    - name: Deploy caddy container
+      docker_container:
+        name: "caddy"
+        hostname: "caddy"
+        image: "{{ caddy_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+        ports:
+          - 80:80
+          - 443:443
+        restart_policy: always
+        state: started
+        pull: false
+        volumes:
+          - '/opt/caddy/etc/:/etc/caddy/'
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded

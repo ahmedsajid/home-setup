@@ -1,0 +1,20 @@
+tls {
+  dns namecheap
+}
+
+*.{{ namecheap_domain }} {
+  @jellyfin host jellyfin.{{ namecheap_domain }}
+  handle @jellyfin {
+      respond "Jellyfin!"
+  }
+
+  @bar host bar.{{ namecheap_domain }}
+  handle @bar {
+      respond "Bar!"
+  }
+
+  # Fallback for otherwise unhandled domains
+  handle {
+      abort
+  }
+}
