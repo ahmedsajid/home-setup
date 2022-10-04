@@ -1,14 +1,14 @@
 tls {
-  dns namecheap
+  dns digitalocean {{ digitalocean_token }}
 }
 
-*.{{ namecheap_domain }} {
-  @jellyfin host jellyfin.{{ namecheap_domain }}
+{{ digitalocean_host }}.{{ digitalocean_domain }} {
+  @jellyfin host jellyfin.{{ digitalocean_domain }}
   handle @jellyfin {
       respond "Jellyfin!"
   }
 
-  @bar host bar.{{ namecheap_domain }}
+  @bar host bar.{{ digitalocean_domain }}
   handle @bar {
       respond "Bar!"
   }

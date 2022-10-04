@@ -22,22 +22,26 @@
       meta: end_play
       when: not config_file_exists.stat.exists
 
+    - name: Setting digital ocean facts
+      set_fact:
+        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
+        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
+        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+
+    - name: stop play if config options do not exist
+      meta: end_play
+      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0 or  digitalocean_token | length == 0
+
     - name: create caddy required folders
       file:
         state: directory
-        path: "{{ item }}"
-      with_items:
-        - "/opt/caddy/etc"
+        path: "/opt/caddy/etc"
 
     - name: Deploy caddy custom config
       template:
         src: "../templates/caddyserver/Caddyfile.j2"
         dest: "/opt/caddy/etc/Caddyfile"
         mode: 0640
-      vars:
-        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
-      when:
-        - digitalocean_domain != ''
 
     - name: Deploy caddy container
       docker_container:
