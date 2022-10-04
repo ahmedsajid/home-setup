@@ -43,6 +43,9 @@
         unbound_interfaces:
           - 127.0.0.1@5353
           - "{{ ansible_default_ipv4.address }}@5353"
+        unbound_access_control:
+          - 127.0.0.1 allow
+          - 192.168.0.0/24 allow
         unbound_forward_zone_configuration:
           - forward-tls-upstream: "yes"
         unbound_configuration:
