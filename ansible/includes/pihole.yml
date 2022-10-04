@@ -43,6 +43,10 @@
         unbound_interfaces:
           - 127.0.0.1@5353
           - "{{ ansible_default_ipv4.address }}@5353"
+        unbound_access_control:
+          - 127.0.0.1 allow
+          - 172.16.0.0/24 allow
+          - 192.168.0.0/24 allow
         unbound_forward_zone_configuration:
           - forward-tls-upstream: "yes"
         unbound_configuration:
@@ -75,6 +79,8 @@
         dest: "/opt/pihole/etc/adlists.list"
         content: "{{ custom_ad_list }}"
         mode: 0640
+        owner: 999
+        group: 999
 
     - name: Deploy custom dns entries
       copy:
@@ -84,6 +90,8 @@
           {{ ansible_default_ipv4.address }} {{ service }}.lan
           {% endfor %}
         mode: 0640
+        owner: 999
+        group: 999
 
     - name: Deploy pihole container
       docker_container:
@@ -92,16 +100,12 @@
         image: "{{ pihole_docker_image }}"
         env:
           TZ: 'America/Toronto'
-          PIHOLE_DNS_: "{{ ansible_default_ipv4.address }}@5353"
+          PIHOLE_DNS_: "{{ ansible_default_ipv4.address }}#5353"
           WEBPASSWORD: ''
-          INTERFACE: "{{ ansible_default_ipv4.interface }}"
-          ServerIP: "{{ ansible_default_ipv4.address }}"
           DNSMASQ_LISTENING: "all"
         ports:
           - "53:53/tcp"
           - "53:53/udp"
-        capabilities:
-          - NET_ADMIN
         restart_policy: always
         state: started
         pull: false
