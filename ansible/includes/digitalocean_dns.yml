@@ -1,0 +1,94 @@
+---
+
+- name: Dynamic Updates under DigitalOcean DNS
+  hosts: localhost
+  connection: local
+  vars:
+    config_file: '/root/config.ini'
+  tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
+
+    - name: Setting digital ocean facts
+      set_fact:
+        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
+        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
+        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+        dns_record_id: 0
+
+    - name: stop play if config options do not exist
+      meta: end_play
+      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0 or  digitalocean_token | length == 0
+
+    - name: Get IPv4 address
+      uri:
+        url: "https://api.ipify.org?format=json"
+        method: GET
+        return_content: true
+        body_format: json
+      register: ipv4_result
+      until: ipv4_result.status == 200
+      retries: 10
+      delay: 5
+
+    - name: Fetch existing record id
+      vars:
+        ip: "{{ ipv4_result.json.ip }}"
+      uri:
+        url: "https://api.digitalocean.com/v2/domains/{{ digitalocean_domain }}/records"
+        method: GET
+        headers:
+          Content-Type: application/json
+          Authorization: "Bearer {{ digitalocean_token }}"
+      no_log: true
+      register: dns_records
+
+    - name: Get DNS record id
+      vars:
+        dns_record_query: "domain_records[?name=='{{ digitalocean_host }}'].id"
+      set_fact:
+        dns_record_id: "{{ dns_records.json | json_query(dns_record_query) | first }}"
+      ignore_errors: true
+
+    - name: Setting fact for method and URL when record exists
+      set_fact:
+        digitalocean_dns_method: "PATCH"
+        digitaloean_dns_url: "https://api.digitalocean.com/v2/domains/{{ digitalocean_domain }}/records/{{ dns_record_id }}"
+      when: dns_record_id | int > 0
+
+    - name: Setting fact for method and URL when record doesn't exist
+      set_fact:
+        digitalocean_dns_method: "POST"
+        digitaloean_dns_url: "https://api.digitalocean.com/v2/domains/{{ digitalocean_domain }}/records"
+      when: dns_record_id | int == 0
+
+    # EXAMPLE
+    # curl -X POST \
+    #   -H "Content-Type: application/json" \
+    #   -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" \
+    #   -d '{"type":"A","name":"www","data":"162.10.66.0","priority":null,"port":null,"ttl":1800,"weight":null,"flags":null,"tag":null}' \
+    #   "https://api.digitalocean.com/v2/domains/example.com/records"
+
+    - name: Update Dynamic DNS
+      vars:
+        ip: "{{ ipv4_result.json.ip }}"
+      uri:
+        url: "{{ digitaloean_dns_url }}"
+        method: "{{ digitalocean_dns_method }}"
+        body_format: json
+        status_code: 200
+        headers:
+          Content-Type: application/json
+          Authorization: "Bearer {{ digitalocean_token }}"
+        body:
+          type: "A"
+          name: "*"
+          data: "{{ ip }}"
+          ttl: 1800
+      no_log: true

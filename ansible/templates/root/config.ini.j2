@@ -15,3 +15,8 @@ ip = {{ nas_ip | default('') }}
 host = {{ namecheap_host | default('') }}
 domain = {{ namecheap_domain | default('') }}
 password = {{ namecheap_password | default('') }}
+
+[digitalocean]
+host = {{ digitalocean_host | default('*') }}
+domain = {{ digitalocean_domain | default('') }}
+token = {{ digitalocean_token | default('') }}
