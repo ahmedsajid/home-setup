@@ -1,0 +1,20 @@
+tls {
+  dns digitalocean {{ digitalocean_token }}
+}
+
+{{ digitalocean_host }}.{{ digitalocean_domain }} {
+  @jellyfin host jellyfin.{{ digitalocean_domain }}
+  handle @jellyfin {
+      respond "Jellyfin!"
+  }
+
+  @bar host bar.{{ digitalocean_domain }}
+  handle @bar {
+      respond "Bar!"
+  }
+
+  # Fallback for otherwise unhandled domains
+  handle {
+      abort
+  }
+}

@@ -8,6 +8,7 @@
 - import_playbook: includes/disableunattendedupgrdes.yml
 - import_playbook: includes/timezone.yml
 - import_playbook: includes/common-packages.yml
+- import_playbook: includes/caddy.yml
 - import_playbook: includes/wireguard.yml
 - import_playbook: includes/nasmounts.yml
 - import_playbook: includes/emby.yml
