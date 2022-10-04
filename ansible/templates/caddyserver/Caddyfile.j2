@@ -1,14 +1,40 @@
-tls {
-  dns digitalocean {{ digitalocean_token }}
+{
+  admin off
 }
 
 {{ digitalocean_host }}.{{ digitalocean_domain }} {
-  @jellyfin host jellyfin.{{ digitalocean_domain }}
+
+  tls {
+    dns digitalocean {{ digitalocean_token }}
+  }
+
+  log {
+    output stdout
+  }
+
+  @pihole {
+    host pihole.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @pihole {
+      reverse_proxy pihole:80
+  }
+
+  @jellyfin {
+    host jellyfin.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
   handle @jellyfin {
       respond "Jellyfin!"
   }
 
-  @bar host bar.{{ digitalocean_domain }}
+  @bar {
+    host bar.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
   handle @bar {
       respond "Bar!"
   }
@@ -17,4 +43,5 @@ tls {
   handle {
       abort
   }
+
 }
