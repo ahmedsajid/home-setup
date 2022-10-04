@@ -42,6 +42,7 @@
       vars:
         unbound_interfaces:
           - 127.0.0.1@5353
+          - "{{ ansible_default_ipv4.address }}@5353"
         unbound_forward_zone_configuration:
           - forward-tls-upstream: "yes"
         unbound_configuration:
@@ -89,14 +90,16 @@
         name: "pihole"
         hostname: "pihole"
         image: "{{ pihole_docker_image }}"
-        network_mode: "host"
         env:
           TZ: 'America/Toronto'
-          PIHOLE_DNS_: '127.0.0.1#5353'
+          PIHOLE_DNS_: "{{ ansible_default_ipv4.address }}@5353"
           WEBPASSWORD: ''
           INTERFACE: "{{ ansible_default_ipv4.interface }}"
           ServerIP: "{{ ansible_default_ipv4.address }}"
           DNSMASQ_LISTENING: "all"
+        ports:
+          - "53:53/tcp"
+          - "53:53/udp"
         capabilities:
           - NET_ADMIN
         restart_policy: always
