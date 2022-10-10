@@ -45,7 +45,7 @@
           - "{{ ansible_default_ipv4.address }}@5353"
         unbound_access_control:
           - 127.0.0.1 allow
-          - 172.16.0.0/24 allow
+          - 172.16.0.0/16 allow
           - 192.168.0.0/24 allow
         unbound_forward_zone_configuration:
           - forward-tls-upstream: "yes"
@@ -106,6 +106,8 @@
         ports:
           - "53:53/tcp"
           - "53:53/udp"
+        networks:
+          - name: "app_network"
         restart_policy: always
         state: started
         pull: false
@@ -131,6 +133,8 @@
           PORT: '9617'
         ports:
           - '9617:9617'
+        networks:
+          - name: "app_network"
         restart_policy: always
         state: started
         pull: false

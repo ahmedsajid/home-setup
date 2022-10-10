@@ -11,9 +11,10 @@
         image: "ahmedsajid/webui-aria2"
         env:
           TZ: 'America/Toronto'
-        ports:
-          - "6800:6800"
-          - "9090:8080"
+        # ports:
+        #   - "6800:6800"
+        networks:
+          - name: "app_network"
         restart_policy: always
         state: started
         pull: false

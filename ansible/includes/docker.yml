@@ -41,3 +41,7 @@
         docker_install_py_module: true
         docker_py_pkg_name: "python3-docker"
       when: not ansible_check_mode
+
+    - name: Setup docker app network
+      docker_network:
+        name: app_network

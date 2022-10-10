@@ -53,6 +53,8 @@
         ports:
           - 80:80
           - 443:443
+        networks:
+          - name: "app_network"
         command: "caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --watch"
         restart_policy: always
         state: started
