@@ -49,6 +49,15 @@
       reverse_proxy webui-aria2:8080
   }
 
+  @speedtest {
+    host speedtest.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @speedtest {
+      reverse_proxy speedtest:80
+  }
+
   # Fallback for otherwise unhandled domains
   handle {
       abort

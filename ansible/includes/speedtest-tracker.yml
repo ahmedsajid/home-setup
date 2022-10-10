@@ -1,0 +1,28 @@
+---
+
+- name: "Speedtest Tracker"
+  hosts: localhost
+  connection: local
+  vars:
+    speedtest_tracker_docker_image: "henrywhitaker3/speedtest-tracker"
+  tasks:
+    - name: Deploy speedtest container
+      docker_container:
+        name: "speedtest"
+        hostname: "speedtest"
+        image: "{{ speedtest_tracker_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+          OOKLA_EULA_GDPR: 'true'
+        networks:
+          - name: "app_network"
+        restart_policy: always
+        state: started
+        pull: false
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when:
+        - not ansible_check_mode
