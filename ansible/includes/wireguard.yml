@@ -63,3 +63,4 @@
       until: result is succeeded
       when:
         - digitalocean_domain != ''
+        - not ansible_check_mode

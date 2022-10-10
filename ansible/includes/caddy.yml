@@ -66,3 +66,4 @@
       retries: 5
       delay: 3
       until: result is succeeded
+      when: not ansible_check_mode

@@ -119,6 +119,7 @@
       retries: 5
       delay: 3
       until: result is succeeded
+      when: not ansible_check_mode
 
     - name: Deploy pihole exporter
       docker_container:
@@ -143,6 +144,7 @@
       retries: 5
       delay: 3
       until: result is succeeded
+      when: not ansible_check_mode
 
     - name: Set facts for time
       set_fact:
