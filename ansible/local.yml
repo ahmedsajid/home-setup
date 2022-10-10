@@ -15,6 +15,7 @@
 - import_playbook: includes/emby.yml
 - import_playbook: includes/jellyfin.yml
 - import_playbook: includes/pihole.yml
+- import_playbook: includes/speedtest-tracker.yml
 - import_playbook: includes/webui-aria2.yml
 - import_playbook: includes/syncthing.yml
 - import_playbook: includes/node-exporter.yml
