@@ -18,7 +18,17 @@
   }
 
   handle @pihole {
+      redir / /admin
       reverse_proxy pihole:80
+  }
+
+  @vpn {
+    host vpn.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @vpn {
+      reverse_proxy wireguard:8080
   }
 
   @jellyfin {
@@ -27,16 +37,16 @@
   }
 
   handle @jellyfin {
-      respond "Jellyfin!"
+      reverse_proxy {{ ansible_default_ipv4.address }}:8096
   }
 
-  @bar {
-    host bar.{{ digitalocean_domain }}
+  @webui-aria2 {
+    host webui-aria2.{{ digitalocean_domain }}
     remote_ip forwarded private_ranges
   }
 
-  handle @bar {
-      respond "Bar!"
+  handle @webui-aria2 {
+      reverse_proxy webui-aria2:8080
   }
 
   # Fallback for otherwise unhandled domains

@@ -5,12 +5,6 @@
   connection: local
   vars:
     caddy_docker_image: "ahmedsajid/caddyserver:digitalocean"
-    service_list:
-      - emby
-      - syncthing
-      - prometheus
-      - grafana
-      - webui-aria
     config_file: '/root/config.ini'
   tasks:
     - name: Check if config file exists
@@ -53,6 +47,8 @@
         ports:
           - 80:80
           - 443:443
+        networks:
+          - name: "app_network"
         command: "caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --watch"
         restart_policy: always
         state: started
@@ -64,3 +60,4 @@
       retries: 5
       delay: 3
       until: result is succeeded
+      when: not ansible_check_mode

@@ -43,6 +43,8 @@
           - "22000:22000/tcp"
           - "22000:22000/udp"
           - "21027:21027/udp"
+        networks:
+          - name: "app_network"
         restart_policy: always
         state: started
         pull: false
@@ -54,3 +56,4 @@
       retries: 5
       delay: 3
       until: result is succeeded
+      when: not ansible_check_mode
