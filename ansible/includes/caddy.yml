@@ -5,12 +5,6 @@
   connection: local
   vars:
     caddy_docker_image: "ahmedsajid/caddyserver:digitalocean"
-    service_list:
-      - emby
-      - syncthing
-      - prometheus
-      - grafana
-      - webui-aria
     config_file: '/root/config.ini'
   tasks:
     - name: Check if config file exists

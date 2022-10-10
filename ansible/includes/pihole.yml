@@ -12,14 +12,28 @@
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/sunburst.txt
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube2.txt
-    service_list:
-      - emby
-      - syncthing
-      - prometheus
-      - grafana
-      - webui-aria
     unbound_role_version: v2.1.3
+    config_file: '/root/config.ini'
   tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
+
+    - name: Setting digital ocean facts
+      set_fact:
+        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
+        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
+        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+
+    - name: stop play if config options do not exist
+      meta: end_play
+      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0 or  digitalocean_token | length == 0
+
     - name: create role folder
       file:
         state: directory
@@ -86,9 +100,7 @@
       copy:
         dest: "/opt/pihole/etc/custom.list"
         content: |
-          {% for service in service_list %}
-          {{ ansible_default_ipv4.address }} {{ service }}.lan
-          {% endfor %}
+          {{ ansible_default_ipv4.address }} {{ digitalocean_host }}.{{ digitalocean_domain }}
         mode: 0640
         owner: 999
         group: 999

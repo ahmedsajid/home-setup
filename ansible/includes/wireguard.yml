@@ -16,6 +16,16 @@
       meta: end_play
       when: not config_file_exists.stat.exists
 
+    - name: Setting digital ocean facts
+      set_fact:
+        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
+        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
+        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+
+    - name: stop play if config options do not exist
+      meta: end_play
+      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0 or  digitalocean_token | length == 0
+
     - name: enable IP forwarding
       sysctl:
         name: net.ipv4.ip_forward
@@ -30,8 +40,6 @@
         path: "/opt/wireguard"
 
     - name: Deploy wireguard container
-      vars:
-        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
       docker_container:
         name: "wireguard"
         hostname: "wireguard"
@@ -62,5 +70,4 @@
       delay: 3
       until: result is succeeded
       when:
-        - digitalocean_domain != ''
         - not ansible_check_mode
