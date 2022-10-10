@@ -1,0 +1,42 @@
+---
+
+- name: "Setting up Influxdb"
+  hosts: localhost
+  connection: local
+  vars:
+    influxdb_version: 2.1.1
+  tasks:
+    - name: "create folder for influx"
+      file:
+        state: directory
+        path: "/opt/influxdb/{{ item }}"
+        recurse: true
+      with_items:
+        - "etc"
+        - "data"
+
+    - name: "Deploy influxdb"
+      docker_container:
+        name: "influxdb"
+        hostname: "influxdb"
+        image: "influxdb:{{ influxdb_version }}"
+        env:
+          TZ: 'America/Toronto'
+          DOCKER_INFLUXDB_INIT_MODE: 'setup'
+          DOCKER_INFLUXDB_INIT_USERNAME: 'admin'
+          DOCKER_INFLUXDB_INIT_PASSWORD: 'password'
+          DOCKER_INFLUXDB_INIT_ORG: 'home'
+          DOCKER_INFLUXDB_INIT_BUCKET: 'home'
+        ports:
+          - '8086:8086'
+        restart_policy: always
+        state: started
+        pull: false
+        volumes:
+          - '/opt/influxdb/etc:/etc/influxdb2'
+          - '/opt/influxdb/data:/var/lib/influxdb2'
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
