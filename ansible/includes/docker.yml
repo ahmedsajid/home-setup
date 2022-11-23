@@ -40,6 +40,8 @@
         }
         docker_install_py_module: true
         docker_py_pkg_name: "python3-docker"
+        docker_config_bip: "172.16.0.1/24"
+        docker_config_fixed_cidr: "172.16.0.0/24"
       when: not ansible_check_mode
 
     - name: Setup docker app network
