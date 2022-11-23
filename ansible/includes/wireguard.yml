@@ -46,18 +46,15 @@
         image: "{{ wireguard_docker_image }}"
         env:
           TZ: 'America/Toronto'
-          WIREGUARD_UI_LISTEN_ADDRESS: ":8080"
+          WIREGUARD_UI_LISTEN_ADDRESS: "172.16.0.1:8080"
           WIREGUARD_UI_DATA_DIR: "/data"
           WIREGUARD_UI_WG_ENDPOINT: "vpn.{{ digitalocean_domain }}:51820"
           WIREGUARD_UI_CLIENT_IP_RANGE: "10.6.0.1/24"
           WIREGUARD_UI_WG_DNS: "{{ ansible_default_ipv4.address }}"
           WIREGUARD_UI_NAT: "true"
           WIREGUARD_UI_NAT_DEVICE: "{{ ansible_default_ipv4.interface }}"
-          # WIREGUARD_UI_WG_DEVICE_NAME=wg0
-        ports:
-          - "51820:51820/udp"
-        networks:
-          - name: "app_network"
+          WIREGUARD_UI_WG_DEVICE_NAME: "wg0"
+        network_mode: host
         restart_policy: always
         privileged: true
         state: started
