@@ -1,0 +1,56 @@
+---
+
+- name: "Actual Budget server setup"
+  hosts: localhost
+  connection: local
+  vars:
+    config_file: '/root/config.ini'
+    actual_docker_image: "docker.io/jlongster/actual-server:22.12.9"
+  tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
+
+    - name: Setting digital ocean facts
+      set_fact:
+        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
+        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
+        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+
+    - name: stop play if config options do not exist
+      meta: end_play
+      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0 or  digitalocean_token | length == 0
+
+    - name: create actual required folder
+      file:
+        state: directory
+        path: "/opt/actual"
+
+    - name: Deploy actual container
+      docker_container:
+        name: "actual"
+        hostname: "actual"
+        image: "{{ actual_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+          # PIHOLE_DNS_: "{{ ansible_default_ipv4.address }}#5353"
+          # WEBPASSWORD: ''
+          # DNSMASQ_LISTENING: "all"
+        networks:
+          - name: "app_network"
+        restart_policy: always
+        state: started
+        pull: false
+        volumes:
+          - '/opt/actual/data/:/data'
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode
