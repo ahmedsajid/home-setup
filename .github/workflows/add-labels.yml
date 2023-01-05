@@ -27,14 +27,14 @@ jobs:
             const title = (context.payload.pull_request) ? context.payload.pull_request.title : context.payload.issue.title
 
             if (title.startsWith('bug:')) {
-              github.issues.setLabels({
+              github.rest.issues.addLabels({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
                 labels: ['bug']
               })
             } else {
-              github.issues.setLabels({
+              github.rest.issues.addLabels({
                 issue_number: context.issue.number,
                 owner: context.repo.owner,
                 repo: context.repo.repo,
