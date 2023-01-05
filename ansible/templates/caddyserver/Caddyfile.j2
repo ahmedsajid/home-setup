@@ -59,6 +59,15 @@
       reverse_proxy speedtest:80
   }
 
+  @money {
+    host money.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @money {
+      reverse_proxy actual:5006
+  }
+
   # Fallback for otherwise unhandled domains
   handle {
       abort
