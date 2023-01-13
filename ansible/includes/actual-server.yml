@@ -71,5 +71,5 @@
             path: "{{ item }}"
             state: absent
           with_items: "{{ actual_old_backups.files.path }}"
-      when: (hour_now | int = 1 and minute_now | int < 15) or
+      when: (hour_now | int == 1 and minute_now | int < 15) or
             (force_actual_backup is defined and force_actual_backup == False)
