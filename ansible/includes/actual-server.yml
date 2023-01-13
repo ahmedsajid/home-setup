@@ -63,7 +63,7 @@
           find:
             paths: /mnt/nas/Backup/actual/
             age: 5d
-            recurse: yes
+            recurse: true
           register: actual_old_backups
 
         - name: Remove files the older files
