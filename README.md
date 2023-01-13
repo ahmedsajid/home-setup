@@ -33,10 +33,10 @@ Once the cronjob has been setup, there should be following available services pr
 - Emby
 - Pihole (+Unbound)
 - Grafana
-- Wireguard - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/29)
+- Wireguard
 - Webui Aria2
+- HTTPs access to services (Caddyserver, Digitalocean)
 - NAS to external hdd backup - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/32)
-- HTTPs access to services (Nginx, LetsEncrypt, Namecheap) - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/33)
 
 ## Integrations
 

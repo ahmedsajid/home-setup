@@ -7,29 +7,26 @@
     config_file: '/root/config.ini'
     actual_docker_image: "docker.io/jlongster/actual-server:22.12.9"
   tasks:
-    - name: Check if config file exists
-      stat:
-        path: "{{ config_file }}"
-      register: config_file_exists
-
-    - name: stop play if config file doesn't exist
-      meta: end_play
-      when: not config_file_exists.stat.exists
-
-    - name: Setting digital ocean facts
+    - name: "Set facts for time"
       set_fact:
-        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
-        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
-        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+        year_now: "{{ ansible_date_time.year | int }}"
+        hour_now: "{{ ansible_date_time.hour | int }}"
+        minute_now: "{{ ansible_date_time.minute | int }}"
 
-    - name: stop play if config options do not exist
-      meta: end_play
-      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0 or  digitalocean_token | length == 0
+    - name: "print ansible_date_time"
+      debug:
+        msg:
+          - "{{ year_now }}"
+          - "{{ hour_now }}"
+          - "{{ minute_now }}"
 
     - name: create actual required folder
       file:
         state: directory
-        path: "/opt/actual"
+        path: "{{ item }}"
+      with_items:
+        - "/opt/actual"
+        - "/mnt/nas/Backup/actual"
 
     - name: Deploy actual container
       docker_container:
@@ -54,3 +51,25 @@
       delay: 3
       until: result is succeeded
       when: not ansible_check_mode
+
+    - name: Run backup of actual budget at 1am within first 15 minutes
+      block:
+        - name: Create archive
+          archive:
+            path: /opt/actual
+            dest: "/mnt/nas/Backup/actual/actual-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+
+        - name: Find older backups
+          find:
+            paths: /mnt/nas/Backup/actual/
+            age: 5d
+            recurse: true
+          register: actual_old_backups
+
+        - name: Remove files the older files
+          file:
+            path: "{{ item }}"
+            state: absent
+          with_items: "{{ actual_old_backups.files.path }}"
+      when: (hour_now | int == 1 and minute_now | int < 15) or
+            (force_actual_backup is defined and force_actual_backup == False)
