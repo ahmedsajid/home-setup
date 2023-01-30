@@ -37,16 +37,30 @@
       set_fact:
         jellyfin_installed_version: "{{ dpkg_query_jellyfin_version.stdout | default('') }}"
 
+    - name: Allow jellyfin to be upgraded
+      dpkg_selections:
+        name: jellyfin
+        selection: install
+      when:
+        - jellyfin_installed_version != jellyfin_version
+        - not ansible_check_mode
+
     - name: Install Jellyfin
       apt:
         name: "jellyfin={{ jellyfin_version }}"
         update_cache: true
+        allow_change_held_packages: false
       # https://github.com/ansible/ansible/issues/45219
       environment:
         PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
       when:
         - jellyfin_installed_version != jellyfin_version
         - not ansible_check_mode
+
+    - name: Prevent jellyfin from being upgraded
+      dpkg_selections:
+        name: jellyfin
+        selection: hold
 
     - name: Ensure Jellyfin server is enabled
       systemd:
