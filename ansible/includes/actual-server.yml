@@ -66,10 +66,14 @@
             recurse: true
           register: actual_old_backups
 
+        - name: Backups found
+          debug:
+            msg: "{{ actual_old_backups.files }}"
+
         - name: Remove files the older files
           file:
-            path: "{{ item }}"
+            path: "{{ item.path }}"
             state: absent
-          with_items: "{{ actual_old_backups.files.path }}"
+          with_items: "{{ actual_old_backups.files }}"
       when: (hour_now | int == 1 and minute_now | int < 10) or
-            (force_actual_backup is defined and force_actual_backup == False)
+            (force_actual_backup is defined and force_actual_backup | bool)
