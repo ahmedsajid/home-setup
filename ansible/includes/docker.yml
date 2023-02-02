@@ -42,6 +42,25 @@
         docker_py_pkg_name: "python3-docker"
         docker_config_bip: "172.16.0.1/24"
         docker_config_fixed_cidr: "172.16.0.0/24"
+        docker_config_group: "docker"
+        docker_config_data_root: "/var/lib/docker"
+        docker_config_ip: "0.0.0.0"
+        docker_config_common:
+          "log-driver": "{{ docker_config_log_driver }}"
+          "log-opts": "{{ docker_config_log_opts }}"
+          "data-root": "{{ docker_config_data_root }}"
+          ## hosts option removed in common because docker-ce packaging in ubuntu prevents this:
+          ## https://github.com/docker/docker-ce-packaging/pull/132
+          # "hosts": "{{ docker_config_hosts }}"
+          "group": "{{ docker_config_group }}"
+          "bip": "{{ docker_config_bip }}"
+          "fixed-cidr": "{{ docker_config_fixed_cidr }}"
+          "ip": "{{ docker_config_ip }}"
+        docker_config_custom:
+          "runtimes":
+             "nvidia":
+               "path": "nvidia-container-runtime"
+               "runtimeArgs": []
       when: not ansible_check_mode
 
     - name: Setup docker app network
