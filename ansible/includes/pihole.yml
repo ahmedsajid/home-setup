@@ -4,7 +4,7 @@
   hosts: localhost
   connection: local
   vars:
-    pihole_docker_image: "pihole/pihole:2023.01.6"
+    pihole_docker_image: "pihole/pihole:2023.02.0"
     pihole_exporter_docker_image: "ekofr/pihole-exporter:v0.0.11"
     custom_ad_list: |
       https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
