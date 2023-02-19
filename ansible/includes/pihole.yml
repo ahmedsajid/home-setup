@@ -4,8 +4,10 @@
   hosts: localhost
   connection: local
   vars:
-    pihole_docker_image: "pihole/pihole:2023.02.2"
+    dhcp_helper_docker_image: "ahmedsajid/dhcp-helper"
+    pihole_docker_image: "pihole/pihole:2023.02.0"
     pihole_exporter_docker_image: "ekofr/pihole-exporter:v0.0.11"
+    pihole_docker_ip: "172.17.0.100"
     custom_ad_list: |
       https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/adlist.txt
@@ -13,6 +15,8 @@
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube2.txt
       https://raw.githubusercontent.com/samiux/update-croissants/a7031d257a7cd7d95755afe13ef98ab438fb0f87/rules/malicious.url
+    dnsmasq_dhcp_options: |
+      dhcp-option=option:dns-server,{{ ansible_default_ipv4.address }}
     unbound_role_version: v2.1.3
     service_list:
       - jellyfin
@@ -91,6 +95,29 @@
           - log-servfail: "yes"
       when: not ansible_check_mode
 
+    - name: Deploy dhcp-helper for relaying dhcp traffic to pihole
+      docker_container:
+        name: "dhcp-helper"
+        hostname: "dhcp-helper"
+        image: "{{ dhcp_helper_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+          IP: "{{ pihole_docker_ip }}"
+        network_mode: host
+        # networks:
+        #   - name: "app_network"
+        capabilities:
+          - NET_ADMIN
+        restart_policy: always
+        state: started
+        pull: false
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode
+
     - name: create pihole required folders
       file:
         state: directory
@@ -116,6 +143,14 @@
         owner: 999
         group: 999
 
+    - name: Deploy dnsmasq dhcp options
+      copy:
+        dest: "/opt/pihole/dnsmasq.d/07-pihole-custom-dhcp-option.conf"
+        content: "{{ dnsmasq_dhcp_options }}"
+        mode: 0640
+        owner: 999
+        group: 999
+
     - name: Deploy pihole container
       docker_container:
         name: "pihole"
@@ -126,14 +161,21 @@
           PIHOLE_DNS_: "{{ ansible_default_ipv4.address }}#5353"
           WEBPASSWORD: ''
           DNSMASQ_LISTENING: "all"
+          WEBLOGS_STDOUT: "1"
+          DHCP_ACTIVE: "true"
+          DHCP_START: "192.168.0.101"
+          DHCP_END: "192.168.0.195"
+          DHCP_ROUTER: "192.168.0.1"
+          DHCP_LEASETIME: "24"
+          DHCP_rapid_commit: "true"
         ports:
           - "53:53/tcp"
           - "53:53/udp"
-          - "67:67/udp"
-        capabilities:
-          - NET_ADMIN
         networks:
           - name: "app_network"
+            ipv4_address: "{{ pihole_docker_ip }}"
+        capabilities:
+          - NET_ADMIN
         restart_policy: always
         state: started
         pull: false
