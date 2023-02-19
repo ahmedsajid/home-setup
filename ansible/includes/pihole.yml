@@ -129,6 +129,9 @@
         ports:
           - "53:53/tcp"
           - "53:53/udp"
+          - "67:67/udp"
+        capabilities:
+          - NET_ADMIN
         networks:
           - name: "app_network"
         restart_policy: always
