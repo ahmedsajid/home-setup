@@ -4,7 +4,7 @@
   hosts: localhost
   connection: local
   vars:
-    pihole_docker_image: "pihole/pihole:2023.02.0"
+    pihole_docker_image: "pihole/pihole:2023.02.2"
     pihole_exporter_docker_image: "ekofr/pihole-exporter:v0.0.11"
     custom_ad_list: |
       https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
@@ -129,6 +129,9 @@
         ports:
           - "53:53/tcp"
           - "53:53/udp"
+          - "67:67/udp"
+        capabilities:
+          - NET_ADMIN
         networks:
           - name: "app_network"
         restart_policy: always
