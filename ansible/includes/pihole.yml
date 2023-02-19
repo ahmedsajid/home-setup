@@ -172,6 +172,8 @@
         ports:
           - "53:53/tcp"
           - "53:53/udp"
+        capabilities:
+          - NET_ADMIN
         networks:
           - name: "app_network"
             ipv4_address: "{{ pihole_docker_ip }}"
