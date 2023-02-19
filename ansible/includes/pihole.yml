@@ -166,7 +166,8 @@
           DHCP_START: "192.168.0.101"
           DHCP_END: "192.168.0.195"
           DHCP_ROUTER: "192.168.0.1"
-          DHCP_LEASETIME: "24"
+          # NOTE: infinite lease
+          DHCP_LEASETIME: "0"
           DHCP_rapid_commit: "true"
         ports:
           - "53:53/tcp"
