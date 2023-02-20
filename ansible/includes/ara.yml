@@ -1,0 +1,47 @@
+---
+
+- name: "ara Install and setup"
+  hosts: localhost
+  connection: local
+  vars:
+    ara_docker_image: "docker.io/recordsansible/ara-api"
+    config_file: '/root/config.ini'
+  tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
+
+    - name: create ara required folders
+      file:
+        state: directory
+        path: "{{ item }}"
+      with_items:
+        - "/opt/ara"
+
+    - name: Deploy ara
+      docker_container:
+        name: "ara"
+        hostname: "ara"
+        image: "{{ ara_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+        ports:
+          - 8000:8000
+        networks:
+          - name: "app_network"
+        volumes:
+          - '/opt/ara:/opt/ara'
+        restart_policy: always
+        state: started
+        pull: false
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode

@@ -68,6 +68,15 @@
       reverse_proxy actual:5006
   }
 
+  @ara {
+    host ara.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @ara {
+      reverse_proxy ara:8000
+  }
+
   # Fallback for otherwise unhandled domains
   handle {
       abort

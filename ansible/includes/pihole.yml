@@ -28,6 +28,7 @@
       - grafana
       - webui-aria
       - money
+      - ara
     config_file: '/root/config.ini'
   tasks:
     - name: Check if config file exists
