@@ -40,7 +40,6 @@
         image: "{{ ara_docker_image }}"
         env:
           TZ: 'America/Toronto'
-          ARA_ALLOWED_HOSTS: "['ara.{{ digitalocean_domain }}']"
         ports:
           - 8000:8000
         networks:
