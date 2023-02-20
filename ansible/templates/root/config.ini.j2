@@ -3,7 +3,7 @@
 [defaults]
 
 # callbacks
-callback_whitelist = healthchecks, profile_tasks
+callback_enabled = healthchecks, profile_tasks, ara
 
 [callback_healthchecks]
 uuid = {{ healthchecks_uuid | default('') }}

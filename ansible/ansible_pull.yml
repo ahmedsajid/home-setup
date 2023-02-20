@@ -27,6 +27,7 @@
     pip_packages:
       - ansible==4.5.0
       - requests==2.26.0
+      - ara==1.6.1
   tasks:
 
     - name: Remove ansible version provided by package managers
