@@ -15,23 +15,23 @@
           - "{{ hour_now }}"
           - "{{ minute_now }}"
 
-    - name: stop play if its not the right time
-      meta: end_play
-      when: (hour_now | int != 2 and minute_now | int > 10) or
-            (force_run_update is defined and force_run_update == False)
+    - name: run os update and reboot if required
+      block:
+        - name: "update all packages"
+          apt:
+            name: "*"
+            state: latest
 
-    - name: "update all packages"
-      apt:
-        name: "*"
-        state: latest
+        - name: "check if reboot is required"
+          stat:
+            path: /var/run/reboot-required
+          register: reboot_required
 
-    - name: "check if reboot is required"
-      stat:
-        path: /var/run/reboot-required
-      register: reboot_required
-
-    - name: "Reboot"
-      shell: sleep 5 && reboot &
-      async: 1
-      poll: 0
-      when: reboot_required.stat.exists
+        - name: "Reboot"
+          shell: sleep 5 && reboot &
+          async: 1
+          poll: 0
+          when: reboot_required.stat.exists
+      # NOTE: Run only between 02:10am and 02:30am
+      when: (hour_now | int == 2 and minute_now | int > 10 and minute_now | int < 30) or
+            (force_run_update is defined and force_run_update | bool)
