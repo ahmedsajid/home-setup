@@ -45,6 +45,8 @@
         pull: false
         volumes:
           - '/opt/actual/data/:/data'
+        network_mode: "default"
+        container_default_behavior: "compatibility"
       # added retry to tasks dependant on external services
       register: result
       retries: 5
