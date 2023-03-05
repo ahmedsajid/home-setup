@@ -23,8 +23,8 @@ jobs:
         uses: actions/checkout@v3
       - name: Setup Python
         uses: actions/setup-python@v4
-      - name: Install pre-commit $PRE_COMMIT_VERSION
-        run: pip install pre-commit==$PRE_COMMIT_VERSION
+      - name: Install pre-commit $PRE_COMMIT_VERSION ansible $ANSIBLE_VERSION
+        run: pip install pre-commit==$PRE_COMMIT_VERSION ansible==$ANSIBLE_VERSION
       - name: Run pre-commit
         run: pre-commit run --all-files
   # Testing ansible-pull that is ran via cronjob
