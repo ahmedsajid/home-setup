@@ -9,7 +9,7 @@
     pihole_exporter_docker_image: "ekofr/pihole-exporter:v0.0.11"
     pihole_docker_ip: "172.17.0.100"
     custom_ad_list: |
-      https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts
+      https://raw.githubusercontent.com/StevenBlack/hosts/master/alternates/fakenews-gambling-porn/hosts
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/adlist.txt
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/sunburst.txt
       https://raw.githubusercontent.com/ahmedsajid/pihole/master/youtube1.txt
