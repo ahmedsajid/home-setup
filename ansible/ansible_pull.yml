@@ -23,10 +23,9 @@
     # ini config file with various secrets and parameters
     config_file: /root/config.ini
 
-    # pip packages to be instaleld
+    # pip packages to be installed
     pip_packages:
-      - ansible==4.5.0
-      - requests==2.26.0
+      - ansible==7.3.0
       - ara==1.6.1
   tasks:
 
