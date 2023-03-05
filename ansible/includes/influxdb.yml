@@ -16,7 +16,7 @@
         - "data"
 
     - name: "Deploy influxdb"
-      docker_container:
+      community.docker.docker_container:
         name: "influxdb"
         hostname: "influxdb"
         image: "influxdb:{{ influxdb_version }}"

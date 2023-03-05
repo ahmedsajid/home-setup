@@ -38,7 +38,7 @@
         mode: 0640
 
     - name: Deploy caddy container
-      docker_container:
+      community.docker.docker_container:
         name: "caddy"
         hostname: "caddy"
         image: "{{ caddy_docker_image }}"

@@ -34,7 +34,7 @@
         - "/opt/ara"
 
     - name: Deploy ara
-      docker_container:
+      community.docker.docker_container:
         name: "ara"
         hostname: "ara"
         image: "{{ ara_docker_image }}"

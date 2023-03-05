@@ -7,7 +7,7 @@
     speedtest_tracker_docker_image: "henrywhitaker3/speedtest-tracker"
   tasks:
     - name: Deploy speedtest container
-      docker_container:
+      community.docker.docker_container:
         name: "speedtest"
         hostname: "speedtest"
         image: "{{ speedtest_tracker_docker_image }}"

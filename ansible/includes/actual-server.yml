@@ -29,7 +29,7 @@
         - "/mnt/nas/Backup/actual"
 
     - name: Deploy actual container
-      docker_container:
+      community.docker.docker_container:
         name: "actual"
         hostname: "actual"
         image: "{{ actual_docker_image }}"

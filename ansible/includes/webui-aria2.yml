@@ -5,7 +5,7 @@
   connection: local
   tasks:
     - name: Deploy webui-aria2 container
-      docker_container:
+      community.docker.docker_container:
         name: "webui-aria2"
         hostname: "webui-aria2"
         image: "ahmedsajid/webui-aria2"

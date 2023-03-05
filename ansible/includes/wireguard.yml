@@ -40,7 +40,7 @@
         path: "/opt/wireguard"
 
     - name: Deploy wireguard container
-      docker_container:
+      community.docker.docker_container:
         name: "wireguard"
         hostname: "wireguard"
         image: "{{ wireguard_docker_image }}"

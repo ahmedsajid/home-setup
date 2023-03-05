@@ -97,7 +97,7 @@
       when: not ansible_check_mode
 
     - name: Deploy dhcp-helper for relaying dhcp traffic to pihole
-      docker_container:
+      community.docker.docker_container:
         name: "dhcp-helper"
         hostname: "dhcp-helper"
         image: "{{ dhcp_helper_docker_image }}"
@@ -154,7 +154,7 @@
         group: 999
 
     - name: Deploy pihole container
-      docker_container:
+      community.docker.docker_container:
         name: "pihole"
         hostname: "pihole"
         image: "{{ pihole_docker_image }}"
@@ -195,7 +195,7 @@
       when: not ansible_check_mode
 
     - name: Deploy pihole exporter
-      docker_container:
+      community.docker.docker_container:
         name: "pihole-exporter"
         hostname: "pihole-exporter"
         image: "{{ pihole_exporter_docker_image }}"
