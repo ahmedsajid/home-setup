@@ -13,16 +13,6 @@
     format transform "{common_log}"
   }
 
-  @url {
-    host url.{{ digitalocean_domain }}
-    # remote_ip forwarded private_ranges
-  }
-
-  handle @url {
-      redir /carfax https://vhr.carfax.ca/en-ca/?id=n/ErQLRdOcLqwxAHlqS78ZXsfjQneOO0
-      redir /kijiji https://www.kijiji.ca/v-view-details.html?adId=1653047844
-  }
-
   @pihole {
     host pihole.{{ digitalocean_domain }}
     remote_ip forwarded private_ranges
