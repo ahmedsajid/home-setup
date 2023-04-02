@@ -35,7 +35,7 @@
       set_fact:
         do_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
         do_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
-        do_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+        do_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') | community.dns.get_registrable_domain }}"
         dns_record_id: 0
 
     - name: Lookup existing record
