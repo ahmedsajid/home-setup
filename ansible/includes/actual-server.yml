@@ -5,7 +5,7 @@
   connection: local
   vars:
     config_file: '/root/config.ini'
-    actual_docker_image: "docker.io/actualbudget/actual-server:23.11.0"
+    actual_docker_image: "docker.io/actualbudget/actual-server:24.1.0"
   tasks:
     - name: "Set facts for time"
       set_fact:
