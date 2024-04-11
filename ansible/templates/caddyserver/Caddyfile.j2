@@ -77,6 +77,15 @@
       reverse_proxy ara:8000
   }
 
+  @pass {
+    host pass.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @pass {
+      reverse_proxy vaultwarden:8000
+  }
+
   # Fallback for otherwise unhandled domains
   handle {
       abort

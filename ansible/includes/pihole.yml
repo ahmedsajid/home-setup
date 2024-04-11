@@ -29,6 +29,7 @@
       - webui-aria
       - money
       - ara
+      - pass
     config_file: '/root/config.ini'
   tasks:
     - name: Check if config file exists

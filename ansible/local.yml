@@ -20,6 +20,7 @@
 - import_playbook: includes/syncthing.yml
 - import_playbook: includes/node-exporter.yml
 - import_playbook: includes/actual-server.yml
+- import_playbook: includes/vaultwarden.yml
 # - import_playbook: includes/grafana.yml
 - import_playbook: includes/prometheus.yml
 - import_playbook: includes/os_update.yml
