@@ -26,7 +26,7 @@
         network_mode: "default"
         container_default_behavior: "compatibility"
         volumes:
-          - '/opt/pihole/etc/:/etc/pihole/'
+          - '/opt/vaultwarden:/data/'
       # added retry to tasks dependant on external services
       register: result
       retries: 5
