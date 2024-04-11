@@ -1,0 +1,36 @@
+---
+
+- name: "Vault Warden"
+  hosts: localhost
+  connection: local
+  vars:
+    vaultwarden_docker_image: "vaultwarden/server:1.30.5"
+  tasks:
+    - name: create caddy required folders
+      file:
+        state: directory
+        path: "/opt/vaultwarden/data"
+
+    - name: Deploy vaultwardedn container
+      docker_container:
+        name: "vaultwarden"
+        hostname: "vaultwarden"
+        image: "{{ vaultwarden_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+        networks:
+          - name: "app_network"
+        restart_policy: always
+        state: started
+        pull: false
+        network_mode: "default"
+        container_default_behavior: "compatibility"
+        volumes:
+          - '/opt/vaultwarden:/data/'
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when:
+        - not ansible_check_mode
