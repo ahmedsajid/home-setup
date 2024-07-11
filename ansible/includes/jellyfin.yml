@@ -5,7 +5,7 @@
   connection: local
   vars:
     jellyfin_root: "/var/lib/jellyfin/root"
-    jellyfin_version: "10.9.2-1"
+    jellyfin_version: "10.9.7+ubu2004"
 
   handlers:
     - name: Restart Jellyfin
