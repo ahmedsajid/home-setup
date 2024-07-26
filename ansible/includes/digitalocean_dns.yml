@@ -40,7 +40,7 @@
 
     - name: Lookup existing record
       set_fact:
-        dig_lookup: "{{ lookup('dig', do_host + '.' + do_domain, '@8.8.8.8') }}"
+        dig_lookup: "{{ lookup('dig', do_host + '.' + do_domain, '@1.1.1.1') }}"
 
     - name: stop play if config options do not exist or update isn't required
       meta: end_play
