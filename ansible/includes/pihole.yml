@@ -23,7 +23,7 @@
       - pihole
       - speedtest
       - vpn
-      - syncthing
+      - sync
       - prometheus
       - grafana
       - webui-aria
