@@ -56,6 +56,12 @@
         - "/opt/headscale/db"
         - "/mnt/nas/Backup/headscale"
 
+    - name: Deploy headscale custom config
+      template:
+        src: "../templates/headscale/config/config.yaml.j2"
+        dest: "/opt/headscale/config/config.yaml"
+        mode: 0640
+
     - name: Deploy headscale container
       docker_container:
         name: "headscale"
