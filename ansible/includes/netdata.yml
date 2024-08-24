@@ -1,10 +1,10 @@
 ---
 
-- name: "Caddyserver Install and setup"
+- name: "netdata Install and setup"
   hosts: localhost
   connection: local
   vars:
-    caddy_docker_image: "ahmedsajid/caddyserver:digitalocean"
+    netdata_docker_image: "docker.io/netdata/netdata:v1.40.1"
     config_file: '/root/config.ini'
   tasks:
     - name: Check if config file exists
@@ -18,44 +18,37 @@
 
     - name: Setting digital ocean facts
       set_fact:
-        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
         digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
 
     - name: stop play if config options do not exist
       meta: end_play
-      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0
+      when: digitalocean_domain | length == 0
 
-    - name: create caddy required folders
+    - name: create netdata required folders
       file:
         state: directory
-        path: "/opt/caddy/etc"
+        path: "{{ item }}"
+      with_items:
+        - "/opt/netdata"
 
-    - name: Deploy caddy custom config
-      template:
-        src: "../templates/caddyserver/Caddyfile.j2"
-        dest: "/opt/caddy/etc/Caddyfile"
-        mode: 0640
-
-    - name: Deploy caddy container
+    - name: Deploy netdata
       docker_container:
-        name: "caddy"
-        hostname: "caddy"
-        image: "{{ caddy_docker_image }}"
+        name: "netdata"
+        hostname: "netdata"
+        image: "{{ netdata_docker_image }}"
         env:
           TZ: 'America/Toronto'
-        ports:
-          - 80:80
-          - 443:443
+        # ports:
+        #   - 8000:8000
         networks:
           - name: "app_network"
-        command: "caddy run --config /etc/caddy/Caddyfile --adapter caddyfile --watch"
+        volumes:
+          - '/opt/netdata:/opt/netdata'
         restart_policy: always
         state: started
         pull: false
-        volumes:
-          - '/opt/caddy/etc/:/etc/caddy/'
         network_mode: "default"
-        container_default_behavior: "compatibility"
+        container_default_behavior: "no_defaults"
       # added retry to tasks dependant on external services
       register: result
       retries: 5

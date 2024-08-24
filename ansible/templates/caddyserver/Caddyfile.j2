@@ -86,6 +86,15 @@
       reverse_proxy vaultwarden:80
   }
 
+  @head {
+    host head.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @head {
+      reverse_proxy headscale:8080
+  }
+
   # Fallback for otherwise unhandled domains
   handle {
       abort

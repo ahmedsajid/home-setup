@@ -27,8 +27,8 @@
           DOCKER_INFLUXDB_INIT_PASSWORD: 'password'
           DOCKER_INFLUXDB_INIT_ORG: 'home'
           DOCKER_INFLUXDB_INIT_BUCKET: 'home'
-        ports:
-          - '8086:8086'
+        # ports:
+        #   - '8086:8086'
         restart_policy: always
         state: started
         pull: false

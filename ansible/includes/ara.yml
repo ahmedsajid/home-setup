@@ -7,25 +7,6 @@
     ara_docker_image: "docker.io/recordsansible/ara-api"
     config_file: '/root/config.ini'
   tasks:
-    - name: Check if config file exists
-      stat:
-        path: "{{ config_file }}"
-      register: config_file_exists
-
-    - name: stop play if config file doesn't exist
-      meta: end_play
-      when: not config_file_exists.stat.exists
-
-    - name: Setting digital ocean facts
-      set_fact:
-        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
-        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
-        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
-
-    - name: stop play if config options do not exist
-      meta: end_play
-      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0 or  digitalocean_token | length == 0
-
     - name: create ara required folders
       file:
         state: directory
@@ -40,8 +21,8 @@
         image: "{{ ara_docker_image }}"
         env:
           TZ: 'America/Toronto'
-        ports:
-          - 8000:8000
+        # ports:
+        #   - 8000:8000
         networks:
           - name: "app_network"
         volumes:
