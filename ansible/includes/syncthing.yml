@@ -45,6 +45,7 @@
           - "21027:21027/udp"
         networks:
           - name: "app_network"
+          - name: "bridge"
         restart_policy: always
         state: started
         pull: false

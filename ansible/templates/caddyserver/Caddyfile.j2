@@ -95,9 +95,17 @@
       reverse_proxy headscale:8080
   }
 
+  @sync {
+    host sync.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @sync {
+      reverse_proxy syncthing:8384
+  }
+
   # Fallback for otherwise unhandled domains
   handle {
       abort
   }
-
 }
