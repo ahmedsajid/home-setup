@@ -1,0 +1,92 @@
+---
+
+- name: "Headscale Setup"
+  hosts: localhost
+  connection: local
+  vars:
+    config_file: '/root/config.ini'
+    headscale_docker_image: "docker.io/headscalebudget/headscale-server:0.22.3"
+  tasks:
+    - name: "Set facts for time"
+      set_fact:
+        year_now: "{{ ansible_date_time.year | int }}"
+        hour_now: "{{ ansible_date_time.hour | int }}"
+        minute_now: "{{ ansible_date_time.minute | int }}"
+
+    - name: "print ansible_date_time"
+      debug:
+        msg:
+          - "{{ year_now }}"
+          - "{{ hour_now }}"
+          - "{{ minute_now }}"
+
+    - name: create headscale required folder
+      file:
+        state: directory
+        path: "{{ item }}"
+        recursive: true
+      with_items:
+        - "/opt/headscale/config"
+        - "/opt/headscale/keys"
+        - "/opt/headscale/db"
+        - "/mnt/nas/Backup/headscale"
+
+    - name: create headscale required folder
+      file:
+        state: directory
+        path: "{{ item }}"
+        recursive: true
+      with_items:
+        - "/opt/headscale/config"
+        - "/opt/headscale/keys"
+        - "/opt/headscale/db"
+        - "/mnt/nas/Backup/headscale"
+
+    - name: Deploy headscale container
+      docker_container:
+        name: "headscale"
+        hostname: "headscale"
+        image: "{{ headscale_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+        networks:
+          - name: "app_network"
+        restart_policy: always
+        state: started
+        pull: false
+        volumes:
+          - '/opt/headscale:/opt/headscale'
+        network_mode: "default"
+        container_default_behavior: "compatibility"
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode
+
+    - name: Run backup of headscale budget at 1am within first 15 minutes
+      block:
+        - name: Create archive
+          archive:
+            path: /opt/headscale
+            dest: "/mnt/nas/Backup/headscale/headscale-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+
+        - name: Find older backups
+          find:
+            paths: /mnt/nas/Backup/headscale/
+            age: 5d
+            recurse: true
+          register: headscale_old_backups
+
+        - name: Backups found
+          debug:
+            msg: "{{ headscale_old_backups.files }}"
+
+        - name: Remove files the older files
+          file:
+            path: "{{ item.path }}"
+            state: absent
+          with_items: "{{ headscale_old_backups.files }}"
+      when: (hour_now | int == 1 and minute_now | int < 10) or
+            (force_headscale_backup is defined and force_headscale_backup | bool)
