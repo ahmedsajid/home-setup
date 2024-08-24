@@ -44,13 +44,11 @@
 
     - name: Setting digital ocean facts
       set_fact:
-        digitalocean_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
-        digitalocean_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
         digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
 
     - name: stop play if config options do not exist
       meta: end_play
-      when: digitalocean_host | length == 0 or digitalocean_domain | length == 0 or  digitalocean_token | length == 0
+      when: digitalocean_domain | length == 0
 
     - name: create role folder
       file:

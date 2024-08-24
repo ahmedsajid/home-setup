@@ -20,16 +20,30 @@
           - "{{ hour_now }}"
           - "{{ minute_now }}"
 
-    - name: create headscale required folder
-      file:
-        state: directory
-        path: "{{ item }}"
-        recursive: true
-      with_items:
-        - "/opt/headscale/config"
-        - "/opt/headscale/keys"
-        - "/opt/headscale/db"
-        - "/mnt/nas/Backup/headscale"
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
+
+    - name: Setting digital ocean facts
+      set_fact:
+        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+
+    - name: stop play if config options do not exist
+      meta: end_play
+      when: digitalocean_domain | length == 0
+
+    - name: enable IP forwarding
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: '1'
+        sysctl_set: true
+        state: present
+        reload: true
 
     - name: create headscale required folder
       file:
@@ -58,6 +72,7 @@
           - '/opt/headscale:/opt/headscale'
         network_mode: "default"
         container_default_behavior: "compatibility"
+        command: "headscale serve -c /opt/headscale/config/config.yaml"
       # added retry to tasks dependant on external services
       register: result
       retries: 5

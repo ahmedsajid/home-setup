@@ -6,12 +6,28 @@
   vars:
     vaultwarden_docker_image: "vaultwarden/server:1.30.5"
   tasks:
-    - name: create caddy required folders
+    - name: "Set facts for time"
+      set_fact:
+        year_now: "{{ ansible_date_time.year | int }}"
+        hour_now: "{{ ansible_date_time.hour | int }}"
+        minute_now: "{{ ansible_date_time.minute | int }}"
+
+    - name: "print ansible_date_time"
+      debug:
+        msg:
+          - "{{ year_now }}"
+          - "{{ hour_now }}"
+          - "{{ minute_now }}"
+
+    - name: create vaultwarden required folder
       file:
         state: directory
-        path: "/opt/vaultwarden/data"
+        path: "{{ item }}"
+      with_items:
+        - "/opt/vaultwarden"
+        - "/mnt/nas/Backup/vaultwarden"
 
-    - name: Deploy vaultwardedn container
+    - name: Deploy vaultwarden container
       docker_container:
         name: "vaultwarden"
         hostname: "vaultwarden"
@@ -34,3 +50,29 @@
       until: result is succeeded
       when:
         - not ansible_check_mode
+
+    - name: Run backup of vaultwarden budget at 1am within first 15 minutes
+      block:
+        - name: Create archive
+          archive:
+            path: /opt/vaultwarden
+            dest: "/mnt/nas/Backup/vaultwarden/vaultwarden-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+
+        - name: Find older backups
+          find:
+            paths: /mnt/nas/Backup/vaultwarden/
+            age: 5d
+            recurse: true
+          register: vaultwarden_old_backups
+
+        - name: Backups found
+          debug:
+            msg: "{{ vaultwarden_old_backups.files }}"
+
+        - name: Remove files the older files
+          file:
+            path: "{{ item.path }}"
+            state: absent
+          with_items: "{{ vaultwarden_old_backups.files }}"
+      when: (hour_now | int == 1 and minute_now | int < 10) or
+            (force_vaultwarden_backup is defined and force_vaultwarden_backup | bool)
