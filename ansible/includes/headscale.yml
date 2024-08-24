@@ -49,7 +49,6 @@
       file:
         state: directory
         path: "{{ item }}"
-        recursive: true
       with_items:
         - "/opt/headscale/config"
         - "/opt/headscale/keys"
