@@ -101,7 +101,7 @@
   }
 
   handle @sync {
-      reverse_proxy syncthing:8384
+      reverse_proxy {{ ansible_default_ipv4.address }}:8384
   }
 
   # Fallback for otherwise unhandled domains

@@ -38,21 +38,21 @@
           PUID: "1000"
           PGID: "1000"
           TZ: "America/Toronto"
-        ports:
-          - "8384:8384"
-          - "22000:22000/tcp"
-          - "22000:22000/udp"
-          - "21027:21027/udp"
-        networks:
-          - name: "app_network"
-          - name: "bridge"
+        # ports:
+        #   - "8384:8384"
+        #   - "22000:22000/tcp"
+        #   - "22000:22000/udp"
+        #   - "21027:21027/udp"
+        # networks:
+        #   - name: "app_network"
+        #   - name: "bridge"
         restart_policy: always
         state: started
         pull: false
         volumes:
           - "/mnt/nas/Syncthing/config:/var/syncthing/config"
           - "/mnt/nas/Syncthing/data:/data"
-        network_mode: "default"
+        network_mode: "host"
         container_default_behavior: "compatibility"
       # added retry to tasks dependant on external services
       register: result
