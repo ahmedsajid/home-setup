@@ -5,7 +5,7 @@
   connection: local
   vars:
     config_file: '/root/config.ini'
-    headscale_docker_image: "docker.io/headscalebudget/headscale-server:0.22.3"
+    headscale_docker_image: "docker.io/headscale/headscale:0.22.3"
   tasks:
     - name: "Set facts for time"
       set_fact:
