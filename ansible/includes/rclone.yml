@@ -31,7 +31,7 @@
         volumes:
           - "/mnt/nas/Backup/rclone/config:/config/rclone"
           - "/opt/rclone/cache/rclone:/data"
-        command: 'serve s3 -vv --vfs-cache-mode=writes rclone:/'
+        command: 'serve s3 -vv --vfs-cache-mode=writes --cache-dir=/data --vfs-cache-max-size=10G rclone:/'
         network_mode: "default"
         container_default_behavior: "compatibility"
       # added retry to tasks dependant on external services
@@ -55,8 +55,8 @@
         pull: false
         volumes:
           - "/mnt/nas/Backup/rclone/config:/config/rclone"
-          - "/opt/rclone/cache/crypt:/data"
-        command: 'serve s3 -vv --vfs-cache-mode=writes rclone-crypt:/'
+          - "/opt/rclone/cache/rclone-crypt:/data"
+        command: 'serve s3 -vv --vfs-cache-mode=writes --cache-dir=/data --vfs-cache-max-size=10G rclone-crypt:/'
         network_mode: "default"
         container_default_behavior: "compatibility"
       # added retry to tasks dependant on external services
