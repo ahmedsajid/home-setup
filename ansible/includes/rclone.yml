@@ -1,0 +1,67 @@
+---
+
+- name: "Setup and run clone"
+  hosts: localhost
+  connection: local
+  vars:
+    rclone_docker_image: "docker.io/rclone/rclone:1.67"
+  tasks:
+    - name: "Create rclone directories"
+      file:
+        state: directory
+        owner: 1000
+        group: 1000
+        path: "{{ item }}"
+      with_items:
+        - "/mnt/nas/Backup/rclone/config"
+        - "/opt/rclone/cache"
+
+    - name: "Deploy rclone container"
+      docker_container:
+        name: "rclone"
+        hostname: "rclone"
+        image: "{{ rclone_docker_image }}"
+        env:
+          TZ: "America/Toronto"
+        networks:
+          - name: "app_network"
+        restart_policy: always
+        state: started
+        pull: false
+        volumes:
+          - "/mnt/nas/Backup/rclone/config:/config/rclone"
+          - "/opt/rclone/cache/rclone:/data"
+        command: 'serve s3 -vv --vfs-cache-mode=writes --cache-dir=/data --addr 0.0.0.0:8080 --vfs-cache-max-size=10G rclone:/'
+        network_mode: "default"
+        container_default_behavior: "compatibility"
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode
+
+    - name: "Deploy rclone crypt container"
+      docker_container:
+        name: "rclone-crypt"
+        hostname: "rclone-crypt"
+        image: "{{ rclone_docker_image }}"
+        env:
+          TZ: "America/Toronto"
+        networks:
+          - name: "app_network"
+        restart_policy: always
+        state: started
+        pull: false
+        volumes:
+          - "/mnt/nas/Backup/rclone/config:/config/rclone"
+          - "/opt/rclone/cache/rclone-crypt:/data"
+        command: 'serve s3 -vv --vfs-cache-mode=writes --cache-dir=/data --addr 0.0.0.0:8080 --vfs-cache-max-size=10G rclone-crypt:/'
+        network_mode: "default"
+        container_default_behavior: "compatibility"
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode

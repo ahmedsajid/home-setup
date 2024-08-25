@@ -104,6 +104,24 @@
       reverse_proxy {{ ansible_default_ipv4.address }}:8384
   }
 
+  @rclone {
+    host rclone.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @rclone {
+      reverse_proxy rclone:8080
+  }
+
+  @rclone-crypt {
+    host rclone-crypt.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @rclone-crypt {
+      reverse_proxy rclone-crypt:8080
+  }
+
   # Fallback for otherwise unhandled domains
   handle {
       abort
