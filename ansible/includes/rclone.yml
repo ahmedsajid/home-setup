@@ -28,6 +28,7 @@
         restart_policy: always
         state: started
         pull: false
+        memory: "1G"
         volumes:
           - "/mnt/nas/Backup/rclone/config:/config/rclone"
           - "/opt/rclone/cache/rclone:/data"
@@ -53,6 +54,7 @@
         restart_policy: always
         state: started
         pull: false
+        memory: "2G"
         volumes:
           - "/mnt/nas/Backup/rclone/config:/config/rclone"
           - "/opt/rclone/cache/rclone-crypt:/data"
