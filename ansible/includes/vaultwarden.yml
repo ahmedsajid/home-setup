@@ -39,6 +39,7 @@
         restart_policy: always
         state: started
         pull: false
+        memory: '1G'
         network_mode: "default"
         container_default_behavior: "compatibility"
         volumes:
