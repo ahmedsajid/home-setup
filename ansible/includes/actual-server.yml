@@ -47,6 +47,7 @@
           - '/opt/actual/data/:/data'
         network_mode: "default"
         container_default_behavior: "compatibility"
+        memory: '500M'
       # added retry to tasks dependant on external services
       register: result
       retries: 5
