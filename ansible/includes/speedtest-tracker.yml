@@ -17,6 +17,7 @@
         networks:
           - name: "app_network"
         restart_policy: always
+        memory: '500M'
         state: started
         pull: false
         network_mode: "default"
