@@ -4,32 +4,17 @@
   hosts: localhost
   connection: local
   vars:
-    netdata_docker_image: "docker.io/netdata/netdata:v1.40.1"
-    config_file: '/root/config.ini'
+    netdata_docker_image: "docker.io/netdata/netdata:v1.47.0"
   tasks:
-    - name: Check if config file exists
-      stat:
-        path: "{{ config_file }}"
-      register: config_file_exists
-
-    - name: stop play if config file doesn't exist
-      meta: end_play
-      when: not config_file_exists.stat.exists
-
-    - name: Setting digital ocean facts
-      set_fact:
-        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
-
-    - name: stop play if config options do not exist
-      meta: end_play
-      when: digitalocean_domain | length == 0
-
     - name: create netdata required folders
       file:
         state: directory
         path: "{{ item }}"
+        recurse: true
       with_items:
-        - "/opt/netdata"
+        - "/opt/netdata/etc"
+        - "/opt/netdata/lib"
+        - "/opt/netdata/cache"
 
     - name: Deploy netdata
       docker_container:
@@ -38,17 +23,29 @@
         image: "{{ netdata_docker_image }}"
         env:
           TZ: 'America/Toronto'
-        # ports:
-        #   - 8000:8000
-        networks:
-          - name: "app_network"
         volumes:
-          - '/opt/netdata:/opt/netdata'
+          - "/opt/netdata/etc:/etc/netdata"
+          - "/opt/netdata/lib:/var/lib/netdata"
+          - "/opt/netdata/cache:/var/cache/netdata"
+          - "/:/host/root:ro,rslave"
+          - "/etc/passwd:/host/etc/passwd:ro"
+          - "/etc/group:/host/etc/group:ro"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "/proc:/host/proc:ro"
+          - "/sys:/host/sys:ro"
+          - "/etc/os-release:/host/etc/os-release:ro"
+          - "/var/log:/host/var/log:ro"
+          - "/var/run/docker.sock:/var/run/docker.sock:ro"
         restart_policy: always
         state: started
         pull: false
-        network_mode: "default"
         container_default_behavior: "no_defaults"
+        network_mode: "host"
+        capabilities:
+          - SYS_PTRACE
+          - SYS_ADMIN
+        security_opts:
+          - apparmor:unconfined
       # added retry to tasks dependant on external services
       register: result
       retries: 5
