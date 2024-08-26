@@ -122,6 +122,15 @@
       reverse_proxy rclone-crypt:8080
   }
 
+  @netdata {
+    host netdata.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+  }
+
+  handle @netdata {
+      reverse_proxy {{ ansible_default_ipv4.address }}:19999
+  }
+
   # Fallback for otherwise unhandled domains
   handle {
       abort

@@ -33,6 +33,7 @@
       - head
       - rclone
       - rclone-crypt
+      - netdata
     config_file: '/root/config.ini'
   tasks:
     - name: Check if config file exists
