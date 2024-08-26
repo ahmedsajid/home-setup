@@ -53,6 +53,7 @@
         restart_policy: always
         state: started
         pull: false
+        limit: '200M'
         volumes:
           - '/opt/caddy/etc/:/etc/caddy/'
         network_mode: "default"

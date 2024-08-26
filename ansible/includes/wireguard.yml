@@ -53,6 +53,7 @@
           WIREGUARD_UI_NAT_DEVICE: "{{ ansible_default_ipv4.interface }}"
           WIREGUARD_UI_WG_DEVICE_NAME: "wg0"
         network_mode: host
+        memory: '500M'
         restart_policy: always
         privileged: true
         state: started

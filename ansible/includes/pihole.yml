@@ -198,33 +198,6 @@
       until: result is succeeded
       when: not ansible_check_mode
 
-    - name: Deploy pihole exporter
-      docker_container:
-        name: "pihole-exporter"
-        hostname: "pihole-exporter"
-        image: "{{ pihole_exporter_docker_image }}"
-        env:
-          TZ: 'America/Toronto'
-          PIHOLE_HOSTNAME: "{{ ansible_default_ipv4.address }}"
-          PIHOLE_PASSWORD: ''
-          INTERVAL: '30s'
-          PORT: '9617'
-        ports:
-          - '9617:9617'
-        networks:
-          - name: "app_network"
-        restart_policy: always
-        state: started
-        pull: false
-        network_mode: "default"
-        container_default_behavior: "compatibility"
-      # added retry to tasks dependant on external services
-      register: result
-      retries: 5
-      delay: 3
-      until: result is succeeded
-      when: not ansible_check_mode
-
     - name: Set facts for time
       set_fact:
         minute_now: "{{ ansible_date_time.minute | int }}"
