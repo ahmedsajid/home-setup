@@ -19,7 +19,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
       - name: Install pre-commit $PRE_COMMIT_VERSION
         run: pip install pre-commit==$PRE_COMMIT_VERSION
       - name: Run pre-commit autoupdate
