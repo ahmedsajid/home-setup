@@ -34,3 +34,8 @@ repos:
     rev: 6.0.0
     hooks:
       - id: flake8
+
+  - repo: https://github.com/renovatebot/pre-commit-hooks
+    rev: 38.119.0
+    hooks:
+      - id: renovate-config-validator
