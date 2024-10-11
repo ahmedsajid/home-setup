@@ -8,8 +8,8 @@
       "fileMatch": [
         ".*yml$"
       ],
-      "matchString": [
-        ".*docker_image.*\"(?<depName>.*?):(?<currentValue>.*?)\""
+      "matchStrings": [
+        ".*docker_image:.*\"(?<depName>.*?):(?<currentValue>.*?)\""
       ],
       "datasourceTemplate": "docker",
       "versioningTemplate": "docker"
