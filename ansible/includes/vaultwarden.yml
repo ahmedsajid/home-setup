@@ -4,7 +4,7 @@
   hosts: localhost
   connection: local
   vars:
-    vaultwarden_docker_image: "vaultwarden/server:1.32.4"
+    vaultwarden_docker_image: "vaultwarden/server:1.32.5"
   tasks:
     - name: "Set facts for time"
       set_fact:
