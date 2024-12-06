@@ -108,8 +108,6 @@
     #       TZ: 'America/Toronto'
     #       IP: "{{ pihole_docker_ip }}"
     #     network_mode: host
-        # networks:
-        #   - name: "app_network"
     #     capabilities:
     #       - NET_ADMIN
     #     restart_policy: always
@@ -117,7 +115,7 @@
     #     pull: false
     #     memory: '100M'
     #     container_default_behavior: "compatibility"
-      # added retry to tasks dependant on external services
+    # added retry to tasks dependant on external services
     #   register: result
     #   retries: 5
     #   delay: 3
@@ -168,13 +166,13 @@
           WEBPASSWORD: ''
           DNSMASQ_LISTENING: "all"
           WEBLOGS_STDOUT: "1"
-          DHCP_ACTIVE: "true"
-          DHCP_START: "192.168.0.101"
-          DHCP_END: "192.168.0.195"
-          DHCP_ROUTER: "192.168.0.1"
+          # DHCP_ACTIVE: "true"
+          # DHCP_START: "192.168.0.101"
+          # DHCP_END: "192.168.0.195"
+          # DHCP_ROUTER: "192.168.0.1"
           # NOTE: infinite lease
-          DHCP_LEASETIME: "0"
-          DHCP_rapid_commit: "true"
+          # DHCP_LEASETIME: "0"
+          # DHCP_rapid_commit: "true"
         ports:
           - "53:53/tcp"
           - "53:53/udp"
