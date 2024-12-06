@@ -99,30 +99,28 @@
           - log-servfail: "yes"
       when: not ansible_check_mode
 
-    - name: Deploy dhcp-helper for relaying dhcp traffic to pihole
-      docker_container:
-        name: "dhcp-helper"
-        hostname: "dhcp-helper"
-        image: "{{ dhcp_helper_docker_image }}"
-        env:
-          TZ: 'America/Toronto'
-          IP: "{{ pihole_docker_ip }}"
-        network_mode: host
-        # networks:
-        #   - name: "app_network"
-        capabilities:
-          - NET_ADMIN
-        restart_policy: always
-        state: started
-        pull: false
-        memory: '100M'
-        container_default_behavior: "compatibility"
-      # added retry to tasks dependant on external services
-      register: result
-      retries: 5
-      delay: 3
-      until: result is succeeded
-      when: not ansible_check_mode
+    # - name: Deploy dhcp-helper for relaying dhcp traffic to pihole
+    #   docker_container:
+    #     name: "dhcp-helper"
+    #     hostname: "dhcp-helper"
+    #     image: "{{ dhcp_helper_docker_image }}"
+    #     env:
+    #       TZ: 'America/Toronto'
+    #       IP: "{{ pihole_docker_ip }}"
+    #     network_mode: host
+    #     capabilities:
+    #       - NET_ADMIN
+    #     restart_policy: always
+    #     state: started
+    #     pull: false
+    #     memory: '100M'
+    #     container_default_behavior: "compatibility"
+    # added retry to tasks dependant on external services
+    #   register: result
+    #   retries: 5
+    #   delay: 3
+    #   until: result is succeeded
+    #   when: not ansible_check_mode
 
     - name: create pihole required folders
       file:
@@ -168,13 +166,13 @@
           WEBPASSWORD: ''
           DNSMASQ_LISTENING: "all"
           WEBLOGS_STDOUT: "1"
-          DHCP_ACTIVE: "true"
-          DHCP_START: "192.168.0.101"
-          DHCP_END: "192.168.0.195"
-          DHCP_ROUTER: "192.168.0.1"
+          # DHCP_ACTIVE: "true"
+          # DHCP_START: "192.168.0.101"
+          # DHCP_END: "192.168.0.195"
+          # DHCP_ROUTER: "192.168.0.1"
           # NOTE: infinite lease
-          DHCP_LEASETIME: "0"
-          DHCP_rapid_commit: "true"
+          # DHCP_LEASETIME: "0"
+          # DHCP_rapid_commit: "true"
         ports:
           - "53:53/tcp"
           - "53:53/udp"
