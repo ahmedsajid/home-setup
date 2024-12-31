@@ -40,5 +40,5 @@ jobs:
       - name: Install ansible $ANSIBLE_VERSION
         run: pip install ansible==$ANSIBLE_VERSION
       - name: Run Ansible test
-        run: ansible-playbook --inventory '127.0.0.1,' --connection local --become --check local.yml -e digitalocean_host='*' -e digitalocean_domain='example.com' -e digitalocean_token='randomtoken' -e config_deploy=true
+        run: ansible-playbook --inventory '127.0.0.1,' --connection local --become --check local.yml -e digitalocean_host='*' -e digitalocean_domain='example.com' -e digitalocean_token='randomtoken' -e config_deploy=true -e config_file='/tmp/config.ini'
         working-directory: ./ansible
