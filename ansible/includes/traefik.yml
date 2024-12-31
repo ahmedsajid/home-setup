@@ -22,6 +22,7 @@
         image: "{{ traefik_docker_image }}"
         env:
           TZ: 'America/Toronto'
+          DO_AUTH_TOKEN: "{{ do_token }}"
         ports:
           - 80:80
           - 443:443
@@ -68,8 +69,6 @@
           - /var/run/docker.sock:/var/run/docker.sock:ro
           - /etc/timezone:/etc/timezone:ro
           - /etc/localtime:/etc/localtime:ro
-        env:
-          DO_AUTH_TOKEN: "{{ do_token }}"
         network_mode: "default"
         container_default_behavior: "compatibility"
       # added retry to tasks dependant on external services
