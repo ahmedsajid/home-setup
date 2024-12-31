@@ -5,7 +5,6 @@
   connection: local
   vars:
     ara_docker_image: "docker.io/recordsansible/ara-api"
-    config_file: '/root/config.ini'
   tasks:
     - name: create ara required folders
       file:
@@ -21,8 +20,14 @@
         image: "{{ ara_docker_image }}"
         env:
           TZ: 'America/Toronto'
-        # ports:
-        #   - 8000:8000
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.ara.rule: "Host(`ara.{{ do_domain }}`)"
+          traefik.http.routers.ara.entrypoints: "https"
+          traefik.http.routers.ara.tls: "true"
+          traefik.http.routers.ara.tls.certresolver: "le"
+          traefik.http.services.ara.loadbalancer.server.port: "8000"
         networks:
           - name: "app_network"
         volumes:

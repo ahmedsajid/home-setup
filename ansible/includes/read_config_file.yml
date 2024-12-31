@@ -1,0 +1,24 @@
+---
+
+- name: "Read config file"
+  hosts: localhost
+  connection: local
+  vars:
+    config_file: '/root/config.ini'
+  tasks:
+    - name: Check if config file exists
+      stat:
+        path: "{{ config_file }}"
+      register: config_file_exists
+
+    - name: stop play if config file doesn't exist
+      meta: end_play
+      when: not config_file_exists.stat.exists
+
+    - name: Setting digital ocean facts
+      set_fact:
+        do_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
+        do_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
+        do_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+        syncthing_api_key: "{{ lookup('password', '/root/syncthing_api_key length=24') }}"
+        cacheable: true

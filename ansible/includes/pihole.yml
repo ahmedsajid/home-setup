@@ -1,5 +1,8 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: "Pihole Install and setup"
   hosts: localhost
   connection: local
@@ -34,25 +37,7 @@
       - rclone
       - rclone-crypt
       - netdata
-    config_file: '/root/config.ini'
   tasks:
-    - name: Check if config file exists
-      stat:
-        path: "{{ config_file }}"
-      register: config_file_exists
-
-    - name: stop play if config file doesn't exist
-      meta: end_play
-      when: not config_file_exists.stat.exists
-
-    - name: Setting digital ocean facts
-      set_fact:
-        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
-
-    - name: stop play if config options do not exist
-      meta: end_play
-      when: digitalocean_domain | length == 0
-
     - name: create role folder
       file:
         state: directory
@@ -142,7 +127,7 @@
       copy:
         dest: "/opt/pihole/etc/custom.list"
         content: |
-          {{ ansible_default_ipv4.address }} {% for service in service_list %}{{ service }}.{{ digitalocean_domain }}{% if not loop.last %} {% endif %}{% endfor %}
+          {{ ansible_default_ipv4.address }} {% for service in service_list %}{{ service }}.{{ do_domain }}{% if not loop.last %} {% endif %}{% endfor %}
         mode: 0640
         owner: 999
         group: 999
@@ -173,6 +158,14 @@
           # NOTE: infinite lease
           # DHCP_LEASETIME: "0"
           # DHCP_rapid_commit: "true"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.pihole.rule: "Host(`pihole.{{ do_domain }}`)"
+          traefik.http.routers.pihole.entrypoints: "https"
+          traefik.http.routers.pihole.tls: "true"
+          traefik.http.routers.pihole.tls.certresolver: "le"
+          traefik.http.services.pihole.loadbalancer.server.port: "80"
         ports:
           - "53:53/tcp"
           - "53:53/udp"

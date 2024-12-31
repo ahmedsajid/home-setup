@@ -23,6 +23,14 @@
         image: "{{ rclone_docker_image }}"
         env:
           TZ: "America/Toronto"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.rclone.rule: "Host(`rclone.{{ do_domain }}`)"
+          traefik.http.routers.rclone.entrypoints: "https"
+          traefik.http.routers.rclone.tls: "true"
+          traefik.http.routers.rclone.tls.certresolver: "le"
+          traefik.http.services.rclone.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"
         restart_policy: always
@@ -49,6 +57,14 @@
         image: "{{ rclone_docker_image }}"
         env:
           TZ: "America/Toronto"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.rclone-crypt.rule: "Host(`rclone-crypt.{{ do_domain }}`)"
+          traefik.http.routers.rclone-crypt.entrypoints: "https"
+          traefik.http.routers.rclone-crypt.tls: "true"
+          traefik.http.routers.rclone-crypt.tls.certresolver: "le"
+          traefik.http.services.rclone-crypt.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"
         restart_policy: always
