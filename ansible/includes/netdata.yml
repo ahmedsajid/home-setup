@@ -4,7 +4,7 @@
   hosts: localhost
   connection: local
   vars:
-    netdata_docker_image: "docker.io/netdata/netdata:v1.47.4"
+    netdata_docker_image: "docker.io/netdata/netdata:v2.1.0"
   tasks:
     - name: create netdata required folders
       file:
