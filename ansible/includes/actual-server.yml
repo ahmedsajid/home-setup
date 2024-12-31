@@ -4,7 +4,6 @@
   hosts: localhost
   connection: local
   vars:
-    config_file: '/root/config.ini'
     actual_docker_image: "docker.io/actualbudget/actual-server:24.12.0"
   tasks:
     - name: "Set facts for time"
@@ -35,9 +34,14 @@
         image: "{{ actual_docker_image }}"
         env:
           TZ: 'America/Toronto'
-          # PIHOLE_DNS_: "{{ ansible_default_ipv4.address }}#5353"
-          # WEBPASSWORD: ''
-          # DNSMASQ_LISTENING: "all"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.actual-server.rule: "Host(`money.{{ do_domain }}`)"
+          traefik.http.routers.actual-server.entrypoints: "https"
+          traefik.http.routers.actual-server.tls: "true"
+          traefik.http.routers.actual-server.tls.certresolver: "le"
+          traefik.http.services.actual-server.loadbalancer.server.port: "5006"
         networks:
           - name: "app_network"
         restart_policy: always

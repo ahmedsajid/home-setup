@@ -1,10 +1,12 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: "Headscale Setup"
   hosts: localhost
   connection: local
   vars:
-    config_file: '/root/config.ini'
     headscale_docker_image: "docker.io/headscale/headscale:v0.23.0"
   tasks:
     - name: "Set facts for time"
@@ -19,23 +21,6 @@
           - "{{ year_now }}"
           - "{{ hour_now }}"
           - "{{ minute_now }}"
-
-    - name: Check if config file exists
-      stat:
-        path: "{{ config_file }}"
-      register: config_file_exists
-
-    - name: stop play if config file doesn't exist
-      meta: end_play
-      when: not config_file_exists.stat.exists
-
-    - name: Setting digital ocean facts
-      set_fact:
-        digitalocean_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
-
-    - name: stop play if config options do not exist
-      meta: end_play
-      when: digitalocean_domain | length == 0
 
     - name: enable IP forwarding
       sysctl:
@@ -68,6 +53,14 @@
         image: "{{ headscale_docker_image }}"
         env:
           TZ: 'America/Toronto'
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.headscale.rule: "Host(`headscale.{{ do_domain }}`)"
+          traefik.http.routers.headscale.entrypoints: "https"
+          traefik.http.routers.headscale.tls: "true"
+          traefik.http.routers.headscale.tls.certresolver: "le"
+          traefik.http.services.headscale.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"
         restart_policy: always

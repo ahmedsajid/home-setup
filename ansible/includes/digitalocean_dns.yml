@@ -1,19 +1,15 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: Dynamic Updates under DigitalOcean DNS
   hosts: localhost
   connection: local
-  vars:
-    config_file: '/root/config.ini'
   tasks:
-    - name: Check if config file exists
-      stat:
-        path: "{{ config_file }}"
-      register: config_file_exists
-
-    - name: stop play if config file doesn't exist
+    - name: do not run in check mode - end_play
       meta: end_play
-      when: not config_file_exists.stat.exists
+      when: ansible_check_mode
 
     - name: Install via pip
       pip:
@@ -99,5 +95,5 @@
           type: "A"
           name: "*"
           data: "{{ ip }}"
-          ttl: 1800
+          ttl: 60
       no_log: true

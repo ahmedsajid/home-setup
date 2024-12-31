@@ -10,8 +10,7 @@
 - import_playbook: includes/timezone.yml
 - import_playbook: includes/common-packages.yml
 - import_playbook: includes/docker.yml
-- import_playbook: includes/caddy.yml
-- import_playbook: includes/wireguard.yml
+- import_playbook: includes/traefik.yml
 - import_playbook: includes/nasmounts.yml
 # - import_playbook: includes/headscale.yml
 - import_playbook: includes/jellyfin.yml

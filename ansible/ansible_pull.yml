@@ -28,7 +28,6 @@
       - ansible==6.7.0
       - ara==1.6.1
   tasks:
-
     - name: Remove ansible version provided by package managers
       package:
         name: ansible
@@ -57,6 +56,11 @@
       stat:
         path: "{{ config_file }}"
       register: config_exists
+
+    - name: going to deploy config
+      ansible.builtin.debug:
+        msg: "Deploying config"
+      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
 
     - name: Deploy a config ini file
       template:

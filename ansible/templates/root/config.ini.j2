@@ -8,14 +8,6 @@ callback_enabled = healthchecks, profile_tasks, ara
 [callback_healthchecks]
 uuid = {{ healthchecks_uuid | default('') }}
 
-[nas]
-ip = {{ nas_ip | default('') }}
-
-[namecheap]
-host = {{ namecheap_host | default('') }}
-domain = {{ namecheap_domain | default('') }}
-password = {{ namecheap_password | default('') }}
-
 [digitalocean]
 host = {{ digitalocean_host | default('*') }}
 domain = {{ digitalocean_domain | default('') }}

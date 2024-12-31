@@ -22,6 +22,14 @@
           - '/mnt/nas/Download:/data'
         network_mode: "default"
         container_default_behavior: "compatibility"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.webui-aria2.rule: "Host(`webui-aria2.{{ do_domain }}`)"
+          traefik.http.routers.webui-aria2.entrypoints: "https"
+          traefik.http.routers.webui-aria2.tls: "true"
+          traefik.http.routers.webui-aria2.tls.certresolver: "le"
+          traefik.http.services.webui-aria2.loadbalancer.server.port: "8080"
       # added retry to tasks dependant on external services
       register: result
       retries: 5

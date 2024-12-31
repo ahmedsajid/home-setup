@@ -1,16 +1,14 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: "Syncthing deploy and setup"
   hosts: localhost
   connection: local
   vars:
     syncthing_docker_image: "syncthing/syncthing:1.18"
   tasks:
-    - name: "Random Syncthing API Key"
-      set_fact:
-        syncthing_api_key: "{{ lookup('password', '/root/syncthing_api_key length=24') }}"
-      when: not ansible_check_mode
-
     - name: "Create syncthing folders"
       file:
         state: directory
@@ -38,6 +36,14 @@
           PUID: "1000"
           PGID: "1000"
           TZ: "America/Toronto"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.syncthing.rule: "Host(`syncthing.{{ do_domain }}`)"
+          traefik.http.routers.syncthing.entrypoints: "https"
+          traefik.http.routers.syncthing.tls: "true"
+          traefik.http.routers.syncthing.tls.certresolver: "le"
+          traefik.http.services.syncthing.loadbalancer.server.port: "8384"
         # ports:
         #   - "8384:8384"
         #   - "22000:22000/tcp"

@@ -12,7 +12,6 @@
       - 'Syncthing'
       - 'Multimedia'
     nas_root: '/mnt/nas'
-    config_file: '/root/config.ini'
     # https://rizvir.com/articles/linux-sysadmin-cheats/
     # Tune NFS 3 mounts
     nfs_mount_opts: 'rsize=32768,wsize=32768,nfsvers=3,tcp,async'
@@ -27,16 +26,9 @@
         path: "{{ nas_root }}/{{ item }}"
       with_items: "{{ mounts }}"
 
-    - name: Check if config file exists
-      stat:
-        path: "{{ config_file }}"
-      register: config_exists
-
     - name: Adding NAS mount points to fstab
-      vars:
-        nas_ip: "{{ lookup('ini', 'ip section=nas file={{ config_file }}') | default('') }}"
       mount:
-        src: "{{ nas_ip }}:/{{ item }}"
+        src: "nas.{{ do_domain }}:/{{ item }}"
         path: "{{ nas_root }}/{{ item }}"
         fstype: nfs
         state: mounted
@@ -44,5 +36,3 @@
       with_items: "{{ mounts }}"
       when:
         - not ansible_check_mode
-        - config_exists.stat.exists
-        - nas_ip != ''

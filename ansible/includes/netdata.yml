@@ -23,6 +23,14 @@
         image: "{{ netdata_docker_image }}"
         env:
           TZ: 'America/Toronto'
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.netdata.rule: "Host(`netdata.{{ do_domain }}`)"
+          traefik.http.routers.netdata.entrypoints: "https"
+          traefik.http.routers.netdata.tls: "true"
+          traefik.http.routers.netdata.tls.certresolver: "le"
+          traefik.http.services.netdata.loadbalancer.server.port: "19999"
         volumes:
           - "/opt/netdata/etc:/etc/netdata"
           - "/opt/netdata/lib:/var/lib/netdata"
