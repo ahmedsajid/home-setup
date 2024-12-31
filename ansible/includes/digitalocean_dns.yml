@@ -3,7 +3,6 @@
 - name: Read ini config file
   import_playbook: "read_config_file.yml"
 
-
 - name: Dynamic Updates under DigitalOcean DNS
   hosts: localhost
   connection: local
