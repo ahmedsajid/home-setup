@@ -22,7 +22,7 @@
         image: "{{ traefik_docker_image }}"
         env:
           TZ: 'America/Toronto'
-          DO_AUTH_TOKEN: "{% if ansible_check_mode %}randomtoken{% else %}{{ do_token }}{% endif %}"
+          DO_AUTH_TOKEN: "{{ do_token }}"
         ports:
           - 80:80
           - 443:443
