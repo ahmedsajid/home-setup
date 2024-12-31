@@ -52,15 +52,15 @@
         group: root
         mode: 0751
 
-    - name: going to deploy config
-      ansible.builtin.debug:
-        msg: "Deploying config"
-      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
-
     - name: Check if config file exists
       stat:
         path: "{{ config_file }}"
       register: config_exists
+
+    - name: going to deploy config
+      ansible.builtin.debug:
+        msg: "Deploying config"
+      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
 
     - name: Deploy a config ini file
       template:
