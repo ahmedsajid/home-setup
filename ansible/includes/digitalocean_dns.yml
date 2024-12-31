@@ -7,6 +7,10 @@
   hosts: localhost
   connection: local
   tasks:
+    - name: do not run in check mode - end_play
+      meta: end_play
+      when: ansible_check_mode
+
     - name: Install via pip
       pip:
         name: "dnspython"
