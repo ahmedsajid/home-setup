@@ -11,11 +11,11 @@
 - import_playbook: includes/common-packages.yml
 - import_playbook: includes/docker.yml
 - import_playbook: includes/caddy.yml
-- import_playbook: includes/wireguard.yml
+# - import_playbook: includes/wireguard.yml
 - import_playbook: includes/nasmounts.yml
 # - import_playbook: includes/headscale.yml
 - import_playbook: includes/jellyfin.yml
-- import_playbook: includes/pihole.yml
+# - import_playbook: includes/pihole.yml
 - import_playbook: includes/speedtest-tracker.yml
 # - import_playbook: includes/webui-aria2.yml
 # - import_playbook: includes/syncthing.yml
