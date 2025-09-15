@@ -4,7 +4,7 @@
   hosts: localhost
   connection: local
   vars:
-    syncthing_docker_image: "syncthing/syncthing:1.18"
+    syncthing_docker_image: "syncthing/syncthing:2.0"
   tasks:
     - name: "Random Syncthing API Key"
       set_fact:
