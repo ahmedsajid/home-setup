@@ -4,7 +4,7 @@
   vars:
 
     # schedule is fed directly to cron
-    schedule: '*/30 * * * *'
+    schedule: '5 4 * * *'
 
     # User to run ansible-pull as from cron
     cron_user: root
