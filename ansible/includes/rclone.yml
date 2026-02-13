@@ -4,7 +4,7 @@
   hosts: localhost
   connection: local
   vars:
-    rclone_docker_image: "docker.io/rclone/rclone:1.68"
+    rclone_docker_image: "docker.io/rclone/rclone:1.73"
   tasks:
     - name: "Create rclone directories"
       file:
