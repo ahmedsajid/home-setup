@@ -5,7 +5,7 @@
   connection: local
   vars:
     dhcp_helper_docker_image: "ahmedsajid/dhcp-helper"
-    pihole_docker_image: "pihole/pihole:2024.07.0"
+    pihole_docker_image: "pihole/pihole:2026.02.0"
     pihole_exporter_docker_image: "ekofr/pihole-exporter:v1.2.0"
     pihole_docker_ip: "172.17.0.100"
     custom_ad_list: |
