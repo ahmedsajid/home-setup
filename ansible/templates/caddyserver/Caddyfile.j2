@@ -41,6 +41,18 @@
       reverse_proxy {{ ansible_default_ipv4.address }}:8096
   }
 
+  @share {
+    host share.{{ digitalocean_domain }}
+    remote_ip forwarded private_ranges
+{% if (share_allowed_ip | default('', true) | trim | length) > 0 %}
+    remote_ip {{ share_allowed_ip | trim }}
+{% endif %}
+  }
+
+  handle @share {
+      reverse_proxy {{ ansible_default_ipv4.address }}:8096
+  }
+
   @webui-aria2 {
     host webui-aria2.{{ digitalocean_domain }}
     remote_ip forwarded private_ranges
