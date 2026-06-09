@@ -35,21 +35,12 @@
   @jellyfin {
     host jellyfin.{{ digitalocean_domain }}
     remote_ip forwarded private_ranges
-  }
-
-  handle @jellyfin {
-      reverse_proxy {{ ansible_default_ipv4.address }}:8096
-  }
-
-  @share {
-    host share.{{ digitalocean_domain }}
-    remote_ip forwarded private_ranges
 {% if (share_allowed_ip | default('', true) | trim | length) > 0 %}
     remote_ip {{ share_allowed_ip | trim }}
 {% endif %}
   }
 
-  handle @share {
+  handle @jellyfin {
       reverse_proxy {{ ansible_default_ipv4.address }}:8096
   }
 
