@@ -20,3 +20,7 @@ password = {{ namecheap_password | default('') }}
 host = {{ digitalocean_host | default('*') }}
 domain = {{ digitalocean_domain | default('') }}
 token = {{ digitalocean_token | default('') }}
+
+[share]
+# Friend's public IP for one-time remote access to jellyfin.{{ digitalocean_domain | default('yourdomain') }}; local/VPN always allowed
+allowed_ip = {{ share_allowed_ip | default('') }}
