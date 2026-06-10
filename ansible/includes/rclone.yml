@@ -1,5 +1,8 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: "Setup and run clone"
   hosts: localhost
   connection: local

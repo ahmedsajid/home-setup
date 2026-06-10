@@ -8,6 +8,8 @@
 - name: "Traefik Install and setup"
   hosts: localhost
   connection: local
+  vars_files:
+    - "{{ playbook_dir }}/../group_vars/all/traefik.yml"
   vars:
     traefik_docker_image: "docker.io/traefik:v3.7.1"
   tasks:

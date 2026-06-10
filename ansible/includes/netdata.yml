@@ -1,5 +1,8 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: "netdata Install and setup"
   hosts: localhost
   connection: local

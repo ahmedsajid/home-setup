@@ -22,4 +22,11 @@
         do_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
         share_allowed_ip: "{{ lookup('ini', 'allowed_ip section=share file={{ config_file }}', errors='ignore') | default('', true) | trim }}"
         syncthing_api_key: "{{ lookup('password', '/root/syncthing_api_key length=24') }}"
+        traefik_private_ranges:
+          - "10.0.0.0/8"
+          - "172.16.0.0/12"
+          - "192.168.0.0/16"
+          - "127.0.0.0/8"
+          - "fc00::/7"
+        traefik_private_ipallowlist_sourcerange: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8,fc00::/7"
         cacheable: true
