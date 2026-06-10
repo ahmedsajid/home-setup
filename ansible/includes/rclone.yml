@@ -29,7 +29,7 @@
           traefik.http.routers.rclone.rule: "Host(`rclone.{{ do_domain }}`)"
           traefik.http.routers.rclone.entrypoints: "https"
           traefik.http.routers.rclone.tls: "true"
-          traefik.http.routers.rclone.middlewares: "private-networks@docker"
+          traefik.http.routers.rclone.middlewares: "private-networks@file"
           traefik.http.services.rclone.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"
@@ -63,7 +63,7 @@
           traefik.http.routers.rclone-crypt.rule: "Host(`rclone-crypt.{{ do_domain }}`)"
           traefik.http.routers.rclone-crypt.entrypoints: "https"
           traefik.http.routers.rclone-crypt.tls: "true"
-          traefik.http.routers.rclone-crypt.middlewares: "private-networks@docker"
+          traefik.http.routers.rclone-crypt.middlewares: "private-networks@file"
           traefik.http.services.rclone-crypt.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"
