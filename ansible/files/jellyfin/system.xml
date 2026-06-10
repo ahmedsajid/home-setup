@@ -160,16 +160,11 @@
   <UICulture>en-US</UICulture>
   <SaveMetadataHidden>false</SaveMetadataHidden>
   <ContentTypes />
-  <RemoteClientBitrateLimit>12000000</RemoteClientBitrateLimit>
+  <RemoteClientBitrateLimit>0</RemoteClientBitrateLimit>
   <EnableFolderView>false</EnableFolderView>
   <EnableGroupingIntoCollections>false</EnableGroupingIntoCollections>
   <DisplaySpecialsWithinSeasons>true</DisplaySpecialsWithinSeasons>
-  <LocalNetworkSubnets>
-    <string>10.0.0.0/8</string>
-    <string>172.16.0.0/12</string>
-    <string>192.168.0.0/16</string>
-    <string>127.0.0.0/8</string>
-  </LocalNetworkSubnets>
+  <LocalNetworkSubnets />
   <LocalNetworkAddresses />
   <CodecsUsed />
   <PluginRepositories>
@@ -192,9 +187,7 @@
   <CorsHosts>
     <string>*</string>
   </CorsHosts>
-  <KnownProxies>
-    <string>172.16.0.1</string>
-  </KnownProxies>
+  <KnownProxies />
   <ActivityLogRetentionDays>30</ActivityLogRetentionDays>
   <LibraryScanFanoutConcurrency>0</LibraryScanFanoutConcurrency>
   <LibraryMetadataRefreshConcurrency>0</LibraryMetadataRefreshConcurrency>
