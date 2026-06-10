@@ -6,7 +6,7 @@ http:
       entryPoints:
         - https
       middlewares:
-        - jellyfin-ipwhitelist
+        - jellyfin-ipallowlist
       service: jellyfin
       tls:
         certResolver: le
@@ -20,8 +20,8 @@ http:
         certResolver: le
 
   middlewares:
-    jellyfin-ipwhitelist:
-      ipWhiteList:
+    jellyfin-ipallowlist:
+      ipAllowList:
         sourceRange:
           - "10.0.0.0/8"
           - "172.16.0.0/12"
