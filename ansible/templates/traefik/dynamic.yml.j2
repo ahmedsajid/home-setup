@@ -1,0 +1,38 @@
+# {{ ansible_managed }}
+# Blocked clients get 404 (not 403) so nothing appears to exist.
+# Jellyfin: LAN/VPN + optional [share] allowed_ip; everything else is private-only.
+http:
+  routers:
+    jellyfin:
+      rule: "Host(`jellyfin.{{ do_domain }}`)"
+      entryPoints:
+        - https
+      middlewares:
+        - jellyfin-ipallowlist
+      service: jellyfin
+      tls: {}
+
+  middlewares:
+    private-networks:
+      ipAllowList:
+        sourceRange:
+{% for cidr in traefik_private_ranges %}
+          - "{{ cidr }}"
+{% endfor %}
+        rejectStatusCode: {{ traefik_ip_reject_status_code }}
+    jellyfin-ipallowlist:
+      ipAllowList:
+        sourceRange:
+{% for cidr in traefik_private_ranges %}
+          - "{{ cidr }}"
+{% endfor %}
+{% if share_allowed_ip | default('', true) | trim | length > 0 %}
+          - "{{ share_allowed_ip | trim }}/32"
+{% endif %}
+        rejectStatusCode: {{ traefik_ip_reject_status_code }}
+
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:8096"

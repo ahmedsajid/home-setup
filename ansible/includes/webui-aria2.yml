@@ -1,5 +1,8 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: "Webui-Aria2 setup"
   hosts: localhost
   connection: local
@@ -22,6 +25,16 @@
           - '/mnt/nas/Download:/data'
         network_mode: "default"
         container_default_behavior: "compatibility"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.webui-aria2.rule: "Host(`webui-aria2.{{ do_domain }}`)"
+          traefik.http.routers.webui-aria2.entrypoints: "https"
+          traefik.http.routers.webui-aria2.tls: "true"
+          traefik.http.routers.webui-aria2.middlewares: "webui-aria2-iprestrict"
+          traefik.http.middlewares.webui-aria2-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.webui-aria2-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
+          traefik.http.services.webui-aria2.loadbalancer.server.port: "8080"
       # added retry to tasks dependant on external services
       register: result
       retries: 5

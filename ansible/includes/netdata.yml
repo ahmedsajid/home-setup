@@ -1,5 +1,8 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: "netdata Install and setup"
   hosts: localhost
   connection: local
@@ -23,6 +26,18 @@
         image: "{{ netdata_docker_image }}"
         env:
           TZ: 'America/Toronto'
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.netdata.rule: "Host(`netdata.{{ do_domain }}`)"
+          traefik.http.routers.netdata.entrypoints: "https"
+          traefik.http.routers.netdata.tls: "true"
+          traefik.http.routers.netdata.middlewares: "netdata-iprestrict"
+          traefik.http.middlewares.netdata-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.netdata-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
+          traefik.http.services.netdata.loadbalancer.server.port: "19999"
+        networks:
+          - name: "app_network"
         volumes:
           - "/opt/netdata/etc:/etc/netdata"
           - "/opt/netdata/lib:/var/lib/netdata"
@@ -40,8 +55,10 @@
         restart_policy: always
         state: started
         pull: false
-        container_default_behavior: "no_defaults"
-        network_mode: "host"
+        container_default_behavior: "compatibility"
+        comparisons:
+          labels: strict
+        network_mode: "default"
         capabilities:
           - SYS_PTRACE
           - SYS_ADMIN

@@ -1,0 +1,108 @@
+---
+
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
+# All HTTPS docker routers must define *-iprestrict middleware on the same container.
+# Blocked IPs get 404 (stealth). Exception: jellyfin (+ optional [share] allowed_ip).
+- name: "Traefik Install and setup"
+  hosts: localhost
+  connection: local
+  vars_files:
+    - "{{ playbook_dir }}/../group_vars/all/traefik.yml"
+  vars:
+    traefik_docker_image: "docker.io/traefik:v3.7.1"
+  tasks:
+    - name: create traefik required folders
+      file:
+        state: directory
+        path: "{{ item }}"
+        mode: 0640
+      with_items:
+        - "/opt/traefik/"
+        - "/opt/traefik/dynamic"
+
+    - name: Deploy traefik dynamic config for host services
+      template:
+        src: "../templates/traefik/dynamic.yml.j2"
+        dest: "/opt/traefik/dynamic/host-services.yml"
+        mode: 0640
+
+    - name: Deploy traefik container
+      docker_container:
+        name: "traefik"
+        hostname: "traefik"
+        image: "{{ traefik_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+          DO_AUTH_TOKEN: "{{ do_token }}"
+        ports:
+          - 80:80
+          - 443:443
+        networks:
+          - name: "app_network"
+        command:
+          - --global.sendanonymoususage=false
+          - --entryPoints.http.address=:80
+          - --entryPoints.https.address=:443
+          - --api=true
+          - --api.dashboard=true
+          - --log.level=INFO
+          - --accesslog=true
+          - --accesslog.format=common
+          - --accesslog.addinternals=true
+          - --providers.file.directory=/opt/traefik/dynamic
+          - --providers.file.watch=true
+          - --providers.docker=true
+          - --providers.docker.endpoint=unix:///var/run/docker.sock
+          - --providers.docker.watch
+          - --providers.docker.exposedbydefault=false
+          - --providers.docker.network=app_network
+          - --certificatesResolvers.le.acme.dnsChallenge.provider=digitalocean
+          - --certificatesResolvers.le.acme.dnsChallenge.delayBeforeCheck=30
+          - --certificatesResolvers.le.acme.storage=/opt/traefik/acme.json
+          - --certificatesResolvers.le.acme.dnsChallenge.resolvers=1.1.1.1:53,8.8.8.8:53
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.dashboard.rule: "Host(`traefik.{{ do_domain }}`)"
+          traefik.http.routers.dashboard.service: "api@internal"
+          traefik.http.routers.dashboard.entrypoints: "https"
+          traefik.http.routers.dashboard.tls: "true"
+          traefik.http.routers.dashboard.middlewares: "dashboard-iprestrict"
+          traefik.http.middlewares.dashboard-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.dashboard-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
+          traefik.http.routers.http-catchall.rule: "hostregexp(`{host:.+}`)"
+          traefik.http.routers.http-catchall.entrypoints: "http"
+          traefik.http.routers.http-catchall.priority: "1"
+          traefik.http.routers.http-catchall.middlewares: "private-networks@file,redirect-to-https@docker"
+          traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: "https"
+          traefik.http.routers.wildcard-certs.rule: "Host(`{{ do_domain }}`)"
+          traefik.http.routers.wildcard-certs.entrypoints: "https"
+          traefik.http.routers.wildcard-certs.tls: "true"
+          traefik.http.routers.wildcard-certs.tls.certresolver: "le"
+          traefik.http.routers.wildcard-certs.tls.domains[0].main: "{{ do_domain }}"
+          traefik.http.routers.wildcard-certs.tls.domains[0].sans: "*.{{ do_domain }}"
+        restart_policy: always
+        state: started
+        pull: false
+        memory: '200M'
+        volumes:
+          - /opt/traefik/:/opt/traefik/
+          - /var/run/docker.sock:/var/run/docker.sock:ro
+          - /etc/timezone:/etc/timezone:ro
+          - /etc/localtime:/etc/localtime:ro
+        etc_hosts:
+          host.docker.internal: host-gateway
+        network_mode: "default"
+        container_default_behavior: "compatibility"
+        comparisons:
+          labels: strict
+          command: strict
+          env: strict
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode

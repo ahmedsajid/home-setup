@@ -1,10 +1,12 @@
 ---
 
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
 - name: "Actual Budget server setup"
   hosts: localhost
   connection: local
   vars:
-    config_file: '/root/config.ini'
     actual_docker_image: "docker.io/actualbudget/actual-server:26.6.0"
   tasks:
     - name: "Set facts for time"
@@ -35,9 +37,16 @@
         image: "{{ actual_docker_image }}"
         env:
           TZ: 'America/Toronto'
-          # PIHOLE_DNS_: "{{ ansible_default_ipv4.address }}#5353"
-          # WEBPASSWORD: ''
-          # DNSMASQ_LISTENING: "all"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.actual-server.rule: "Host(`money.{{ do_domain }}`)"
+          traefik.http.routers.actual-server.entrypoints: "https"
+          traefik.http.routers.actual-server.tls: "true"
+          traefik.http.routers.actual-server.middlewares: "actual-server-iprestrict"
+          traefik.http.middlewares.actual-server-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.actual-server-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
+          traefik.http.services.actual-server.loadbalancer.server.port: "5006"
         networks:
           - name: "app_network"
         restart_policy: always
@@ -47,6 +56,8 @@
           - '/opt/actual/data/:/data'
         network_mode: "default"
         container_default_behavior: "compatibility"
+        comparisons:
+          labels: strict
         memory: '500M'
       # added retry to tasks dependant on external services
       register: result

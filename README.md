@@ -35,7 +35,7 @@ Once the cronjob has been setup, there should be following available services pr
 - Grafana
 - Wireguard
 - Webui Aria2
-- HTTPs access to services (Caddyserver, Digitalocean)
+- HTTPs access to services (Traefik, Digitalocean)
 - NAS to external hdd backup - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/32)
 
 ## Integrations
