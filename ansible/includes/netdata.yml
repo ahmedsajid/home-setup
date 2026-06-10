@@ -29,7 +29,7 @@
           traefik.http.routers.netdata.rule: "Host(`netdata.{{ do_domain }}`)"
           traefik.http.routers.netdata.entrypoints: "https"
           traefik.http.routers.netdata.tls: "true"
-          traefik.http.routers.netdata.middlewares: "private-networks@file"
+          traefik.http.routers.netdata.middlewares: "{{ traefik_ip_restriction_middleware }}"
           traefik.http.services.netdata.loadbalancer.server.port: "19999"
         networks:
           - name: "app_network"

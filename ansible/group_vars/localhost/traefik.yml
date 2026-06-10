@@ -1,0 +1,11 @@
+---
+# Default Traefik access policy: block public internet on all HTTPS routes.
+# Jellyfin is the only exception (private ranges + optional [share] allowed_ip).
+traefik_ip_restriction_middleware: "private-networks@file"
+
+traefik_private_ranges:
+  - "10.0.0.0/8"
+  - "172.16.0.0/12"
+  - "192.168.0.0/16"
+  - "127.0.0.0/8"
+  - "fc00::/7"

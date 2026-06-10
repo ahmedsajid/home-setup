@@ -3,6 +3,8 @@
 - name: Read ini config file
   import_playbook: "read_config_file.yml"
 
+# All HTTPS services must use {{ traefik_ip_restriction_middleware }} on their router.
+# Exception: jellyfin (private ranges + optional [share] allowed_ip in dynamic.yml.j2).
 - name: "Traefik Install and setup"
   hosts: localhost
   connection: local
@@ -62,7 +64,7 @@
           traefik.http.routers.dashboard.service: "api@internal"
           traefik.http.routers.dashboard.entrypoints: "https"
           traefik.http.routers.dashboard.tls: "true"
-          traefik.http.routers.dashboard.middlewares: "private-networks@file"
+          traefik.http.routers.dashboard.middlewares: "{{ traefik_ip_restriction_middleware }}"
           traefik.http.routers.http-catchall.rule: "hostregexp(`{host:.+}`)"
           traefik.http.routers.http-catchall.entrypoints: "http"
           traefik.http.routers.http-catchall.middlewares: "redirect-to-https"
