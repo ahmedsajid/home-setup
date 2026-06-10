@@ -14,7 +14,7 @@
   <EnableAutomaticSeriesGrouping>false</EnableAutomaticSeriesGrouping>
   <EnableEmbeddedTitles>false</EnableEmbeddedTitles>
   <EnableEmbeddedEpisodeInfos>false</EnableEmbeddedEpisodeInfos>
-  <AutomaticRefreshIntervalDays>0</AutomaticRefreshIntervalDays>
+  <AutomaticRefreshIntervalDays>1</AutomaticRefreshIntervalDays>
   <PreferredMetadataLanguage />
   <MetadataCountryCode />
   <SeasonZeroDisplayName>Specials</SeasonZeroDisplayName>
