@@ -46,6 +46,8 @@
           - --api=true
           - --api.dashboard=true
           - --log.level=INFO
+          - --accesslog=true
+          - --accesslog.format=common
           - --providers.file.directory=/opt/traefik/dynamic
           - --providers.file.watch=true
           - --providers.docker=true
