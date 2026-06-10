@@ -7,7 +7,7 @@
   hosts: localhost
   connection: local
   vars:
-    traefik_docker_image: "docker.io/traefik:v3.2.3"
+    traefik_docker_image: "docker.io/traefik:v3.7.1"
   tasks:
     - name: create traefik required folders
       file:
@@ -62,7 +62,7 @@
           traefik.http.routers.dashboard.service: "api@internal"
           traefik.http.routers.dashboard.entrypoints: "https"
           traefik.http.routers.dashboard.tls: "true"
-          traefik.http.services.api-svc.loadbalancer.server.port: "9999"
+          traefik.http.routers.dashboard.tls.certresolver: "le"
           traefik.http.routers.http-catchall.rule: "hostregexp(`{host:.+}`)"
           traefik.http.routers.http-catchall.entrypoints: "http"
           traefik.http.routers.http-catchall.middlewares: "redirect-to-https"
@@ -79,8 +79,8 @@
           - /var/run/docker.sock:/var/run/docker.sock:ro
           - /etc/timezone:/etc/timezone:ro
           - /etc/localtime:/etc/localtime:ro
-        extra_hosts:
-          - "host.docker.internal:host-gateway"
+        etc_hosts:
+          host.docker.internal: host-gateway
         network_mode: "default"
         container_default_behavior: "compatibility"
       # added retry to tasks dependant on external services
