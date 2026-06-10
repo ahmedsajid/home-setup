@@ -1,7 +1,8 @@
 ---
 # Default Traefik access policy: block public internet on all HTTPS routes.
 # Jellyfin is the only exception (private ranges + optional [share] allowed_ip).
-traefik_ip_restriction_middleware: "private-networks@file"
+# Each docker router defines its own *-iprestrict middleware on the same container.
+traefik_private_ipallowlist_sourcerange: "{{ traefik_private_ranges | join(',') }}"
 
 traefik_private_ranges:
   - "10.0.0.0/8"

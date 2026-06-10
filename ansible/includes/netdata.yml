@@ -29,7 +29,8 @@
           traefik.http.routers.netdata.rule: "Host(`netdata.{{ do_domain }}`)"
           traefik.http.routers.netdata.entrypoints: "https"
           traefik.http.routers.netdata.tls: "true"
-          traefik.http.routers.netdata.middlewares: "{{ traefik_ip_restriction_middleware }}"
+          traefik.http.routers.netdata.middlewares: "netdata-iprestrict"
+          traefik.http.middlewares.netdata-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
           traefik.http.services.netdata.loadbalancer.server.port: "19999"
         networks:
           - name: "app_network"
@@ -51,6 +52,8 @@
         state: started
         pull: false
         container_default_behavior: "compatibility"
+        comparisons:
+          labels: strict
         network_mode: "default"
         capabilities:
           - SYS_PTRACE

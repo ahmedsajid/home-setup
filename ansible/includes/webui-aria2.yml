@@ -28,7 +28,8 @@
           traefik.http.routers.webui-aria2.rule: "Host(`webui-aria2.{{ do_domain }}`)"
           traefik.http.routers.webui-aria2.entrypoints: "https"
           traefik.http.routers.webui-aria2.tls: "true"
-          traefik.http.routers.webui-aria2.middlewares: "{{ traefik_ip_restriction_middleware }}"
+          traefik.http.routers.webui-aria2.middlewares: "webui-aria2-iprestrict"
+          traefik.http.middlewares.webui-aria2-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
           traefik.http.services.webui-aria2.loadbalancer.server.port: "8080"
       # added retry to tasks dependant on external services
       register: result

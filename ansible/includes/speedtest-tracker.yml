@@ -20,7 +20,8 @@
           traefik.http.routers.speedtest.rule: "Host(`speedtest.{{ do_domain }}`)"
           traefik.http.routers.speedtest.entrypoints: "https"
           traefik.http.routers.speedtest.tls: "true"
-          traefik.http.routers.speedtest.middlewares: "{{ traefik_ip_restriction_middleware }}"
+          traefik.http.routers.speedtest.middlewares: "speedtest-iprestrict"
+          traefik.http.middlewares.speedtest-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
           traefik.http.services.speedtest.loadbalancer.server.port: "80"
         networks:
           - name: "app_network"
@@ -30,6 +31,8 @@
         pull: false
         network_mode: "default"
         container_default_behavior: "compatibility"
+        comparisons:
+          labels: strict
       # added retry to tasks dependant on external services
       register: result
       retries: 5

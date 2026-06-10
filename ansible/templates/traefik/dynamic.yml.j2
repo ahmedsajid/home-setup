@@ -1,6 +1,5 @@
 # {{ ansible_managed }}
-# IP policy: private-networks on all routes by default via service labels.
-# Jellyfin is the only exception — uses jellyfin-ipallowlist below.
+# Jellyfin is the only public exception (private ranges + optional [share] allowed_ip).
 http:
   routers:
     jellyfin:
@@ -13,12 +12,6 @@ http:
       tls: {}
 
   middlewares:
-    private-networks:
-      ipAllowList:
-        sourceRange:
-{% for cidr in traefik_private_ranges %}
-          - "{{ cidr }}"
-{% endfor %}
     jellyfin-ipallowlist:
       ipAllowList:
         sourceRange:
