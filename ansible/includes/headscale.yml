@@ -59,6 +59,7 @@
           traefik.http.routers.head.rule: "Host(`head.{{ do_domain }}`)"
           traefik.http.routers.head.entrypoints: "https"
           traefik.http.routers.head.tls: "true"
+          traefik.http.routers.head.middlewares: "private-networks@docker"
           traefik.http.services.head.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"

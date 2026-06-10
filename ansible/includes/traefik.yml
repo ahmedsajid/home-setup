@@ -62,6 +62,7 @@
           traefik.http.routers.dashboard.service: "api@internal"
           traefik.http.routers.dashboard.entrypoints: "https"
           traefik.http.routers.dashboard.tls: "true"
+          traefik.http.routers.dashboard.middlewares: "private-networks"
           traefik.http.routers.http-catchall.rule: "hostregexp(`{host:.+}`)"
           traefik.http.routers.http-catchall.entrypoints: "http"
           traefik.http.routers.http-catchall.middlewares: "redirect-to-https"
