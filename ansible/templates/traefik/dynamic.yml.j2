@@ -10,14 +10,15 @@ http:
       service: jellyfin
       tls: {}
 
-    netdata:
-      rule: "Host(`netdata.{{ do_domain }}`)"
-      entryPoints:
-        - https
-      service: netdata
-      tls: {}
-
   middlewares:
+    private-networks:
+      ipAllowList:
+        sourceRange:
+          - "10.0.0.0/8"
+          - "172.16.0.0/12"
+          - "192.168.0.0/16"
+          - "127.0.0.0/8"
+          - "fc00::/7"
     jellyfin-ipallowlist:
       ipAllowList:
         sourceRange:
@@ -35,8 +36,3 @@ http:
       loadBalancer:
         servers:
           - url: "http://host.docker.internal:8096"
-
-    netdata:
-      loadBalancer:
-        servers:
-          - url: "http://host.docker.internal:19999"

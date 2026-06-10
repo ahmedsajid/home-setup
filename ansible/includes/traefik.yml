@@ -66,6 +66,7 @@
           traefik.http.routers.http-catchall.entrypoints: "http"
           traefik.http.routers.http-catchall.middlewares: "redirect-to-https"
           traefik.http.middlewares.redirect-to-https.redirectscheme.scheme: "https"
+          traefik.http.middlewares.private-networks.ipallowlist.sourcerange: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8,fc00::/7"
           traefik.http.routers.wildcard-certs.rule: "Host(`{{ do_domain }}`)"
           traefik.http.routers.wildcard-certs.entrypoints: "https"
           traefik.http.routers.wildcard-certs.tls: "true"
