@@ -48,6 +48,7 @@
           - --log.level=INFO
           - --accesslog=true
           - --accesslog.format=common
+          - --accesslog.addinternals=true
           - --providers.file.directory=/opt/traefik/dynamic
           - --providers.file.watch=true
           - --providers.docker=true
@@ -93,6 +94,8 @@
         container_default_behavior: "compatibility"
         comparisons:
           labels: strict
+          command: strict
+          env: strict
       # added retry to tasks dependant on external services
       register: result
       retries: 5
