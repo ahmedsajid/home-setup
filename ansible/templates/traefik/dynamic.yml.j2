@@ -8,16 +8,14 @@ http:
       middlewares:
         - jellyfin-ipallowlist
       service: jellyfin
-      tls:
-        certResolver: le
+      tls: {}
 
     netdata:
       rule: "Host(`netdata.{{ do_domain }}`)"
       entryPoints:
         - https
       service: netdata
-      tls:
-        certResolver: le
+      tls: {}
 
   middlewares:
     jellyfin-ipallowlist:

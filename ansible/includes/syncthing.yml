@@ -42,7 +42,6 @@
           traefik.http.routers.sync.rule: "Host(`sync.{{ do_domain }}`)"
           traefik.http.routers.sync.entrypoints: "https"
           traefik.http.routers.sync.tls: "true"
-          traefik.http.routers.sync.tls.certresolver: "le"
           traefik.http.services.sync.loadbalancer.server.port: "8384"
         # ports:
         #   - "8384:8384"

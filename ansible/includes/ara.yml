@@ -26,7 +26,6 @@
           traefik.http.routers.ara.rule: "Host(`ara.{{ do_domain }}`)"
           traefik.http.routers.ara.entrypoints: "https"
           traefik.http.routers.ara.tls: "true"
-          traefik.http.routers.ara.tls.certresolver: "le"
           traefik.http.services.ara.loadbalancer.server.port: "8000"
         networks:
           - name: "app_network"

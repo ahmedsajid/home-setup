@@ -52,7 +52,7 @@
           - --providers.docker.exposedbydefault=false
           - --providers.docker.network=app_network
           - --certificatesResolvers.le.acme.dnsChallenge.provider=digitalocean
-          - --certificatesResolvers.le.acme.dnsChallenge.delayBeforeCheck=5
+          - --certificatesResolvers.le.acme.dnsChallenge.delayBeforeCheck=30
           - --certificatesResolvers.le.acme.storage=/opt/traefik/acme.json
           - --certificatesResolvers.le.acme.dnsChallenge.resolvers=1.1.1.1:53,8.8.8.8:53
         labels:
@@ -62,7 +62,6 @@
           traefik.http.routers.dashboard.service: "api@internal"
           traefik.http.routers.dashboard.entrypoints: "https"
           traefik.http.routers.dashboard.tls: "true"
-          traefik.http.routers.dashboard.tls.certresolver: "le"
           traefik.http.routers.http-catchall.rule: "hostregexp(`{host:.+}`)"
           traefik.http.routers.http-catchall.entrypoints: "http"
           traefik.http.routers.http-catchall.middlewares: "redirect-to-https"

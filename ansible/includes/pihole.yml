@@ -164,7 +164,6 @@
           traefik.http.routers.pihole.rule: "Host(`pihole.{{ do_domain }}`)"
           traefik.http.routers.pihole.entrypoints: "https"
           traefik.http.routers.pihole.tls: "true"
-          traefik.http.routers.pihole.tls.certresolver: "le"
           traefik.http.services.pihole.loadbalancer.server.port: "80"
         ports:
           - "53:53/tcp"
