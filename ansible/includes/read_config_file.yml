@@ -20,5 +20,6 @@
         do_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
         do_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
         do_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
+        share_allowed_ip: "{{ lookup('ini', 'allowed_ip section=share file={{ config_file }}', errors='ignore') | default('', true) | trim }}"
         syncthing_api_key: "{{ lookup('password', '/root/syncthing_api_key length=24') }}"
         cacheable: true

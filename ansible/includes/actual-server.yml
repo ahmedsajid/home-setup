@@ -4,7 +4,7 @@
   hosts: localhost
   connection: local
   vars:
-    actual_docker_image: "docker.io/actualbudget/actual-server:24.12.0"
+    actual_docker_image: "docker.io/actualbudget/actual-server:26.6.0"
   tasks:
     - name: "Set facts for time"
       set_fact:

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EncodingOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <EncodingThreadCount>0</EncodingThreadCount>
+  <EncodingThreadCount>2</EncodingThreadCount>
   <TranscodingTempPath>/var/lib/jellyfin/transcodes</TranscodingTempPath>
   <FallbackFontPath />
   <EnableFallbackFont>false</EnableFallbackFont>
   <DownMixAudioBoost>2</DownMixAudioBoost>
   <MaxMuxingQueueSize>2048</MaxMuxingQueueSize>
-  <EnableThrottling>false</EnableThrottling>
+  <EnableThrottling>true</EnableThrottling>
   <ThrottleDelaySeconds>180</ThrottleDelaySeconds>
-  <HardwareAccelerationType />
+  <HardwareAccelerationType>vaapi</HardwareAccelerationType>
   <EncoderAppPath>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPath>
   <EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>
   <VaapiDevice>/dev/dri/renderD128</VaapiDevice>
@@ -26,14 +26,15 @@
   <EncoderPreset />
   <DeinterlaceDoubleRate>false</DeinterlaceDoubleRate>
   <DeinterlaceMethod>yadif</DeinterlaceMethod>
-  <EnableDecodingColorDepth10Hevc>true</EnableDecodingColorDepth10Hevc>
-  <EnableDecodingColorDepth10Vp9>true</EnableDecodingColorDepth10Vp9>
-  <EnableEnhancedNvdecDecoder>true</EnableEnhancedNvdecDecoder>
+  <EnableDecodingColorDepth10Hevc>false</EnableDecodingColorDepth10Hevc>
+  <EnableDecodingColorDepth10Vp9>false</EnableDecodingColorDepth10Vp9>
+  <EnableEnhancedNvdecDecoder>false</EnableEnhancedNvdecDecoder>
   <EnableHardwareEncoding>true</EnableHardwareEncoding>
-  <AllowHevcEncoding>true</AllowHevcEncoding>
+  <AllowHevcEncoding>false</AllowHevcEncoding>
   <EnableSubtitleExtraction>true</EnableSubtitleExtraction>
   <HardwareDecodingCodecs>
     <string>h264</string>
+    <string>mpeg2video</string>
     <string>vc1</string>
   </HardwareDecodingCodecs>
 </EncodingOptions>

@@ -1,0 +1,44 @@
+# {{ ansible_managed }}
+http:
+  routers:
+    jellyfin:
+      rule: "Host(`jellyfin.{{ do_domain }}`)"
+      entryPoints:
+        - https
+      middlewares:
+        - jellyfin-ipwhitelist
+      service: jellyfin
+      tls:
+        certResolver: le
+
+    netdata:
+      rule: "Host(`netdata.{{ do_domain }}`)"
+      entryPoints:
+        - https
+      service: netdata
+      tls:
+        certResolver: le
+
+  middlewares:
+    jellyfin-ipwhitelist:
+      ipWhiteList:
+        sourceRange:
+          - "10.0.0.0/8"
+          - "172.16.0.0/12"
+          - "192.168.0.0/16"
+          - "127.0.0.0/8"
+          - "fc00::/7"
+{% if share_allowed_ip | default('', true) | trim | length > 0 %}
+          - "{{ share_allowed_ip | trim }}/32"
+{% endif %}
+
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:8096"
+
+    netdata:
+      loadBalancer:
+        servers:
+          - url: "http://host.docker.internal:19999"

@@ -12,7 +12,16 @@
     - name: create traefik required folders
       file:
         state: directory
-        path: "/opt/traefik/"
+        path: "{{ item }}"
+        mode: 0640
+      with_items:
+        - "/opt/traefik/"
+        - "/opt/traefik/dynamic"
+
+    - name: Deploy traefik dynamic config for host services
+      template:
+        src: "../templates/traefik/dynamic.yml.j2"
+        dest: "/opt/traefik/dynamic/host-services.yml"
         mode: 0640
 
     - name: Deploy traefik container
@@ -34,8 +43,9 @@
           - --entryPoints.https.address=:443
           - --api=true
           - --api.dashboard=true
-          - --api.debug=true
           - --log.level=INFO
+          - --providers.file.directory=/opt/traefik/dynamic
+          - --providers.file.watch=true
           - --providers.docker=true
           - --providers.docker.endpoint=unix:///var/run/docker.sock
           - --providers.docker.watch
@@ -69,6 +79,8 @@
           - /var/run/docker.sock:/var/run/docker.sock:ro
           - /etc/timezone:/etc/timezone:ro
           - /etc/localtime:/etc/localtime:ro
+        extra_hosts:
+          - "host.docker.internal:host-gateway"
         network_mode: "default"
         container_default_behavior: "compatibility"
       # added retry to tasks dependant on external services
@@ -76,3 +88,4 @@
       retries: 5
       delay: 3
       until: result is succeeded
+      when: not ansible_check_mode

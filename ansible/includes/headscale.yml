@@ -7,7 +7,7 @@
   hosts: localhost
   connection: local
   vars:
-    headscale_docker_image: "docker.io/headscale/headscale:v0.23.0"
+    headscale_docker_image: "docker.io/headscale/headscale:v0.24.1"
   tasks:
     - name: "Set facts for time"
       set_fact:
@@ -56,11 +56,11 @@
         labels:
           traefik.enable: "true"
           traefik.docker.network: "app_network"
-          traefik.http.routers.headscale.rule: "Host(`headscale.{{ do_domain }}`)"
-          traefik.http.routers.headscale.entrypoints: "https"
-          traefik.http.routers.headscale.tls: "true"
-          traefik.http.routers.headscale.tls.certresolver: "le"
-          traefik.http.services.headscale.loadbalancer.server.port: "8080"
+          traefik.http.routers.head.rule: "Host(`head.{{ do_domain }}`)"
+          traefik.http.routers.head.entrypoints: "https"
+          traefik.http.routers.head.tls: "true"
+          traefik.http.routers.head.tls.certresolver: "le"
+          traefik.http.services.head.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"
         restart_policy: always

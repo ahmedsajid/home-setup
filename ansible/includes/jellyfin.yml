@@ -5,7 +5,7 @@
   connection: local
   vars:
     jellyfin_root: "/var/lib/jellyfin/root"
-    jellyfin_version: "10.9.7+ubu2004"
+    jellyfin_version: "10.11.11+ubu2004"
 
   handlers:
     - name: Restart Jellyfin
@@ -61,6 +61,27 @@
       dpkg_selections:
         name: jellyfin
         selection: hold
+
+    - name: Install VA-API drivers for Intel hardware transcoding
+      apt:
+        name:
+          - i965-va-driver
+          - mesa-va-drivers
+        state: present
+
+    - name: Check prime-select profile
+      command: prime-select query
+      register: prime_profile
+      changed_when: false
+      failed_when: false
+      when: not ansible_check_mode
+
+    - name: Use Intel GPU for VA-API on Optimus laptops
+      command: prime-select intel
+      when:
+        - not ansible_check_mode
+        - prime_profile.stdout is defined
+        - prime_profile.stdout != "intel"
 
     - name: Ensure Jellyfin server is enabled
       systemd:
