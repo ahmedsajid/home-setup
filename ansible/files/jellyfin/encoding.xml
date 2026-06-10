@@ -1,40 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <EncodingOptions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <EncodingThreadCount>2</EncodingThreadCount>
-  <TranscodingTempPath>/var/lib/jellyfin/transcodes</TranscodingTempPath>
-  <FallbackFontPath />
   <EnableFallbackFont>false</EnableFallbackFont>
+  <EnableAudioVbr>false</EnableAudioVbr>
   <DownMixAudioBoost>2</DownMixAudioBoost>
+  <DownMixStereoAlgorithm>None</DownMixStereoAlgorithm>
   <MaxMuxingQueueSize>2048</MaxMuxingQueueSize>
   <EnableThrottling>true</EnableThrottling>
   <ThrottleDelaySeconds>180</ThrottleDelaySeconds>
+  <EnableSegmentDeletion>false</EnableSegmentDeletion>
+  <SegmentKeepSeconds>720</SegmentKeepSeconds>
   <HardwareAccelerationType>vaapi</HardwareAccelerationType>
-  <EncoderAppPath>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPath>
   <EncoderAppPathDisplay>/usr/lib/jellyfin-ffmpeg/ffmpeg</EncoderAppPathDisplay>
   <VaapiDevice>/dev/dri/renderD128</VaapiDevice>
-  <OpenclDevice>0.0</OpenclDevice>
+  <QsvDevice />
   <EnableTonemapping>false</EnableTonemapping>
   <EnableVppTonemapping>false</EnableVppTonemapping>
-  <TonemappingAlgorithm>hable</TonemappingAlgorithm>
+  <EnableVideoToolboxTonemapping>false</EnableVideoToolboxTonemapping>
+  <TonemappingAlgorithm>bt2390</TonemappingAlgorithm>
+  <TonemappingMode>auto</TonemappingMode>
   <TonemappingRange>auto</TonemappingRange>
   <TonemappingDesat>0</TonemappingDesat>
-  <TonemappingThreshold>0.8</TonemappingThreshold>
   <TonemappingPeak>100</TonemappingPeak>
   <TonemappingParam>0</TonemappingParam>
+  <VppTonemappingBrightness>16</VppTonemappingBrightness>
+  <VppTonemappingContrast>1</VppTonemappingContrast>
   <H264Crf>23</H264Crf>
   <H265Crf>28</H265Crf>
-  <EncoderPreset />
+  <EncoderPreset xsi:nil="true" />
   <DeinterlaceDoubleRate>false</DeinterlaceDoubleRate>
   <DeinterlaceMethod>yadif</DeinterlaceMethod>
   <EnableDecodingColorDepth10Hevc>false</EnableDecodingColorDepth10Hevc>
   <EnableDecodingColorDepth10Vp9>false</EnableDecodingColorDepth10Vp9>
+  <EnableDecodingColorDepth10HevcRext>false</EnableDecodingColorDepth10HevcRext>
+  <EnableDecodingColorDepth12HevcRext>false</EnableDecodingColorDepth12HevcRext>
   <EnableEnhancedNvdecDecoder>false</EnableEnhancedNvdecDecoder>
+  <PreferSystemNativeHwDecoder>true</PreferSystemNativeHwDecoder>
+  <EnableIntelLowPowerH264HwEncoder>false</EnableIntelLowPowerH264HwEncoder>
+  <EnableIntelLowPowerHevcHwEncoder>false</EnableIntelLowPowerHevcHwEncoder>
   <EnableHardwareEncoding>true</EnableHardwareEncoding>
   <AllowHevcEncoding>false</AllowHevcEncoding>
+  <AllowAv1Encoding>false</AllowAv1Encoding>
   <EnableSubtitleExtraction>true</EnableSubtitleExtraction>
   <HardwareDecodingCodecs>
     <string>h264</string>
     <string>mpeg2video</string>
     <string>vc1</string>
   </HardwareDecodingCodecs>
+  <AllowOnDemandMetadataBasedKeyframeExtractionForExtensions>
+    <string>mkv</string>
+  </AllowOnDemandMetadataBasedKeyframeExtractionForExtensions>
 </EncodingOptions>
