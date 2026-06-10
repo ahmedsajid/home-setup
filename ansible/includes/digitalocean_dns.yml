@@ -6,6 +6,8 @@
 - name: Dynamic Updates under DigitalOcean DNS
   hosts: localhost
   connection: local
+  vars:
+    config_file: '/root/config.ini'
   tasks:
     - name: do not run in check mode - end_play
       meta: end_play
