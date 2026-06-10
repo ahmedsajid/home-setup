@@ -9,6 +9,7 @@
     jellyfin_system_config_files:
       - system.xml
       - encoding.xml
+      - network.xml
 
   tasks:
     - name: Add an Apt signing key for Jellyfin
