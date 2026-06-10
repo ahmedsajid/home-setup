@@ -6,14 +6,9 @@
   vars:
     jellyfin_root: "/var/lib/jellyfin/root"
     jellyfin_version: "10.11.11+ubu2004"
-
-  handlers:
-    - name: Restart Jellyfin
-      systemd:
-        name: "jellyfin"
-        state: restarted
-      # Skipping check mode since its causes issues :(
-      when: not ansible_check_mode
+    jellyfin_system_config_files:
+      - system.xml
+      - encoding.xml
 
   tasks:
     - name: Add an Apt signing key for Jellyfin
@@ -98,17 +93,59 @@
         owner: "jellyfin"
         group: "jellyfin"
 
+    - name: Check whether system config files need updating
+      copy:
+        src: "../files/jellyfin/{{ item }}"
+        dest: "/etc/jellyfin/{{ item }}"
+        owner: "jellyfin"
+        group: "jellyfin"
+      check_mode: true
+      register: jellyfin_config_check
+      loop: "{{ jellyfin_system_config_files }}"
+      when: not ansible_check_mode
+
+    - name: Check whether library configuration needs updating
+      synchronize:
+        src: "../files/jellyfin/default"
+        dest: "{{ jellyfin_root }}"
+        delete: true
+        recursive: true
+        copy_links: true
+        checksum: true
+        archive: false
+      check_mode: true
+      register: jellyfin_library_check
+      when: not ansible_check_mode
+
+    - name: Determine whether Jellyfin service cycle is required
+      set_fact:
+        jellyfin_config_changed: "{{ jellyfin_config_check.results | selectattr('changed') | list | length > 0 }}"
+        jellyfin_library_changed: "{{ jellyfin_library_check.changed | default(false) }}"
+      when: not ansible_check_mode
+
+    - name: Set Jellyfin service cycle flag
+      set_fact:
+        jellyfin_service_cycle_needed: "{{ jellyfin_config_changed or jellyfin_library_changed }}"
+      when: not ansible_check_mode
+
+    - name: Stop Jellyfin before applying configuration
+      systemd:
+        name: "jellyfin"
+        state: stopped
+      when:
+        - not ansible_check_mode
+        - jellyfin_service_cycle_needed | bool
+
     - name: Copy over system config file
       copy:
         src: "../files/jellyfin/{{ item }}"
         dest: "/etc/jellyfin/{{ item }}"
         owner: "jellyfin"
         group: "jellyfin"
-      notify:
-        - Restart Jellyfin
-      with_items:
-        - "system.xml"
-        - "encoding.xml"
+      loop: "{{ jellyfin_system_config_files }}"
+      when:
+        - not ansible_check_mode
+        - jellyfin_service_cycle_needed | bool
 
     - name: Copy over library content configuration files
       synchronize:
@@ -119,8 +156,10 @@
         copy_links: true
         checksum: true
         archive: false
-      notify:
-        - Restart Jellyfin
+      when:
+        - not ansible_check_mode
+        - jellyfin_service_cycle_needed | bool
+        - jellyfin_library_changed | bool
 
     - name: fixing permission of files that were copied
       file:
@@ -130,5 +169,16 @@
         mode: 0755
         owner: "jellyfin"
         group: "jellyfin"
-      notify:
-        - Restart Jellyfin
+      when:
+        - not ansible_check_mode
+        - jellyfin_service_cycle_needed | bool
+        - jellyfin_library_changed | bool
+
+    - name: Start Jellyfin after applying configuration
+      systemd:
+        name: "jellyfin"
+        enabled: true
+        state: started
+      when:
+        - not ansible_check_mode
+        - jellyfin_service_cycle_needed | bool
