@@ -4,7 +4,7 @@
   import_playbook: "read_config_file.yml"
 
 # All HTTPS docker routers must define *-iprestrict middleware on the same container.
-# Exception: jellyfin (private ranges + optional [share] allowed_ip in dynamic.yml.j2).
+# Blocked IPs get 404 (stealth). Exception: jellyfin (+ optional [share] allowed_ip).
 - name: "Traefik Install and setup"
   hosts: localhost
   connection: local
@@ -71,6 +71,7 @@
           traefik.http.routers.dashboard.tls: "true"
           traefik.http.routers.dashboard.middlewares: "dashboard-iprestrict"
           traefik.http.middlewares.dashboard-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.dashboard-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
           traefik.http.routers.http-catchall.rule: "hostregexp(`{host:.+}`)"
           traefik.http.routers.http-catchall.entrypoints: "http"
           traefik.http.routers.http-catchall.priority: "1"

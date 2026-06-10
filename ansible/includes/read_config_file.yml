@@ -29,4 +29,5 @@
           - "127.0.0.0/8"
           - "fc00::/7"
         traefik_private_ipallowlist_sourcerange: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.0/8,fc00::/7"
+        traefik_ip_reject_status_code: 404
         cacheable: true

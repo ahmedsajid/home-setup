@@ -31,6 +31,7 @@
           traefik.http.routers.ara.tls: "true"
           traefik.http.routers.ara.middlewares: "ara-iprestrict"
           traefik.http.middlewares.ara-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.ara-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
           traefik.http.services.ara.loadbalancer.server.port: "8000"
         networks:
           - name: "app_network"

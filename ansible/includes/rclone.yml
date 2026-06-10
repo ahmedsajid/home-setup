@@ -34,6 +34,7 @@
           traefik.http.routers.rclone.tls: "true"
           traefik.http.routers.rclone.middlewares: "rclone-iprestrict"
           traefik.http.middlewares.rclone-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.rclone-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
           traefik.http.services.rclone.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"
@@ -69,6 +70,7 @@
           traefik.http.routers.rclone-crypt.tls: "true"
           traefik.http.routers.rclone-crypt.middlewares: "rclone-crypt-iprestrict"
           traefik.http.middlewares.rclone-crypt-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.rclone-crypt-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
           traefik.http.services.rclone-crypt.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"

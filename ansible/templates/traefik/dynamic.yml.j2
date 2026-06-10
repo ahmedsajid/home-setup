@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
-# Jellyfin is the only public exception (private ranges + optional [share] allowed_ip).
-# HTTPS catchall: external clients 403 (private-networks), internal clients 404.
+# Blocked clients get 404 (not 403) so nothing appears to exist.
+# Jellyfin: LAN/VPN + optional [share] allowed_ip; everything else is private-only.
 http:
   routers:
     jellyfin:
@@ -12,17 +12,6 @@ http:
       service: jellyfin
       tls: {}
 
-    catchall-https:
-      rule: "HostRegexp(`{host:.+}`)"
-      entryPoints:
-        - https
-      priority: 1
-      middlewares:
-        - private-networks
-        - catchall-not-found
-      service: api@internal
-      tls: {}
-
   middlewares:
     private-networks:
       ipAllowList:
@@ -30,6 +19,7 @@ http:
 {% for cidr in traefik_private_ranges %}
           - "{{ cidr }}"
 {% endfor %}
+        rejectStatusCode: {{ traefik_ip_reject_status_code }}
     jellyfin-ipallowlist:
       ipAllowList:
         sourceRange:
@@ -39,9 +29,7 @@ http:
 {% if share_allowed_ip | default('', true) | trim | length > 0 %}
           - "{{ share_allowed_ip | trim }}/32"
 {% endif %}
-    catchall-not-found:
-      replacePath:
-        path: /api/__catchall_not_found__
+        rejectStatusCode: {{ traefik_ip_reject_status_code }}
 
   services:
     jellyfin:

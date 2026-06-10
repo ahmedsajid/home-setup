@@ -45,6 +45,7 @@
           traefik.http.routers.pass.tls: "true"
           traefik.http.routers.pass.middlewares: "pass-iprestrict"
           traefik.http.middlewares.pass-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.pass-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
           traefik.http.services.pass.loadbalancer.server.port: "80"
         networks:
           - name: "app_network"

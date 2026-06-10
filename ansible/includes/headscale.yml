@@ -61,6 +61,7 @@
           traefik.http.routers.head.tls: "true"
           traefik.http.routers.head.middlewares: "head-iprestrict"
           traefik.http.middlewares.head-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.head-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
           traefik.http.services.head.loadbalancer.server.port: "8080"
         networks:
           - name: "app_network"

@@ -34,6 +34,7 @@
           traefik.http.routers.netdata.tls: "true"
           traefik.http.routers.netdata.middlewares: "netdata-iprestrict"
           traefik.http.middlewares.netdata-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.netdata-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
           traefik.http.services.netdata.loadbalancer.server.port: "19999"
         networks:
           - name: "app_network"

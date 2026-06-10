@@ -1,7 +1,9 @@
 ---
-# Default Traefik access policy: block public internet on all HTTPS routes.
-# Jellyfin is the only exception (private ranges + optional [share] allowed_ip).
-# Each docker router defines its own *-iprestrict middleware on the same container.
+# Private/LAN/VPN clients reach services; everyone else gets HTTP 404 (stealth).
+# Jellyfin also allows [share] allowed_ip from config.ini.
+# RFC1918 ranges cover typical WireGuard subnets (10.x, 172.16.x, 192.168.x).
+traefik_ip_reject_status_code: 404
+
 traefik_private_ipallowlist_sourcerange: "{{ traefik_private_ranges | join(',') }}"
 
 traefik_private_ranges:

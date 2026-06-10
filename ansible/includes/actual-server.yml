@@ -45,6 +45,7 @@
           traefik.http.routers.actual-server.tls: "true"
           traefik.http.routers.actual-server.middlewares: "actual-server-iprestrict"
           traefik.http.middlewares.actual-server-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.actual-server-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
           traefik.http.services.actual-server.loadbalancer.server.port: "5006"
         networks:
           - name: "app_network"
