@@ -1,0 +1,103 @@
+---
+
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
+- name: "Home Assistant"
+  hosts: localhost
+  connection: local
+  vars:
+    homeassistant_docker_image: "ghcr.io/home-assistant/home-assistant:2026.7.1"
+  tasks:
+    - name: "Set facts for time"
+      set_fact:
+        year_now: "{{ ansible_date_time.year | int }}"
+        hour_now: "{{ ansible_date_time.hour | int }}"
+        minute_now: "{{ ansible_date_time.minute | int }}"
+
+    - name: "print ansible_date_time"
+      debug:
+        msg:
+          - "{{ year_now }}"
+          - "{{ hour_now }}"
+          - "{{ minute_now }}"
+
+    - name: create homeassistant required folders
+      file:
+        state: directory
+        path: "{{ item }}"
+      with_items:
+        - "/opt/homeassistant"
+        - "/mnt/nas/Backup/homeassistant"
+
+    - name: Deploy homeassistant bootstrap config
+      template:
+        src: "../templates/homeassistant/configuration.yaml.j2"
+        dest: "/opt/homeassistant/configuration.yaml"
+        mode: 0644
+        force: false
+      when: not ansible_check_mode
+
+    - name: Deploy homeassistant container
+      docker_container:
+        name: "homeassistant"
+        hostname: "homeassistant"
+        image: "{{ homeassistant_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.home.rule: "Host(`home.{{ do_domain }}`)"
+          traefik.http.routers.home.entrypoints: "https"
+          traefik.http.routers.home.tls: "true"
+          traefik.http.routers.home.middlewares: "home-iprestrict"
+          traefik.http.middlewares.home-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.home-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
+          traefik.http.services.home.loadbalancer.server.port: "8123"
+        restart_policy: always
+        state: started
+        pull: false
+        privileged: true
+        memory: '2G'
+        network_mode: "host"
+        container_default_behavior: "compatibility"
+        comparisons:
+          labels: strict
+        volumes:
+          - '/opt/homeassistant:/config'
+          - '/etc/localtime:/etc/localtime:ro'
+          - '/run/dbus:/run/dbus:ro'
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when:
+        - not ansible_check_mode
+
+    - name: Run backup of homeassistant at 1am within first 15 minutes
+      block:
+        - name: Create archive
+          archive:
+            path: /opt/homeassistant
+            dest: "/mnt/nas/Backup/homeassistant/homeassistant-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+
+        - name: Find older backups
+          find:
+            paths: /mnt/nas/Backup/homeassistant/
+            age: 5d
+            recurse: true
+          register: homeassistant_old_backups
+
+        - name: Backups found
+          debug:
+            msg: "{{ homeassistant_old_backups.files }}"
+
+        - name: Remove files the older files
+          file:
+            path: "{{ item.path }}"
+            state: absent
+          with_items: "{{ homeassistant_old_backups.files }}"
+      when: (hour_now | int == 1 and minute_now | int < 10) or
+            (force_homeassistant_backup is defined and force_homeassistant_backup | bool)

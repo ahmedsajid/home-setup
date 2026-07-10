@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+# Bootstrap only — ansible deploys this with force: false so later edits are kept.
+
+# Loads default set of integrations. Do not remove.
+default_config:
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+{% for cidr in traefik_private_ranges %}
+    - {{ cidr }}
+{% endfor %}
