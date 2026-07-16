@@ -11,7 +11,7 @@
   vars_files:
     - "{{ playbook_dir }}/../group_vars/all/traefik.yml"
   vars:
-    traefik_docker_image: "docker.io/traefik:v3.7.6"
+    traefik_docker_image: "docker.io/traefik:v3.7.8"
   tasks:
     - name: create traefik required folders
       file:
