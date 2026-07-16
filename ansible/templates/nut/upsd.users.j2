@@ -1,0 +1,9 @@
+# {{ ansible_managed }}
+
+[homeassistant]
+	password = {{ nut_password }}
+	upsmon slave
+
+[upsmon]
+	password = {{ nut_password }}
+	upsmon master

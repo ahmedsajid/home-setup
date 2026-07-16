@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+
+MONITOR apc@localhost 1 upsmon {{ nut_password }} master
+
+MINSUPPLIES 1
+SHUTDOWNCMD "/sbin/shutdown -h +0"
+NOTIFYCMD /etc/nut/notifycmd
+POLLFREQ 5
+POLLFREQALERT 5
+HOSTSYNC 15
+DEADTIME 15
+POWERDOWNFLAG /etc/killpower
+RBWARNTIME 43200
+NOCOMMWARNTIME 300
+FINALDELAY 5
