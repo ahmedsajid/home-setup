@@ -41,14 +41,23 @@
         state: started
         pull: false
         network_mode: "host"
+        command:
+          - "--storage-path"
+          - "/data"
+          - "--paa-root-cert-dir"
+          - "/data/credentials"
+          - "--primary-interface"
+          - "eno1"
         container_default_behavior: "compatibility"
+        comparisons:
+          command: strict
         volumes:
           - '/opt/matter-server:/data'
       register: matter_result
       retries: 5
       delay: 3
       until: matter_result is succeeded
-      when: - not ansible_check_mode
+      when: not ansible_check_mode
 
     - name: Deploy homeassistant bootstrap config
       template:
