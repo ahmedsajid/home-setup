@@ -48,7 +48,7 @@
       retries: 5
       delay: 3
       until: matter_result is succeeded
-      when: - not ansible_check_mode
+      when: not ansible_check_mode
 
     - name: Deploy homeassistant bootstrap config
       template:
