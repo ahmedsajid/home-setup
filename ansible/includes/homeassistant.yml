@@ -8,6 +8,7 @@
   connection: local
   vars:
     homeassistant_docker_image: "ghcr.io/home-assistant/home-assistant:2026.7.1"
+    matter_server_docker_image: "ghcr.io/home-assistant-libs/python-matter-server:stable"    
   tasks:
     - name: "Set facts for time"
       set_fact:
@@ -28,7 +29,26 @@
         path: "{{ item }}"
       with_items:
         - "/opt/homeassistant"
+        - "/opt/matter-server"
         - "/mnt/nas/Backup/homeassistant"
+
+    - name: Deploy Matter Server container
+      docker_container:
+        name: "matter-server"
+        hostname: "matter-server"
+        image: "{{ matter_server_docker_image }}"
+        restart_policy: always
+        state: started
+        pull: false
+        network_mode: "host"
+        container_default_behavior: "compatibility"
+        volumes:
+          - '/opt/matter-server:/data'
+      register: matter_result
+      retries: 5
+      delay: 3
+      until: matter_result is succeeded
+      when: - not ansible_check_mode
 
     - name: Deploy homeassistant bootstrap config
       template:
