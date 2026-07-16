@@ -1,0 +1,87 @@
+---
+
+- name: "Network UPS Tools (APC USB)"
+  hosts: localhost
+  connection: local
+  handlers:
+    - name: Restart nut
+      shell: |
+        upsdrvctl stop || true
+        systemctl restart nut-server
+        upsdrvctl start
+        systemctl restart nut-monitor
+      args:
+        executable: /bin/bash
+      when: not ansible_check_mode
+  tasks:
+    - name: Install NUT packages
+      package:
+        name:
+          - nut
+          - nut-client
+          - nut-server
+        state: present
+
+    - name: Generate NUT password
+      set_fact:
+        nut_password: "{{ lookup('password', '/root/nut_password length=24 chars=ascii_letters,digits') }}"
+
+    - name: Deploy NUT configuration
+      template:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+        owner: root
+        group: nut
+        mode: "0640"
+      loop:
+        - { src: "../templates/nut/nut.conf.j2", dest: "/etc/nut/nut.conf" }
+        - { src: "../templates/nut/ups.conf.j2", dest: "/etc/nut/ups.conf" }
+        - { src: "../templates/nut/upsd.conf.j2", dest: "/etc/nut/upsd.conf" }
+        - { src: "../templates/nut/upsd.users.j2", dest: "/etc/nut/upsd.users" }
+        - { src: "../templates/nut/upsmon.conf.j2", dest: "/etc/nut/upsmon.conf" }
+      notify: Restart nut
+
+    - name: Enable and start NUT services
+      systemd:
+        name: "{{ item }}"
+        enabled: true
+        state: started
+      loop:
+        - nut-server
+        - nut-monitor
+      when: not ansible_check_mode
+
+    - name: Ensure UPS drivers are running
+      command: upsdrvctl start
+      register: upsdrvctl_start
+      changed_when: false
+      failed_when: false
+      when: not ansible_check_mode
+
+    - name: Verify APC UPS is readable via NUT
+      command: upsc apc@localhost
+      register: upsc_apc
+      changed_when: false
+      retries: 5
+      delay: 3
+      until: upsc_apc.rc == 0
+      when: not ansible_check_mode
+
+    - name: Show APC UPS status summary
+      debug:
+        msg: "{{ upsc_apc.stdout_lines | select('match', '^(battery.charge|ups.status|ups.model|device.serial):') | list }}"
+      when:
+        - not ansible_check_mode
+        - upsc_apc is succeeded
+
+    - name: Write Home Assistant NUT connection hints
+      copy:
+        dest: /root/nut_ha_connection.txt
+        mode: "0600"
+        content: |
+          Home Assistant NUT integration settings (host networking):
+            Host: 127.0.0.1
+            Port: 3493
+            Username: homeassistant
+            Password: {{ nut_password }}
+            UPS: apc

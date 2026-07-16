@@ -1,0 +1,11 @@
+# {{ ansible_managed }}
+# Local APC Back-UPS connected over USB (usbhid-ups).
+
+maxretry = 3
+
+[apc]
+	driver = usbhid-ups
+	port = auto
+	vendorid = 051d
+	productid = 0002
+	desc = "APC Back-UPS ES USB"

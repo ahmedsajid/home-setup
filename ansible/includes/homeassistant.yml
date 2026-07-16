@@ -97,15 +97,14 @@
           - '/opt/homeassistant:/config'
           - '/etc/localtime:/etc/localtime:ro'
           - '/run/dbus:/run/dbus:ro'
-        devices:
-          - '/dev/ttyUSB0:/dev/ttyUSB0'
+        # APC UPS is owned by host NUT (nut.yml). HA uses the NUT integration
+        # against 127.0.0.1:3493 via host networking — no USB device map needed.
       # added retry to tasks dependant on external services
       register: result
       retries: 5
       delay: 3
       until: result is succeeded
-      when:
-        - not ansible_check_mode
+      when: not ansible_check_mode
 
     - name: Run backup of homeassistant at 1am within first 15 minutes
       block:
