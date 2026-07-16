@@ -41,7 +41,16 @@
         state: started
         pull: false
         network_mode: "host"
+        command:
+          - "--storage-path"
+          - "/data"
+          - "--paa-root-cert-dir"
+          - "/data/credentials"
+          - "--primary-interface"
+          - "eno1"
         container_default_behavior: "compatibility"
+        comparisons:
+          command: strict
         volumes:
           - '/opt/matter-server:/data'
       register: matter_result
