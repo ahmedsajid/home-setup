@@ -27,6 +27,9 @@
       file:
         state: directory
         path: "{{ item }}"
+        owner: '1000'
+        group: '1000'
+        mode: '0755
       with_items:
         - "/opt/homeassistant"
         - "/opt/matter-server"
@@ -63,6 +66,8 @@
       template:
         src: "../templates/homeassistant/configuration.yaml.j2"
         dest: "/opt/homeassistant/configuration.yaml"
+        owner: '1000'
+        group: '1000'
         mode: 0644
         force: false
       when: not ansible_check_mode
