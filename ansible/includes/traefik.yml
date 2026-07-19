@@ -93,7 +93,7 @@
           - /etc/timezone:/etc/timezone:ro
           - /etc/localtime:/etc/localtime:ro
         # Public resolvers: ACME DNS-01 must not depend on LAN DNS.
-        dns:
+        dns_servers:
           - "1.1.1.1"
           - "1.0.0.1"
         etc_hosts:
