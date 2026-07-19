@@ -57,7 +57,11 @@
           "bip": "{{ docker_config_bip }}"
           "fixed-cidr": "{{ docker_config_fixed_cidr }}"
           "ip": "{{ docker_config_ip }}"
+        # Default container DNS to LAN (router). Override per-container when
+        # a service needs public resolvers (e.g. Traefik ACME → Cloudflare).
         docker_config_custom:
+          "dns":
+            - "{{ ansible_default_ipv4.gateway }}"
           "runtimes":
             "nvidia":
               "path": "nvidia-container-runtime"

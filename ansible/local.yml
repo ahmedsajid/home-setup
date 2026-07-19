@@ -2,7 +2,6 @@
 
 # List of tasks
 - import_playbook: ansible_pull.yml
-# - import_playbook: includes/ara.yml
 - import_playbook: includes/digitalocean_dns.yml
 - import_playbook: includes/dns.yml
 - import_playbook: includes/disablesleep.yml
@@ -11,21 +10,12 @@
 - import_playbook: includes/common-packages.yml
 - import_playbook: includes/docker.yml
 - import_playbook: includes/traefik.yml
-# - import_playbook: includes/wireguard.yml
 - import_playbook: includes/nasmounts.yml
-# - import_playbook: includes/headscale.yml
 - import_playbook: includes/jellyfin.yml
-# - import_playbook: includes/pihole.yml
 - import_playbook: includes/speedtest-tracker.yml
-# - import_playbook: includes/webui-aria2.yml
-# - import_playbook: includes/syncthing.yml
-# - import_playbook: includes/node-exporter.yml
 - import_playbook: includes/actual-server.yml
 - import_playbook: includes/vaultwarden.yml
 - import_playbook: includes/nut.yml
 - import_playbook: includes/homeassistant.yml
-# - import_playbook: includes/rclone.yml
 - import_playbook: includes/netdata.yml
-# - import_playbook: includes/grafana.yml
-# - import_playbook: includes/prometheus.yml
 - import_playbook: includes/os_update.yml
