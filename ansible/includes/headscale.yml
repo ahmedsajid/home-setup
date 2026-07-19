@@ -7,7 +7,7 @@
   hosts: localhost
   connection: local
   vars:
-    headscale_docker_image: "docker.io/headscale/headscale:v0.24.1"
+    headscale_docker_image: "docker.io/headscale/headscale:v0.29.2"
   tasks:
     - name: "Set facts for time"
       set_fact:
