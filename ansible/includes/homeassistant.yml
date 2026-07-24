@@ -7,7 +7,7 @@
   hosts: localhost
   connection: local
   vars:
-    homeassistant_docker_image: "ghcr.io/home-assistant/home-assistant:2026.7.1"
+    homeassistant_docker_image: "ghcr.io/home-assistant/home-assistant:2026.7.4"
     matter_server_docker_image: "ghcr.io/home-assistant-libs/python-matter-server:stable"    
   tasks:
     - name: "Set facts for time"
