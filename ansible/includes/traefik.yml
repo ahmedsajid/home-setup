@@ -11,7 +11,7 @@
   vars_files:
     - "{{ playbook_dir }}/../group_vars/all/traefik.yml"
   vars:
-    traefik_docker_image: "docker.io/traefik:v3.7.8"
+    traefik_docker_image: "docker.io/traefik:v3.7.9"
   tasks:
     - name: create traefik required folders
       file:
@@ -98,7 +98,7 @@
           - "1.0.0.1"
         etc_hosts:
           host.docker.internal: host-gateway
-        network_mode: "default"
+        network_mode: "bridge"
         container_default_behavior: "compatibility"
         comparisons:
           labels: strict

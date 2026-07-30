@@ -41,7 +41,7 @@
         pull: false
         volumes:
           - '/opt/actual/data/:/data'
-        network_mode: "default"
+        network_mode: "bridge"
         container_default_behavior: "compatibility"
         comparisons:
           labels: strict

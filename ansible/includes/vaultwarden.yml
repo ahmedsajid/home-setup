@@ -7,7 +7,7 @@
   hosts: localhost
   connection: local
   vars:
-    vaultwarden_docker_image: "vaultwarden/server:1.36.0"
+    vaultwarden_docker_image: "vaultwarden/server:1.37.0"
   tasks:
     - name: create vaultwarden required folder
       file:
@@ -40,7 +40,7 @@
         state: started
         pull: false
         memory: '1G'
-        network_mode: "default"
+        network_mode: "bridge"
         container_default_behavior: "compatibility"
         comparisons:
           labels: strict

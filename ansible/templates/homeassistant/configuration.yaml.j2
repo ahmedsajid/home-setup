@@ -4,6 +4,11 @@
 # Loads default set of integrations. Do not remove.
 default_config:
 
+# UI-managed automations / scripts / scenes
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+
 http:
   use_x_forwarded_for: true
   trusted_proxies:
