@@ -9,19 +9,6 @@
   vars:
     vaultwarden_docker_image: "vaultwarden/server:1.36.0"
   tasks:
-    - name: "Set facts for time"
-      set_fact:
-        year_now: "{{ ansible_date_time.year | int }}"
-        hour_now: "{{ ansible_date_time.hour | int }}"
-        minute_now: "{{ ansible_date_time.minute | int }}"
-
-    - name: "print ansible_date_time"
-      debug:
-        msg:
-          - "{{ year_now }}"
-          - "{{ hour_now }}"
-          - "{{ minute_now }}"
-
     - name: create vaultwarden required folder
       file:
         state: directory
@@ -67,12 +54,21 @@
       when:
         - not ansible_check_mode
 
-    - name: Run backup of vaultwarden budget at 1am within first 15 minutes
+    - name: Set today's vaultwarden backup path
+      set_fact:
+        vaultwarden_backup_file: "/mnt/nas/Backup/vaultwarden/vaultwarden-backup-{{ ansible_date_time.date }}.tgz"
+
+    - name: Check whether today's vaultwarden backup already exists
+      stat:
+        path: "{{ vaultwarden_backup_file }}"
+      register: vaultwarden_todays_backup
+
+    - name: Run daily vaultwarden backup if missing
       block:
         - name: Create archive
           archive:
             path: /opt/vaultwarden
-            dest: "/mnt/nas/Backup/vaultwarden/vaultwarden-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+            dest: "{{ vaultwarden_backup_file }}"
 
         - name: Find older backups
           find:
@@ -81,14 +77,10 @@
             recurse: true
           register: vaultwarden_old_backups
 
-        - name: Backups found
-          debug:
-            msg: "{{ vaultwarden_old_backups.files }}"
-
-        - name: Remove files the older files
+        - name: Remove older backups
           file:
             path: "{{ item.path }}"
             state: absent
           with_items: "{{ vaultwarden_old_backups.files }}"
-      when: (hour_now | int == 1 and minute_now | int < 10) or
+      when: (not vaultwarden_todays_backup.stat.exists) or
             (force_vaultwarden_backup is defined and force_vaultwarden_backup | bool)

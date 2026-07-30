@@ -9,19 +9,6 @@
   vars:
     actual_docker_image: "docker.io/actualbudget/actual-server:26.7.0"
   tasks:
-    - name: "Set facts for time"
-      set_fact:
-        year_now: "{{ ansible_date_time.year | int }}"
-        hour_now: "{{ ansible_date_time.hour | int }}"
-        minute_now: "{{ ansible_date_time.minute | int }}"
-
-    - name: "print ansible_date_time"
-      debug:
-        msg:
-          - "{{ year_now }}"
-          - "{{ hour_now }}"
-          - "{{ minute_now }}"
-
     - name: create actual required folder
       file:
         state: directory
@@ -66,12 +53,21 @@
       until: result is succeeded
       when: not ansible_check_mode
 
-    - name: Run backup of actual budget at 1am within first 15 minutes
+    - name: Set today's actual backup path
+      set_fact:
+        actual_backup_file: "/mnt/nas/Backup/actual/actual-backup-{{ ansible_date_time.date }}.tgz"
+
+    - name: Check whether today's actual backup already exists
+      stat:
+        path: "{{ actual_backup_file }}"
+      register: actual_todays_backup
+
+    - name: Run daily actual backup if missing
       block:
         - name: Create archive
           archive:
             path: /opt/actual
-            dest: "/mnt/nas/Backup/actual/actual-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+            dest: "{{ actual_backup_file }}"
 
         - name: Find older backups
           find:
@@ -80,14 +76,10 @@
             recurse: true
           register: actual_old_backups
 
-        - name: Backups found
-          debug:
-            msg: "{{ actual_old_backups.files }}"
-
-        - name: Remove files the older files
+        - name: Remove older backups
           file:
             path: "{{ item.path }}"
             state: absent
           with_items: "{{ actual_old_backups.files }}"
-      when: (hour_now | int == 1 and minute_now | int < 10) or
+      when: (not actual_todays_backup.stat.exists) or
             (force_actual_backup is defined and force_actual_backup | bool)
