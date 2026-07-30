@@ -84,8 +84,8 @@
           - '/opt/homeassistant:/config'
           - '/etc/localtime:/etc/localtime:ro'
           - '/run/dbus:/run/dbus:ro'
-        # APC UPS is owned by host NUT (nut.yml). HA uses the NUT integration
-        # against 127.0.0.1:3493 via host networking — no USB device map needed.
+      # APC UPS is owned by host NUT (nut.yml). HA uses the NUT integration
+      # against 127.0.0.1:3493 via host networking — no USB device map needed.
       # added retry to tasks dependant on external services
       register: result
       retries: 5

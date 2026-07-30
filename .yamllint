@@ -3,6 +3,9 @@ extends: default
 
 ignore: |
   *vault*
+  .github/
 
 rules:
   line-length: disable
+  truthy:
+    allowed-values: ['true', 'false', 'on', 'off', 'yes', 'no']

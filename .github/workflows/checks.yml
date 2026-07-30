@@ -46,6 +46,17 @@ jobs:
       - name: Install Ansible collections
         run: ansible-galaxy collection install -r requirements.yml
         working-directory: ./ansible
+      - name: Seed config.ini for check mode
+        # Template deploy is a no-op under --check, but later plays need these facts.
+        run: |
+          cat > /tmp/config.ini <<'EOF'
+          [digitalocean]
+          host = *
+          domain = example.com
+          token = randomtoken
+          [share]
+          allowed_ip =
+          EOF
       - name: Run Ansible test
         run: ansible-playbook --inventory '127.0.0.1,' --connection local --become --check local.yml -e digitalocean_host='*' -e digitalocean_domain='example.com' -e digitalocean_token='randomtoken' -e config_deploy=true -e config_file='/tmp/config.ini'
         working-directory: ./ansible
