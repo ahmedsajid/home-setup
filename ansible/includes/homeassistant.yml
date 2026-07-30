@@ -8,21 +8,8 @@
   connection: local
   vars:
     homeassistant_docker_image: "ghcr.io/home-assistant/home-assistant:2026.7.1"
-    matter_server_docker_image: "ghcr.io/home-assistant-libs/python-matter-server:stable"    
+    matter_server_docker_image: "ghcr.io/home-assistant-libs/python-matter-server:stable"
   tasks:
-    - name: "Set facts for time"
-      set_fact:
-        year_now: "{{ ansible_date_time.year | int }}"
-        hour_now: "{{ ansible_date_time.hour | int }}"
-        minute_now: "{{ ansible_date_time.minute | int }}"
-
-    - name: "print ansible_date_time"
-      debug:
-        msg:
-          - "{{ year_now }}"
-          - "{{ hour_now }}"
-          - "{{ minute_now }}"
-
     - name: create homeassistant required folders
       file:
         state: directory
@@ -106,12 +93,21 @@
       until: result is succeeded
       when: not ansible_check_mode
 
-    - name: Run backup of homeassistant at 1am within first 15 minutes
+    - name: Set today's homeassistant backup path
+      set_fact:
+        homeassistant_backup_file: "/mnt/nas/Backup/homeassistant/homeassistant-backup-{{ ansible_date_time.date }}.tgz"
+
+    - name: Check whether today's homeassistant backup already exists
+      stat:
+        path: "{{ homeassistant_backup_file }}"
+      register: homeassistant_todays_backup
+
+    - name: Run daily homeassistant backup if missing
       block:
         - name: Create archive
           archive:
             path: /opt/homeassistant
-            dest: "/mnt/nas/Backup/homeassistant/homeassistant-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+            dest: "{{ homeassistant_backup_file }}"
 
         - name: Find older backups
           find:
@@ -120,14 +116,10 @@
             recurse: true
           register: homeassistant_old_backups
 
-        - name: Backups found
-          debug:
-            msg: "{{ homeassistant_old_backups.files }}"
-
-        - name: Remove files the older files
+        - name: Remove older backups
           file:
             path: "{{ item.path }}"
             state: absent
           with_items: "{{ homeassistant_old_backups.files }}"
-      when: (hour_now | int == 1 and minute_now | int < 10) or
+      when: (not homeassistant_todays_backup.stat.exists) or
             (force_homeassistant_backup is defined and force_homeassistant_backup | bool)
