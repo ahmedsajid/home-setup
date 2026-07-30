@@ -26,6 +26,12 @@
     - name: Generate NUT password
       ansible.builtin.set_fact:
         nut_password: "{{ lookup('ansible.builtin.password', '/root/nut_password length=24 chars=ascii_letters,digits') }}"
+      when: not ansible_check_mode
+
+    - name: Use placeholder NUT password in check mode
+      ansible.builtin.set_fact:
+        nut_password: "check-mode-placeholder"
+      when: ansible_check_mode
 
     - name: Deploy NUT configuration
       ansible.builtin.template:
