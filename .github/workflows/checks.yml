@@ -42,7 +42,7 @@ jobs:
       - name: Install system dependencies
         run: sudo apt-get update && sudo apt-get -y install python3-docker python3-apt python3-debian
       - name: Install ansible $ANSIBLE_VERSION
-        run: pip install ansible==$ANSIBLE_VERSION
+        run: pip install ansible==$ANSIBLE_VERSION requests docker
       - name: Install Ansible collections
         run: ansible-galaxy collection install -r requirements.yml
         working-directory: ./ansible

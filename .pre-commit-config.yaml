@@ -29,6 +29,8 @@ repos:
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
+        # Hook metadata defaults to python3.14; CI/local commonly have 3.12
+        language_version: python3.12
         additional_dependencies:
           - ansible==14.2.0
 
