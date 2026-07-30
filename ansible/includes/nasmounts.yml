@@ -17,22 +17,22 @@
     nfs_mount_opts: 'rsize=32768,wsize=32768,nfsvers=3,tcp,async'
   tasks:
     - name: Installed nfs-common
-      package:
+      ansible.builtin.package:
         name: nfs-common
 
     - name: Create required folders
-      file:
+      ansible.builtin.file:
         state: directory
         path: "{{ nas_root }}/{{ item }}"
-      with_items: "{{ mounts }}"
+      loop: "{{ mounts }}"
 
     - name: Adding NAS mount points to fstab
-      mount:
+      ansible.posix.mount:
         src: "nas.{{ do_domain }}:/{{ item }}"
         path: "{{ nas_root }}/{{ item }}"
         fstype: nfs
         state: mounted
         opts: "{{ nfs_mount_opts }}"
-      with_items: "{{ mounts }}"
+      loop: "{{ mounts }}"
       when:
         - not ansible_check_mode

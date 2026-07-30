@@ -1,0 +1,10 @@
+---
+collections:
+  - name: community.docker
+    version: ">=4.0.0"
+  - name: community.general
+    version: ">=10.0.0"
+  - name: community.dns
+    version: ">=3.0.0"
+  - name: ansible.posix
+    version: ">=1.5.0"

@@ -5,23 +5,22 @@
   connection: local
   tasks:
     - name: install common-packages
-      package:
-        name: "{{ item }}"
-      with_items:
-        - "bash-completion"
-        - "net-tools"
-        - "iputils-ping"
-        - "curl"
-        - "wget"
-        - "screen"
-        - "tree"
-        - "jq"
-        - "aria2"
-        - "nmap"
-        - "whois"
+      ansible.builtin.package:
+        name:
+          - bash-completion
+          - net-tools
+          - iputils-ping
+          - curl
+          - wget
+          - screen
+          - tree
+          - jq
+          - nmap
+          - whois
+        state: present
 
     # Taken from https://rizvir.com/articles/linux-sysadmin-cheats/
     - name: Allow scrolling in screen session
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/screenrc
         line: 'termcapinfo xterm* ti@:te@'

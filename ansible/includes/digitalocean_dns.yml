@@ -1,7 +1,7 @@
 ---
 
 - name: Read ini config file
-  import_playbook: "read_config_file.yml"
+  ansible.builtin.import_playbook: "read_config_file.yml"
 
 - name: Dynamic Updates under DigitalOcean DNS
   hosts: localhost
@@ -10,16 +10,16 @@
     config_file: '/root/config.ini'
   tasks:
     - name: do not run in check mode - end_play
-      meta: end_play
+      ansible.builtin.meta: end_play
       when: ansible_check_mode
 
     - name: Install via pip
-      pip:
+      ansible.builtin.pip:
         name: "dnspython"
         state: present
 
     - name: Get IPv4 address
-      uri:
+      ansible.builtin.uri:
         url: "https://api.ipify.org?format=json"
         method: GET
         return_content: true
@@ -30,24 +30,22 @@
       delay: 5
 
     - name: Setting digital ocean facts
-      set_fact:
-        do_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
-        do_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
-        do_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') | community.dns.get_registrable_domain }}"
+      ansible.builtin.set_fact:
+        do_host: "{{ lookup('ansible.builtin.ini', 'host section=digitalocean file={{ config_file }}') }}"
+        do_token: "{{ lookup('ansible.builtin.ini', 'token section=digitalocean file={{ config_file }}') }}"
+        do_domain: "{{ lookup('ansible.builtin.ini', 'domain section=digitalocean file={{ config_file }}') | community.dns.get_registrable_domain }}"
         dns_record_id: 0
 
     - name: Lookup existing record
-      set_fact:
-        dig_lookup: "{{ lookup('dig', do_host + '.' + do_domain, '@1.1.1.1') }}"
+      ansible.builtin.set_fact:
+        dig_lookup: "{{ lookup('community.general.dig', do_host + '.' + do_domain, '@1.1.1.1') }}"
 
     - name: stop play if config options do not exist or update isn't required
-      meta: end_play
-      when: do_host | length == 0 or do_domain | length == 0 or  do_token | length == 0 or dig_lookup == ipv4_result.json.ip
+      ansible.builtin.meta: end_play
+      when: do_host | length == 0 or do_domain | length == 0 or do_token | length == 0 or dig_lookup == ipv4_result.json.ip
 
     - name: Fetch existing record id
-      vars:
-        ip: "{{ ipv4_result.json.ip }}"
-      uri:
+      ansible.builtin.uri:
         url: "https://api.digitalocean.com/v2/domains/{{ do_domain }}/records"
         method: GET
         headers:
@@ -59,34 +57,27 @@
     - name: Get DNS record id
       vars:
         dns_record_query: "domain_records[?name=='{{ do_host }}'].id"
-      set_fact:
+      ansible.builtin.set_fact:
         dns_record_id: "{{ dns_records.json | json_query(dns_record_query) | first }}"
-      ignore_errors: true
+      failed_when: false
 
     - name: Setting fact for method and URL when record exists
-      set_fact:
+      ansible.builtin.set_fact:
         do_dns_method: "PATCH"
-        digitaloean_dns_url: "https://api.digitalocean.com/v2/domains/{{ do_domain }}/records/{{ dns_record_id }}"
+        digitalocean_dns_url: "https://api.digitalocean.com/v2/domains/{{ do_domain }}/records/{{ dns_record_id }}"
       when: dns_record_id | int > 0
 
     - name: Setting fact for method and URL when record doesn't exist
-      set_fact:
+      ansible.builtin.set_fact:
         do_dns_method: "POST"
-        digitaloean_dns_url: "https://api.digitalocean.com/v2/domains/{{ do_domain }}/records"
+        digitalocean_dns_url: "https://api.digitalocean.com/v2/domains/{{ do_domain }}/records"
       when: dns_record_id | int == 0
-
-    # EXAMPLE
-    # curl -X POST \
-    #   -H "Content-Type: application/json" \
-    #   -H "Authorization: Bearer $DIGITALOCEAN_TOKEN" \
-    #   -d '{"type":"A","name":"www","data":"162.10.66.0","priority":null,"port":null,"ttl":1800,"weight":null,"flags":null,"tag":null}' \
-    #   "https://api.digitalocean.com/v2/domains/example.com/records"
 
     - name: Update Dynamic DNS
       vars:
         ip: "{{ ipv4_result.json.ip }}"
-      uri:
-        url: "{{ digitaloean_dns_url }}"
+      ansible.builtin.uri:
+        url: "{{ digitalocean_dns_url }}"
         method: "{{ do_dns_method }}"
         body_format: json
         status_code: 200

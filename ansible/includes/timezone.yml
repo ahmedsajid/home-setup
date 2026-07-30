@@ -5,5 +5,5 @@
   connection: local
   tasks:
     - name: Setting timezone
-      timezone:
+      community.general.timezone:
         name: 'America/Toronto'

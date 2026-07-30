@@ -3,16 +3,13 @@
 - name: "Ensuring laptop stays awake"
   hosts: localhost
   connection: local
-  handlers:
-    - name: Update Grub
-      command: update-grub
   tasks:
     - name: "Disable any kind of sleep"
-      systemd:
+      ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: false
         masked: true
-      with_items:
+      loop:
         - sleep.target
         - suspend.target
         - hibernate.target

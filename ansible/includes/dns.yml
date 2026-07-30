@@ -11,12 +11,12 @@
       - "{{ ansible_default_ipv4.gateway }}"
   tasks:
     - name: create role folder
-      file:
+      ansible.builtin.file:
         state: directory
         path: /root/.ansible/roles
 
     - name: Clone role ahuffman.resolv
-      git:
+      ansible.builtin.git:
         repo: 'https://github.com/ahuffman/ansible-resolv.git'
         dest: /root/.ansible/roles/ahuffman.resolv
         version: "{{ resolv_role_version }}"
@@ -27,7 +27,7 @@
       until: result is succeeded
 
     - name: Using resolv role
-      include_role:
+      ansible.builtin.include_role:
         name: ahuffman.resolv
       vars:
         resolv_nameservers: "{{ lan_nameservers }}"
@@ -37,7 +37,7 @@
       when: not ansible_check_mode
 
     - name: "Disable systemd-resolv"
-      systemd:
+      ansible.builtin.systemd:
         name: "systemd-resolved"
         enabled: false
         masked: true

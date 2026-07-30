@@ -1,7 +1,7 @@
 ---
 
 - name: Read ini config file
-  import_playbook: "read_config_file.yml"
+  ansible.builtin.import_playbook: "read_config_file.yml"
 
 - name: "netdata Install and setup"
   hosts: localhost
@@ -10,17 +10,17 @@
     netdata_docker_image: "docker.io/netdata/netdata:v2.10.4"
   tasks:
     - name: create netdata required folders
-      file:
+      ansible.builtin.file:
         state: directory
         path: "{{ item }}"
         recurse: true
-      with_items:
+      loop:
         - "/opt/netdata/etc"
         - "/opt/netdata/lib"
         - "/opt/netdata/cache"
 
     - name: Deploy netdata
-      docker_container:
+      community.docker.docker_container:
         name: "netdata"
         hostname: "netdata"
         image: "{{ netdata_docker_image }}"

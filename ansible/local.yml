@@ -1,20 +1,20 @@
 ---
 
 # List of tasks
-- import_playbook: ansible_pull.yml
-- import_playbook: includes/digitalocean_dns.yml
-- import_playbook: includes/dns.yml
-- import_playbook: includes/disablesleep.yml
-- import_playbook: includes/disableunattendedupgrdes.yml
-- import_playbook: includes/timezone.yml
-- import_playbook: includes/common-packages.yml
-- import_playbook: includes/docker.yml
-- import_playbook: includes/traefik.yml
-- import_playbook: includes/nasmounts.yml
-- import_playbook: includes/jellyfin.yml
-- import_playbook: includes/actual-server.yml
-- import_playbook: includes/vaultwarden.yml
-- import_playbook: includes/nut.yml
-- import_playbook: includes/homeassistant.yml
-- import_playbook: includes/netdata.yml
-- import_playbook: includes/os_update.yml
+- ansible.builtin.import_playbook: ansible_pull.yml
+- ansible.builtin.import_playbook: includes/digitalocean_dns.yml
+- ansible.builtin.import_playbook: includes/dns.yml
+- ansible.builtin.import_playbook: includes/disablesleep.yml
+- ansible.builtin.import_playbook: includes/disableunattendedupgrdes.yml
+- ansible.builtin.import_playbook: includes/timezone.yml
+- ansible.builtin.import_playbook: includes/common-packages.yml
+- ansible.builtin.import_playbook: includes/docker.yml
+- ansible.builtin.import_playbook: includes/traefik.yml
+- ansible.builtin.import_playbook: includes/nasmounts.yml
+- ansible.builtin.import_playbook: includes/jellyfin.yml
+- ansible.builtin.import_playbook: includes/actual-server.yml
+- ansible.builtin.import_playbook: includes/vaultwarden.yml
+- ansible.builtin.import_playbook: includes/nut.yml
+- ansible.builtin.import_playbook: includes/homeassistant.yml
+- ansible.builtin.import_playbook: includes/netdata.yml
+- ansible.builtin.import_playbook: includes/os_update.yml

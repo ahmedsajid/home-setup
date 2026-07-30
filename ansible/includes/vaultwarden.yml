@@ -1,7 +1,7 @@
 ---
 
 - name: Read ini config file
-  import_playbook: "read_config_file.yml"
+  ansible.builtin.import_playbook: "read_config_file.yml"
 
 - name: "Vault Warden"
   hosts: localhost
@@ -10,15 +10,15 @@
     vaultwarden_docker_image: "vaultwarden/server:1.37.0"
   tasks:
     - name: create vaultwarden required folder
-      file:
+      ansible.builtin.file:
         state: directory
         path: "{{ item }}"
-      with_items:
+      loop:
         - "/opt/vaultwarden"
         - "/mnt/nas/Backup/vaultwarden"
 
     - name: Deploy vaultwarden container
-      docker_container:
+      community.docker.docker_container:
         name: "vaultwarden"
         hostname: "vaultwarden"
         image: "{{ vaultwarden_docker_image }}"
@@ -55,32 +55,32 @@
         - not ansible_check_mode
 
     - name: Set today's vaultwarden backup path
-      set_fact:
+      ansible.builtin.set_fact:
         vaultwarden_backup_file: "/mnt/nas/Backup/vaultwarden/vaultwarden-backup-{{ ansible_date_time.date }}.tgz"
 
     - name: Check whether today's vaultwarden backup already exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ vaultwarden_backup_file }}"
       register: vaultwarden_todays_backup
 
     - name: Run daily vaultwarden backup if missing
       block:
         - name: Create archive
-          archive:
+          community.general.archive:
             path: /opt/vaultwarden
             dest: "{{ vaultwarden_backup_file }}"
 
         - name: Find older backups
-          find:
+          ansible.builtin.find:
             paths: /mnt/nas/Backup/vaultwarden/
             age: 5d
             recurse: true
           register: vaultwarden_old_backups
 
         - name: Remove older backups
-          file:
+          ansible.builtin.file:
             path: "{{ item.path }}"
             state: absent
-          with_items: "{{ vaultwarden_old_backups.files }}"
+          loop: "{{ vaultwarden_old_backups.files }}"
       when: (not vaultwarden_todays_backup.stat.exists) or
             (force_vaultwarden_backup is defined and force_vaultwarden_backup | bool)
