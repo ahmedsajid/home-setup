@@ -68,6 +68,7 @@
       ansible.builtin.dpkg_selections:
         name: jellyfin
         selection: hold
+      when: not ansible_check_mode
 
     - name: Install VA-API drivers for Intel hardware transcoding
       ansible.builtin.apt:
