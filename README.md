@@ -30,7 +30,6 @@ Once the cronjob has been setup, there should be following available services pr
 - Home Assistant (+ Matter Server)
 - Vaultwarden
 - Actual Budget
-- Speedtest Tracker
 - Netdata
 - Network UPS Tools (NUT)
 
