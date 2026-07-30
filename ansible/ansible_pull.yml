@@ -6,6 +6,9 @@
     # schedule is fed directly to cron
     schedule: '5 4 * * *'
 
+    # DigitalOcean DNS update schedule (every 15 minutes)
+    dns_schedule: '*/15 * * * *'
+
     # User to run ansible-pull as from cron
     cron_user: root
 

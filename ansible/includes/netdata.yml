@@ -58,7 +58,7 @@
         container_default_behavior: "compatibility"
         comparisons:
           labels: strict
-        network_mode: "default"
+        network_mode: "bridge"
         capabilities:
           - SYS_PTRACE
           - SYS_ADMIN
