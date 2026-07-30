@@ -98,7 +98,7 @@
           - "1.0.0.1"
         etc_hosts:
           host.docker.internal: host-gateway
-        network_mode: "default"
+        network_mode: "bridge"
         container_default_behavior: "compatibility"
         comparisons:
           labels: strict

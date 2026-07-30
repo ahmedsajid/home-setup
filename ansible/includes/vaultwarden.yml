@@ -53,7 +53,7 @@
         state: started
         pull: false
         memory: '1G'
-        network_mode: "default"
+        network_mode: "bridge"
         container_default_behavior: "compatibility"
         comparisons:
           labels: strict
