@@ -123,7 +123,7 @@
     - name: going to deploy config
       ansible.builtin.debug:
         msg: "Deploying config"
-      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
+      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy | bool)
 
     - name: Deploy a config ini file
       ansible.builtin.template:
@@ -132,7 +132,7 @@
         owner: root
         group: root
         mode: "0644"
-      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
+      when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy | bool)
 
     - name: Create crontab entry to clone/pull git repository
       ansible.builtin.template:
