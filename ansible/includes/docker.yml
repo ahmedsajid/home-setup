@@ -3,24 +3,14 @@
 - name: "Docker installation and setup"
   hosts: localhost
   connection: local
-  handlers:
-    - name: Restart docker
-      systemd:
-        name: "docker"
-        state: restarted
-      # Skipping check mode since its causes issues :(
-      when: not ansible_check_mode
   tasks:
-    - name: Gather package facts
-      package_facts:
-
     - name: create role folder
-      file:
+      ansible.builtin.file:
         state: directory
         path: /root/.ansible/roles
 
     - name: Clone role gbolo.docker
-      git:
+      ansible.builtin.git:
         repo: 'https://github.com/gbolo/ansible-role-docker.git'
         dest: /root/.ansible/roles/gbolo.docker
         version: v2.1
@@ -31,7 +21,7 @@
       until: result is succeeded
 
     - name: Using docker role
-      include_role:
+      ansible.builtin.include_role:
         name: gbolo.docker
       vars:
         docker_config_log_opts: {
@@ -62,15 +52,11 @@
         docker_config_custom:
           "dns":
             - "{{ ansible_default_ipv4.gateway }}"
-          "runtimes":
-            "nvidia":
-              "path": "nvidia-container-runtime"
-              "runtimeArgs": []
           "live-restore": true
       when: not ansible_check_mode
 
     - name: Setup docker app network
-      docker_network:
+      community.docker.docker_network:
         name: app_network
         ipam_config:
           - subnet: '172.17.0.0/24'

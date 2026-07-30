@@ -1,0 +1,19 @@
+---
+profile: basic
+exclude_paths:
+  - .github/
+  - .collections/
+skip_list:
+  # Intentional package upgrades
+  - package-latest
+  # External roles cloned at runtime
+  - galaxy
+  # Pre-existing style; not required for Ansible 14 / FQCN upgrade
+  - name[casing]
+  - name[play]
+  - risky-file-permissions
+  - no-relative-paths
+  - key-order[task]
+warn_list:
+  - experimental
+  - jinja[spacing]

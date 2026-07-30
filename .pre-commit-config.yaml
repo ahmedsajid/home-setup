@@ -4,7 +4,7 @@
 fail_fast: true
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.4.0
+    rev: v5.0.0
     hooks:
       - id: fix-byte-order-marker
       - id: check-case-conflict
@@ -20,22 +20,24 @@ repos:
       - id: detect-private-key
 
   - repo: https://github.com/adrienverge/yamllint.git
-    rev: v1.29.0
+    rev: v1.38.0
     hooks:
       - id: yamllint
 
-  - repo: https://github.com/ansible-community/ansible-lint.git
-    rev: v6.11.0
+  - repo: https://github.com/ansible/ansible-lint.git
+    rev: v26.6.0
     hooks:
       - id: ansible-lint
         files: \.(yaml|yml)$
+        additional_dependencies:
+          - ansible==14.2.0
 
   - repo: https://github.com/PyCQA/flake8
-    rev: 6.0.0
+    rev: 7.3.0
     hooks:
       - id: flake8
 
   - repo: https://github.com/renovatebot/pre-commit-hooks
-    rev: 38.119.0
+    rev: 41.131.0
     hooks:
       - id: renovate-config-validator

@@ -1,7 +1,7 @@
 ---
 
 - name: Read ini config file
-  import_playbook: "read_config_file.yml"
+  ansible.builtin.import_playbook: "read_config_file.yml"
 
 # All HTTPS docker routers must define *-iprestrict middleware on the same container.
 # Blocked IPs get 404 (stealth). Exception: jellyfin (+ optional [share] allowed_ip).
@@ -14,22 +14,22 @@
     traefik_docker_image: "docker.io/traefik:v3.7.9"
   tasks:
     - name: create traefik required folders
-      file:
+      ansible.builtin.file:
         state: directory
         path: "{{ item }}"
-        mode: 0640
-      with_items:
+        mode: "0640"
+      loop:
         - "/opt/traefik/"
         - "/opt/traefik/dynamic"
 
     - name: Deploy traefik dynamic config for host services
-      template:
+      ansible.builtin.template:
         src: "../templates/traefik/dynamic.yml.j2"
         dest: "/opt/traefik/dynamic/host-services.yml"
-        mode: 0640
+        mode: "0640"
 
     - name: Deploy traefik container
-      docker_container:
+      community.docker.docker_container:
         name: "traefik"
         hostname: "traefik"
         image: "{{ traefik_docker_image }}"

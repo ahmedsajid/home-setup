@@ -22,21 +22,17 @@ To enable healthchecks.io monitoring for the ansible-pull cronjob, run playbook 
 ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --user <username> --become --ask-become-pass -e healthchecks_uuid=<checkUUID> -e config_deploy=true
 ```
 
-To enable namecheap dynamic updates, first have your hostname registered. Then you can pass in required parameters to the pull playbook as below.
-```
-ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --user <username> --become --ask-become-pass -e namecheap_host=myhostname -e namecheap_domain=mydomain.tld -e namecheap_password=myrandompassword -e config_deploy=true
-```
-
 ## Running services
 
 Once the cronjob has been setup, there should be following available services provided by the server:
-- Emby
-- Pihole (+Unbound)
-- Grafana
-- Wireguard
-- Webui Aria2
-- HTTPs access to services (Traefik, Digitalocean)
-- NAS to external hdd backup - [Coming soon](https://github.com/ahmedsajid/home-setup/issues/32)
+- Jellyfin
+- Traefik (HTTPS / DigitalOcean DNS)
+- Home Assistant (+ Matter Server)
+- Vaultwarden
+- Actual Budget
+- Speedtest Tracker
+- Netdata
+- Network UPS Tools (NUT)
 
 ## Integrations
 

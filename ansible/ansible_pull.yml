@@ -26,37 +26,97 @@
     # ini config file with various secrets and parameters
     config_file: /root/config.ini
 
+    # Ansible 14+ requires Python >= 3.12 on the control node
+    ansible_python: python3.12
+
     # pip packages to be installed
     pip_packages:
-      - ansible==6.7.0
-      - ara==1.6.1
+      - ansible==14.2.0
+      - requests
   tasks:
     - name: Remove ansible version provided by package managers
-      package:
+      ansible.builtin.package:
         name: ansible
         state: absent
 
-    - name: Install python3-pip
-      package:
-        name: python3-pip
+    - name: Install OS packages needed for Python tooling
+      ansible.builtin.package:
+        name:
+          - python3-pip
+          - software-properties-common
         state: present
+
+    - name: Check whether Python 3.12 is available
+      ansible.builtin.command: "{{ ansible_python }} --version"
+      register: python312_check
+      changed_when: false
+      failed_when: false
+
+    - name: Add deadsnakes PPA when Python 3.12 is missing
+      ansible.builtin.deb822_repository:
+        name: deadsnakes-ppa
+        types: deb
+        uris: https://ppa.launchpadcontent.net/deadsnakes/ppa/ubuntu
+        suites: "{{ ansible_distribution_release }}"
+        components: main
+        signed_by: https://keyserver.ubuntu.com/pks/lookup?op=get&search=0xF23C5A6CF475977595C89F51BA6932366A755776
+        install_python_debian: true
+        state: present
+      when: python312_check.rc != 0
+
+    - name: Refresh apt cache after adding deadsnakes
+      ansible.builtin.apt:
+        update_cache: true
+      when: python312_check.rc != 0
+
+    - name: Install Python 3.12
+      ansible.builtin.package:
+        name:
+          - python3.12
+          - python3.12-venv
+          - python3.12-dev
+        state: present
+      when: python312_check.rc != 0
+
+    - name: Ensure pip is available for Python 3.12
+      ansible.builtin.command: "{{ ansible_python }} -m ensurepip --upgrade"
+      register: ensurepip_result
+      changed_when: "'Successfully installed' in (ensurepip_result.stdout | default(''))"
+      failed_when: false
+
+    - name: Bootstrap pip via get-pip when ensurepip is unavailable
+      ansible.builtin.shell: |
+        set -euo pipefail
+        curl -fsSL https://bootstrap.pypa.io/get-pip.py -o /tmp/get-pip.py
+        {{ ansible_python }} /tmp/get-pip.py
+      args:
+        executable: /bin/bash
+      when: ensurepip_result.rc | default(1) != 0
+      changed_when: true
 
     - name: Install via pip
-      pip:
-        name: "{{ item }}"
-        state: present
-      with_items: "{{ pip_packages }}"
+      ansible.builtin.command:
+        argv:
+          - "{{ ansible_python }}"
+          - "-m"
+          - "pip"
+          - "install"
+          - "--upgrade"
+          - "{{ item }}"
+      loop: "{{ pip_packages }}"
+      register: pip_install
+      changed_when: "'Successfully installed' in pip_install.stdout"
 
     - name: Create local directory to work from
-      file:
+      ansible.builtin.file:
         path: "{{ workdir }}"
         state: directory
         owner: root
         group: root
-        mode: 0751
+        mode: "0751"
 
     - name: Check if config file exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ config_file }}"
       register: config_exists
 
@@ -66,26 +126,26 @@
       when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
 
     - name: Deploy a config ini file
-      template:
+      ansible.builtin.template:
         src: templates/root/config.ini.j2
         dest: "{{ config_file }}"
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
       when: (not config_exists.stat.exists) or (config_deploy is defined and config_deploy)
 
     - name: Create crontab entry to clone/pull git repository
-      template:
+      ansible.builtin.template:
         src: templates/etc/etc_cron.d_ansible-pull.j2
         dest: /etc/cron.d/ansible-pull
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
 
     - name: Create logrotate entry for ansible-pull.log
-      template:
+      ansible.builtin.template:
         src: templates/etc/etc_logrotate.d_ansible-pull.j2
         dest: /etc/logrotate.d/ansible-pull
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"

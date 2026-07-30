@@ -12,29 +12,40 @@
       - network.xml
 
   tasks:
-    - name: Add an Apt signing key for Jellyfin
-      apt_key:
-        url: https://repo.jellyfin.org/jellyfin_team.gpg.key
+    - name: Ensure python3-debian is available for deb822 repos
+      ansible.builtin.package:
+        name: python3-debian
         state: present
+
+    - name: Remove legacy Jellyfin apt list file
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/jellyfin.list
+        state: absent
 
     - name: Add Jellyfin repository
-      apt_repository:
-        repo: deb [arch=amd64] https://repo.jellyfin.org/ubuntu focal main
+      ansible.builtin.deb822_repository:
+        name: jellyfin
+        types: deb
+        uris: https://repo.jellyfin.org/ubuntu
+        suites: focal
+        components: main
+        architectures: amd64
+        signed_by: https://repo.jellyfin.org/jellyfin_team.gpg.key
         state: present
-        filename: jellyfin
 
     - name: Get Jellyfin installed version
-      shell:
+      ansible.builtin.shell:
         cmd: dpkg-query -f '${Version}' -W jellyfin
       register: dpkg_query_jellyfin_version
-      ignore_errors: true
+      failed_when: false
+      changed_when: false
 
     - name: Setting jellyfin_installed_version fact
-      set_fact:
+      ansible.builtin.set_fact:
         jellyfin_installed_version: "{{ dpkg_query_jellyfin_version.stdout | default('') }}"
 
     - name: Allow jellyfin to be upgraded
-      dpkg_selections:
+      ansible.builtin.dpkg_selections:
         name: jellyfin
         selection: install
       when:
@@ -42,7 +53,7 @@
         - not ansible_check_mode
 
     - name: Install Jellyfin
-      apt:
+      ansible.builtin.apt:
         name: "jellyfin={{ jellyfin_version }}"
         update_cache: true
         allow_change_held_packages: false
@@ -54,33 +65,34 @@
         - not ansible_check_mode
 
     - name: Prevent jellyfin from being upgraded
-      dpkg_selections:
+      ansible.builtin.dpkg_selections:
         name: jellyfin
         selection: hold
 
     - name: Install VA-API drivers for Intel hardware transcoding
-      apt:
+      ansible.builtin.apt:
         name:
           - i965-va-driver
           - mesa-va-drivers
         state: present
 
     - name: Check prime-select profile
-      command: prime-select query
+      ansible.builtin.command: prime-select query
       register: prime_profile
       changed_when: false
       failed_when: false
       when: not ansible_check_mode
 
     - name: Use Intel GPU for VA-API on Optimus laptops
-      command: prime-select intel
+      ansible.builtin.command: prime-select intel
+      changed_when: true
       when:
         - not ansible_check_mode
         - prime_profile.stdout is defined
         - prime_profile.stdout != "intel"
 
     - name: Ensure Jellyfin server is enabled
-      systemd:
+      ansible.builtin.systemd:
         name: "jellyfin"
         enabled: true
         state: started
@@ -88,14 +100,14 @@
       when: not ansible_check_mode
 
     - name: Create folders for content
-      file:
+      ansible.builtin.file:
         state: directory
         path: "{{ jellyfin_root }}"
         owner: "jellyfin"
         group: "jellyfin"
 
     - name: Check whether system config files need updating
-      copy:
+      ansible.builtin.copy:
         src: "../files/jellyfin/{{ item }}"
         dest: "/etc/jellyfin/{{ item }}"
         owner: "jellyfin"
@@ -106,7 +118,7 @@
       when: not ansible_check_mode
 
     - name: Check whether library configuration needs updating
-      synchronize:
+      ansible.posix.synchronize:
         src: "../files/jellyfin/default"
         dest: "{{ jellyfin_root }}"
         delete: true
@@ -119,18 +131,18 @@
       when: not ansible_check_mode
 
     - name: Determine whether Jellyfin service cycle is required
-      set_fact:
+      ansible.builtin.set_fact:
         jellyfin_config_changed: "{{ jellyfin_config_check.results | selectattr('changed') | list | length > 0 }}"
         jellyfin_library_changed: "{{ jellyfin_library_check.changed | default(false) }}"
       when: not ansible_check_mode
 
     - name: Set Jellyfin service cycle flag
-      set_fact:
+      ansible.builtin.set_fact:
         jellyfin_service_cycle_needed: "{{ jellyfin_config_changed or jellyfin_library_changed }}"
       when: not ansible_check_mode
 
     - name: Stop Jellyfin before applying configuration
-      systemd:
+      ansible.builtin.systemd:
         name: "jellyfin"
         state: stopped
       when:
@@ -138,7 +150,7 @@
         - jellyfin_service_cycle_needed | bool
 
     - name: Copy over system config file
-      copy:
+      ansible.builtin.copy:
         src: "../files/jellyfin/{{ item }}"
         dest: "/etc/jellyfin/{{ item }}"
         owner: "jellyfin"
@@ -149,7 +161,7 @@
         - jellyfin_service_cycle_needed | bool
 
     - name: Copy over library content configuration files
-      synchronize:
+      ansible.posix.synchronize:
         src: "../files/jellyfin/default"
         dest: "{{ jellyfin_root }}"
         delete: true
@@ -163,11 +175,11 @@
         - jellyfin_library_changed | bool
 
     - name: fixing permission of files that were copied
-      file:
+      ansible.builtin.file:
         path: "{{ jellyfin_root }}"
         state: directory
         recurse: true
-        mode: 0755
+        mode: "0755"
         owner: "jellyfin"
         group: "jellyfin"
       when:
@@ -176,7 +188,7 @@
         - jellyfin_library_changed | bool
 
     - name: Start Jellyfin after applying configuration
-      systemd:
+      ansible.builtin.systemd:
         name: "jellyfin"
         enabled: true
         state: started

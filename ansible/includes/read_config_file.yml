@@ -7,20 +7,20 @@
     config_file: '/root/config.ini'
   tasks:
     - name: Check if config file exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ config_file }}"
       register: config_file_exists
 
     - name: stop play if config file doesn't exist
-      meta: end_play
+      ansible.builtin.meta: end_play
       when: not config_file_exists.stat.exists
 
     - name: Setting digital ocean facts
-      set_fact:
-        do_host: "{{ lookup('ini', 'host section=digitalocean file={{ config_file }}') }}"
-        do_token: "{{ lookup('ini', 'token section=digitalocean file={{ config_file }}') }}"
-        do_domain: "{{ lookup('ini', 'domain section=digitalocean file={{ config_file }}') }}"
-        share_allowed_ip: "{{ lookup('ini', 'allowed_ip section=share file={{ config_file }}', errors='ignore') | default('', true) | trim }}"
+      ansible.builtin.set_fact:
+        do_host: "{{ lookup('ansible.builtin.ini', 'host section=digitalocean file={{ config_file }}') }}"
+        do_token: "{{ lookup('ansible.builtin.ini', 'token section=digitalocean file={{ config_file }}') }}"
+        do_domain: "{{ lookup('ansible.builtin.ini', 'domain section=digitalocean file={{ config_file }}') }}"
+        share_allowed_ip: "{{ lookup('ansible.builtin.ini', 'allowed_ip section=share file={{ config_file }}', errors='ignore') | default('', true) | trim }}"
         traefik_private_ranges:
           - "10.0.0.0/8"
           - "172.16.0.0/12"

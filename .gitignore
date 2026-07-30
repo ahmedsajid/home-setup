@@ -1,3 +1,5 @@
 __pycache__
 *.swp
-ansible/setup.sh
+ansible/collections/
+.collections/
+.lint-out.txt

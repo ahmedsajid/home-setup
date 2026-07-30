@@ -5,10 +5,10 @@
   connection: local
   tasks:
     - name: "Gather service facts"
-      service_facts:
+      ansible.builtin.service_facts:
 
     - name: "Disable unattended upgrades service"
-      systemd:
+      ansible.builtin.systemd:
         name: "unattended-upgrades.service"
         enabled: false
         masked: true

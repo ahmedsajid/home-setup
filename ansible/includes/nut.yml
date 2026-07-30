@@ -5,17 +5,18 @@
   connection: local
   handlers:
     - name: Restart nut
-      shell: |
+      ansible.builtin.shell: |
         upsdrvctl stop || true
         systemctl restart nut-server
         upsdrvctl start
         systemctl restart nut-monitor
       args:
         executable: /bin/bash
+      changed_when: true
       when: not ansible_check_mode
   tasks:
     - name: Install NUT packages
-      package:
+      ansible.builtin.package:
         name:
           - nut
           - nut-client
@@ -23,11 +24,11 @@
         state: present
 
     - name: Generate NUT password
-      set_fact:
-        nut_password: "{{ lookup('password', '/root/nut_password length=24 chars=ascii_letters,digits') }}"
+      ansible.builtin.set_fact:
+        nut_password: "{{ lookup('ansible.builtin.password', '/root/nut_password length=24 chars=ascii_letters,digits') }}"
 
     - name: Deploy NUT configuration
-      template:
+      ansible.builtin.template:
         src: "{{ item.src }}"
         dest: "{{ item.dest }}"
         owner: root
@@ -42,7 +43,7 @@
       notify: Restart nut
 
     - name: Enable and start NUT services
-      systemd:
+      ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: true
         state: started
@@ -52,14 +53,14 @@
       when: not ansible_check_mode
 
     - name: Ensure UPS drivers are running
-      command: upsdrvctl start
+      ansible.builtin.command: upsdrvctl start
       register: upsdrvctl_start
       changed_when: false
       failed_when: false
       when: not ansible_check_mode
 
     - name: Verify APC UPS is readable via NUT
-      command: upsc apc@localhost
+      ansible.builtin.command: upsc apc@localhost
       register: upsc_apc
       changed_when: false
       retries: 5
@@ -68,14 +69,14 @@
       when: not ansible_check_mode
 
     - name: Show APC UPS status summary
-      debug:
+      ansible.builtin.debug:
         msg: "{{ upsc_apc.stdout_lines | select('match', '^(battery.charge|ups.status|ups.model|device.serial):') | list }}"
       when:
         - not ansible_check_mode
         - upsc_apc is succeeded
 
     - name: Write Home Assistant NUT connection hints
-      copy:
+      ansible.builtin.copy:
         dest: /root/nut_ha_connection.txt
         mode: "0600"
         content: |
