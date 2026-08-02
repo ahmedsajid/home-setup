@@ -3,6 +3,8 @@
 - name: "Install and Setup Jellyfin"
   hosts: localhost
   connection: local
+  vars_files:
+    - "{{ playbook_dir }}/../group_vars/all/nas.yml"
   vars:
     jellyfin_root: "/var/lib/jellyfin/root"
     jellyfin_version: "10.11.11+ubu2004"

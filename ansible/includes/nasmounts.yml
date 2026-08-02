@@ -3,6 +3,8 @@
 - name: "Ensuring NAS shares are mounted"
   hosts: localhost
   connection: local
+  vars_files:
+    - "{{ playbook_dir }}/../group_vars/all/nas.yml"
   vars:
     mounts:
       - 'Movies'
