@@ -94,6 +94,15 @@
         owner: "jellyfin"
         group: "jellyfin"
 
+    - name: Ensure Pinchflat YouTube media path exists for Jellyfin library
+      file:
+        state: directory
+        path: "{{ item }}"
+        mode: "0777"
+      loop:
+        - "/mnt/nas/Multimedia/YouTube"
+        - "/mnt/nas/Multimedia/YouTube/shows"
+
     - name: Check whether system config files need updating
       copy:
         src: "../files/jellyfin/{{ item }}"
