@@ -9,7 +9,6 @@
   vars:
     pinchflat_docker_image: "ghcr.io/kieraneglin/pinchflat:v2025.9.26"
     pinchflat_root: "/opt/pinchflat"
-    pinchflat_output_dir: "/mnt/nas/Multimedia/YouTube"
   tasks:
     - name: "Set facts for time"
       set_fact:
@@ -36,8 +35,8 @@
         mode: "0777"
       with_items:
         - "{{ pinchflat_output_dir }}"
-        - "{{ pinchflat_output_dir }}/shows"
-        - "/mnt/nas/Backup/pinchflat"
+        - "{{ pinchflat_shows_dir }}"
+        - "{{ pinchflat_backup_dir }}"
 
     - name: Deploy pinchflat container
       docker_container:
@@ -82,11 +81,11 @@
         - name: Create archive
           archive:
             path: "{{ pinchflat_root }}"
-            dest: "/mnt/nas/Backup/pinchflat/pinchflat-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+            dest: "{{ pinchflat_backup_dir }}/pinchflat-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
 
         - name: Find older backups
           find:
-            paths: /mnt/nas/Backup/pinchflat/
+            paths: "{{ pinchflat_backup_dir }}"
             age: 5d
             recurse: true
           register: pinchflat_old_backups
