@@ -1,0 +1,103 @@
+---
+
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
+- name: "Pinchflat"
+  hosts: localhost
+  connection: local
+  vars:
+    pinchflat_docker_image: "ghcr.io/kieraneglin/pinchflat:v2025.9.26"
+    pinchflat_root: "/opt/pinchflat"
+  tasks:
+    - name: "Set facts for time"
+      set_fact:
+        year_now: "{{ ansible_date_time.year | int }}"
+        hour_now: "{{ ansible_date_time.hour | int }}"
+        minute_now: "{{ ansible_date_time.minute | int }}"
+
+    - name: "print ansible_date_time"
+      debug:
+        msg:
+          - "{{ year_now }}"
+          - "{{ hour_now }}"
+          - "{{ minute_now }}"
+
+    - name: create pinchflat config folder
+      file:
+        state: directory
+        path: "{{ pinchflat_root }}"
+
+    - name: create pinchflat media and backup folders
+      file:
+        state: directory
+        path: "{{ item }}"
+        mode: "0777"
+      with_items:
+        - "{{ pinchflat_output_dir }}"
+        - "{{ pinchflat_shows_dir }}"
+        - "{{ pinchflat_backup_dir }}"
+
+    - name: Deploy pinchflat container
+      docker_container:
+        name: "pinchflat"
+        hostname: "pinchflat"
+        image: "{{ pinchflat_docker_image }}"
+        env:
+          TZ: "America/Toronto"
+          LOG_LEVEL: "info"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.pinchflat.rule: "Host(`pinchflat.{{ do_domain }}`)"
+          traefik.http.routers.pinchflat.entrypoints: "https"
+          traefik.http.routers.pinchflat.tls: "true"
+          traefik.http.routers.pinchflat.middlewares: "pinchflat-iprestrict"
+          traefik.http.middlewares.pinchflat-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.pinchflat-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
+          traefik.http.services.pinchflat.loadbalancer.server.port: "8945"
+        networks:
+          - name: "app_network"
+        restart_policy: always
+        state: started
+        pull: false
+        memory: "1G"
+        network_mode: "default"
+        container_default_behavior: "compatibility"
+        comparisons:
+          labels: strict
+          env: strict
+        volumes:
+          - "{{ pinchflat_root }}:/config"
+          - "{{ pinchflat_output_dir }}:/downloads"
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode
+
+    - name: Run backup of pinchflat at 1am within first 15 minutes
+      block:
+        - name: Create archive
+          archive:
+            path: "{{ pinchflat_root }}"
+            dest: "{{ pinchflat_backup_dir }}/pinchflat-backup-{{ year_now }}{{ hour_now }}{{ minute_now }}.tgz"
+
+        - name: Find older backups
+          find:
+            paths: "{{ pinchflat_backup_dir }}"
+            age: 5d
+            recurse: true
+          register: pinchflat_old_backups
+
+        - name: Backups found
+          debug:
+            msg: "{{ pinchflat_old_backups.files }}"
+
+        - name: Remove files the older files
+          file:
+            path: "{{ item.path }}"
+            state: absent
+          with_items: "{{ pinchflat_old_backups.files }}"
+      when: (hour_now | int == 1 and minute_now | int < 10) or
+            (force_pinchflat_backup is defined and force_pinchflat_backup | bool)

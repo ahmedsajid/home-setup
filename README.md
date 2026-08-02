@@ -30,7 +30,8 @@ ansible-playbook -i '<hostname/ipaddress>,' ansible_pull.yml --user <username> -
 ## Running services
 
 Once the cronjob has been setup, there should be following available services provided by the server:
-- Emby
+- Jellyfin
+- Pinchflat (YouTube downloader for Jellyfin)
 - Pihole (+Unbound)
 - Grafana
 - Wireguard

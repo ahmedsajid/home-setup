@@ -1,0 +1,8 @@
+---
+# Shared NAS mount root (NFS shares live under here).
+nas_root: /mnt/nas
+
+# Pinchflat media + backup paths on the NAS.
+pinchflat_output_dir: "{{ nas_root }}/Multimedia/YouTube"
+pinchflat_shows_dir: "{{ pinchflat_output_dir }}/shows"
+pinchflat_backup_dir: "{{ nas_root }}/Backup/pinchflat"
