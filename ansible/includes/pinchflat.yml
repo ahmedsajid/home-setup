@@ -9,7 +9,7 @@
   vars_files:
     - "{{ playbook_dir }}/../group_vars/all/nas.yml"
   vars:
-    pinchflat_docker_image: "ghcr.io/kieraneglin/pinchflat:v2025.9.26"
+    pinchflat_docker_image: "ghcr.io/kieraneglin/pinchflat:latest"
     pinchflat_root: "/opt/pinchflat"
   tasks:
     - name: "Set facts for time"
