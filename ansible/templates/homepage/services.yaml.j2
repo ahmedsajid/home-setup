@@ -1,0 +1,51 @@
+# {{ ansible_managed }}
+---
+- Home:
+    - Home Assistant:
+        icon: home-assistant.png
+        href: https://ha.{{ do_domain }}/
+        description: Home automation
+        siteMonitor: https://ha.{{ do_domain }}/
+        server: local
+        container: homeassistant
+
+- Media:
+    - Jellyfin:
+        icon: jellyfin.png
+        href: https://jellyfin.{{ do_domain }}/
+        description: Media server
+        siteMonitor: https://jellyfin.{{ do_domain }}/
+
+- Tools:
+    - Vaultwarden:
+        icon: vaultwarden.png
+        href: https://pass.{{ do_domain }}/
+        description: Password manager
+        siteMonitor: https://pass.{{ do_domain }}/
+        server: local
+        container: vaultwarden
+
+    - Actual Budget:
+        icon: actual-budget.png
+        href: https://money.{{ do_domain }}/
+        description: Budgeting
+        siteMonitor: https://money.{{ do_domain }}/
+        server: local
+        container: actual
+
+- Monitoring:
+    - Netdata:
+        icon: netdata.png
+        href: https://netdata.{{ do_domain }}/
+        description: System metrics
+        siteMonitor: https://netdata.{{ do_domain }}/
+        server: local
+        container: netdata
+
+    - Traefik:
+        icon: traefik.png
+        href: https://traefik.{{ do_domain }}/
+        description: Reverse proxy
+        siteMonitor: https://traefik.{{ do_domain }}/
+        server: local
+        container: traefik

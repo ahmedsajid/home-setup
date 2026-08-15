@@ -64,13 +64,13 @@
         labels:
           traefik.enable: "true"
           traefik.docker.network: "app_network"
-          traefik.http.routers.home.rule: "Host(`home.{{ do_domain }}`)"
-          traefik.http.routers.home.entrypoints: "https"
-          traefik.http.routers.home.tls: "true"
-          traefik.http.routers.home.middlewares: "home-iprestrict"
-          traefik.http.middlewares.home-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
-          traefik.http.middlewares.home-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
-          traefik.http.services.home.loadbalancer.server.port: "8123"
+          traefik.http.routers.ha.rule: "Host(`ha.{{ do_domain }}`)"
+          traefik.http.routers.ha.entrypoints: "https"
+          traefik.http.routers.ha.tls: "true"
+          traefik.http.routers.ha.middlewares: "ha-iprestrict"
+          traefik.http.middlewares.ha-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.ha-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
+          traefik.http.services.ha.loadbalancer.server.port: "8123"
         restart_policy: always
         state: started
         pull: false
