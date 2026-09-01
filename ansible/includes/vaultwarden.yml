@@ -7,7 +7,7 @@
   hosts: localhost
   connection: local
   vars:
-    vaultwarden_docker_image: "vaultwarden/server:1.37.1"
+    vaultwarden_docker_image: "vaultwarden/server:1.37.2"
   tasks:
     - name: create vaultwarden required folder
       file:
