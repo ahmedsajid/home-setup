@@ -17,5 +17,6 @@
 - import_playbook: includes/vaultwarden.yml
 - import_playbook: includes/nut.yml
 - import_playbook: includes/homeassistant.yml
+- import_playbook: includes/homepage.yml
 - import_playbook: includes/netdata.yml
 - import_playbook: includes/os_update.yml

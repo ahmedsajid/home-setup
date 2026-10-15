@@ -1,0 +1,77 @@
+---
+
+- name: Read ini config file
+  import_playbook: "read_config_file.yml"
+
+- name: "Homepage"
+  hosts: localhost
+  connection: local
+  vars:
+    homepage_docker_image: "ghcr.io/gethomepage/homepage:v1.13.2"
+  tasks:
+    - name: create homepage required folders
+      file:
+        state: directory
+        path: "{{ item }}"
+      with_items:
+        - "/opt/homepage"
+        - "/opt/homepage/config"
+
+    - name: Deploy homepage settings
+      template:
+        src: "../templates/homepage/settings.yaml.j2"
+        dest: "/opt/homepage/config/settings.yaml"
+        mode: 0644
+      when: not ansible_check_mode
+
+    - name: Deploy homepage services
+      template:
+        src: "../templates/homepage/services.yaml.j2"
+        dest: "/opt/homepage/config/services.yaml"
+        mode: 0644
+      when: not ansible_check_mode
+
+    - name: Deploy homepage docker config
+      template:
+        src: "../templates/homepage/docker.yaml.j2"
+        dest: "/opt/homepage/config/docker.yaml"
+        mode: 0644
+      when: not ansible_check_mode
+
+    - name: Deploy homepage container
+      docker_container:
+        name: "homepage"
+        hostname: "homepage"
+        image: "{{ homepage_docker_image }}"
+        env:
+          TZ: 'America/Toronto'
+          HOMEPAGE_ALLOWED_HOSTS: "home.{{ do_domain }}"
+        labels:
+          traefik.enable: "true"
+          traefik.docker.network: "app_network"
+          traefik.http.routers.home.rule: "Host(`home.{{ do_domain }}`)"
+          traefik.http.routers.home.entrypoints: "https"
+          traefik.http.routers.home.tls: "true"
+          traefik.http.routers.home.middlewares: "home-iprestrict"
+          traefik.http.middlewares.home-iprestrict.ipallowlist.sourcerange: "{{ traefik_private_ipallowlist_sourcerange }}"
+          traefik.http.middlewares.home-iprestrict.ipallowlist.rejectstatuscode: "{{ traefik_ip_reject_status_code }}"
+          traefik.http.services.home.loadbalancer.server.port: "3000"
+        networks:
+          - name: "app_network"
+        restart_policy: always
+        state: started
+        pull: false
+        memory: '512M'
+        network_mode: "default"
+        container_default_behavior: "compatibility"
+        comparisons:
+          labels: strict
+        volumes:
+          - '/opt/homepage/config:/app/config'
+          - '/var/run/docker.sock:/var/run/docker.sock:ro'
+      # added retry to tasks dependant on external services
+      register: result
+      retries: 5
+      delay: 3
+      until: result is succeeded
+      when: not ansible_check_mode
