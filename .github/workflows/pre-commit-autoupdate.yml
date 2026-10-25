@@ -24,6 +24,11 @@ jobs:
         run: pip install pre-commit==$PRE_COMMIT_VERSION
       - name: Run pre-commit autoupdate
         run: pre-commit autoupdate
+      - name: Close existing pre-commit autoupdate PRs
+        run: |
+          gh pr list --search "pre-commit autoupdate" --state open --json number --jq '.[].number' | xargs -r gh pr close
+        env:
+          GITHUB_TOKEN: ${{ secrets.BOT_GITHUB_TOKEN }}
       - name: Create PR if required
         run: |
           # If there are changes, only then continue
